@@ -5,10 +5,10 @@
   },
   "dev": {
     "browserSync": {
-      "proxyURL": "localhost:8881",
+      "proxyURL": "https://blue-rook-278273.hostingersite.com",
       "bypassPort": "3000",
       "live": true,
-      "https": false
+      "https": true
     }
   }
 }
