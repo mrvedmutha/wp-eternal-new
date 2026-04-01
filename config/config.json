@@ -1,0 +1,14 @@
+{
+  "theme": {
+    "themeType": "classic",
+    "enableBlocks": true
+  },
+  "dev": {
+    "browserSync": {
+      "proxyURL": "localhost:8881",
+      "bypassPort": "3000",
+      "live": true,
+      "https": false
+    }
+  }
+}

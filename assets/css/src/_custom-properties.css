@@ -1,0 +1,49 @@
+/**
+ * Custom Properties
+ * aka CSS variables — Eternal Labs Brand System
+ *
+ * @link: https://developer.mozilla.org/en-US/docs/Web/CSS/--*
+ **/
+
+:root {
+
+	/* ─── Fonts ─────────────────────────────────────────── */
+	--font-display: 'Cormorant Garamond', georgia, serif;
+	--font-body:    'Maison Neue', 'Helvetica Neue', arial, sans-serif;
+
+	/* ─── Colors ─────────────────────────────────────────── */
+	--color-primary: #021f1d;   /* deep forest green */
+	--color-white:   #fff;
+	--color-grey:    #f5f5f5;   /* section backgrounds */
+	--color-muted:   #868686;   /* secondary / meta text */
+	--color-black:   #000;
+	--color-rule:    #dcd7cd;   /* dividers, warm cream */
+
+	/* Semantic aliases */
+	--color-text:       var(--color-primary);
+	--color-bg:         var(--color-white);
+	--color-bg-subtle:  var(--color-grey);
+	--color-border:     var(--color-rule);
+	--dropdown-symbol-width: 0.7em;
+
+	/* ─── Spacing — 4pt grid ─────────────────────────────── */
+	--space-1:  4px;
+	--space-2:  8px;
+	--space-3:  12px;
+	--space-4:  16px;
+	--space-5:  20px;
+	--space-6:  24px;
+	--space-8:  32px;
+	--space-10: 40px;
+	--space-12: 48px;
+	--space-16: 64px;
+	--space-20: 80px;
+
+	/* ─── Layout ─────────────────────────────────────────── */
+	--page-width:    1440px;
+	--content-width: 760px;
+	--page-padding:  80px;
+	--section-gap:   80px;
+	--body-gap:      24px;
+	--nav-height:    80px;
+}
