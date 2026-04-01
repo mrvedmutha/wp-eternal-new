@@ -35,11 +35,13 @@ declare const EternalPDP: {
 document.addEventListener("DOMContentLoaded", () => {
 	initGallery();
 	initGalleryZoom();
+	initGalleryCarousel();
 	initLightbox();
 	initAccordion();
 	initQtyStepper();
 	initVariantSwitching();
 	initSubscriptionToggle();
+	initIngredientsSlider();
 });
 
 // ─── 1. Gallery thumbnail switching ─────────────────────────────────────────
@@ -122,6 +124,7 @@ function initGallery(): void {
 			updateGalleryImage(newIndex);
 		});
 	}
+
 }
 
 // ─── 1b. Gallery zoom + pan on hover ────────────────────────────────────────
@@ -162,7 +165,149 @@ function initGalleryZoom(): void {
 	});
 }
 
-// ─── 1c. Lightbox Modal ──────────────────────────────────────────────────────
+// ─── 1c. Gallery carousel (mobile ≤700px) ───────────────────────────────────
+
+function initGalleryCarousel(): void {
+	const mq = window.matchMedia("(max-width: 700px)");
+	const heroContainer =
+		document.querySelector<HTMLElement>(".pdp-gallery__hero");
+	const thumbs = Array.from(
+		document.querySelectorAll<HTMLButtonElement>(".pdp-gallery__thumb"),
+	);
+
+	if (!heroContainer || thumbs.length < 2) return;
+
+	const heroImg =
+		heroContainer.querySelector<HTMLImageElement>("[data-hero-img]");
+	if (!heroImg) return;
+
+	const images = thumbs.map((t) => ({
+		url: t.dataset.fullUrl ?? "",
+		srcset: t.dataset.fullSrcset ?? "",
+		alt: t.getAttribute("aria-label") ?? "",
+	}));
+
+	let track: HTMLDivElement | null = null;
+	let isActive = false;
+
+	const cardWidth = (): number => heroContainer.offsetWidth;
+
+	const setPos = (index: number, animated: boolean): void => {
+		if (!track) return;
+		track.style.transition = animated
+			? "transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+			: "none";
+		track.style.transform = `translateX(${-index * cardWidth()}px)`;
+	};
+
+	const syncThumbs = (index: number): void => {
+		thumbs.forEach((t, i) => t.classList.toggle("is-active", i === index));
+		const trigger = document.querySelector<HTMLElement>(
+			"[data-lightbox-trigger]",
+		);
+		if (trigger) trigger.dataset.currentIndex = String(index);
+		currentGalleryIndex = index;
+	};
+
+	const build = (): void => {
+		if (isActive) return;
+		isActive = true;
+
+		heroImg.style.display = "none";
+
+		track = document.createElement("div");
+		track.className = "pdp-gallery__carousel-track";
+
+		images.forEach((img) => {
+			const el = document.createElement("img");
+			el.className = "pdp-gallery__hero-img";
+			el.src = img.url;
+			if (img.srcset) el.srcset = img.srcset;
+			el.alt = img.alt;
+			el.draggable = false;
+			track!.appendChild(el);
+		});
+
+		heroContainer.insertBefore(track, heroContainer.firstChild);
+		setPos(currentGalleryIndex, false);
+
+		let startX = 0;
+		let liveX = 0;
+		let dragging = false;
+
+		heroContainer.addEventListener(
+			"touchstart",
+			(e: TouchEvent) => {
+				startX = e.touches[0].clientX;
+				liveX = startX;
+				dragging = true;
+				if (track) track.style.transition = "none";
+			},
+			{ passive: true },
+		);
+
+		heroContainer.addEventListener(
+			"touchmove",
+			(e: TouchEvent) => {
+				if (!dragging || !track) return;
+				liveX = e.touches[0].clientX;
+				const delta = liveX - startX;
+				track.style.transform = `translateX(${-currentGalleryIndex * cardWidth() + delta}px)`;
+			},
+			{ passive: true },
+		);
+
+		heroContainer.addEventListener("touchend", () => {
+			if (!dragging || !track) return;
+			dragging = false;
+
+			const delta = liveX - startX;
+			const threshold = cardWidth() * 0.25;
+			let newIndex = currentGalleryIndex;
+
+			if (delta < -threshold && currentGalleryIndex < images.length - 1) {
+				newIndex = currentGalleryIndex + 1;
+			} else if (delta > threshold && currentGalleryIndex > 0) {
+				newIndex = currentGalleryIndex - 1;
+			}
+
+			setPos(newIndex, true);
+			if (newIndex !== currentGalleryIndex) syncThumbs(newIndex);
+		});
+	};
+
+	const destroy = (): void => {
+		if (!isActive) return;
+		isActive = false;
+		track?.remove();
+		track = null;
+		heroImg.style.display = "";
+		heroImg.src = images[currentGalleryIndex].url;
+		if (images[currentGalleryIndex].srcset)
+			heroImg.srcset = images[currentGalleryIndex].srcset;
+	};
+
+	// Keep carousel in sync when nav buttons / thumbs are used
+	const trigger = document.querySelector<HTMLElement>("[data-lightbox-trigger]");
+	if (trigger) {
+		new MutationObserver(() => {
+			if (!isActive || !track) return;
+			const idx = parseInt(trigger.dataset.currentIndex ?? "0", 10);
+			if (!isNaN(idx) && idx !== currentGalleryIndex) {
+				setPos(idx, true);
+				currentGalleryIndex = idx;
+			}
+		}).observe(trigger, {
+			attributes: true,
+			attributeFilter: ["data-current-index"],
+		});
+	}
+
+	if (mq.matches) build();
+	mq.addEventListener("change", () => (mq.matches ? build() : destroy()));
+}
+
+// ─── 1d. Lightbox Modal ──────────────────────────────────────────────────────
 
 class PDPLightbox {
 	private modal: HTMLElement | null = null;
@@ -833,4 +978,49 @@ function initSubscriptionToggle(): void {
 		const defaultMonths = EternalPDP.plans[0].months;
 		applyPlanTier(defaultMonths);
 	}
+}
+
+// ─── Ingredients slider (mobile only ≤700px) ────────────────────────────────
+
+function initIngredientsSlider(): void {
+	const track = document.querySelector<HTMLElement>("[data-ingredients-track]");
+	if (!track) return;
+
+	const cards = track.querySelectorAll<HTMLElement>(".pdp-ingredients__card");
+	if (cards.length <= 1) return;
+
+	const prevBtn = document.querySelector<HTMLButtonElement>(
+		"[data-ingredients-prev]",
+	);
+	const nextBtn = document.querySelector<HTMLButtonElement>(
+		"[data-ingredients-next]",
+	);
+	const fill = document.querySelector<HTMLElement>("[data-ingredients-fill]");
+
+	const mq = window.matchMedia("(max-width: 700px)");
+	let current = 0;
+	const total = cards.length;
+
+	const updateProgress = (index: number): void => {
+		if (fill) fill.style.width = `${((index + 1) / total) * 100}%`;
+	};
+
+	const goTo = (index: number): void => {
+		if (!mq.matches) return;
+		current = ((index % total) + total) % total;
+		track.style.transform = `translateX(${-current * 100}%)`;
+		updateProgress(current);
+	};
+
+	// Reset when viewport leaves mobile
+	mq.addEventListener("change", () => {
+		if (!mq.matches) {
+			track.style.transform = "";
+			current = 0;
+			updateProgress(0);
+		}
+	});
+
+	prevBtn?.addEventListener("click", () => goTo(current - 1));
+	nextBtn?.addEventListener("click", () => goTo(current + 1));
 }

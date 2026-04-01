@@ -976,6 +976,27 @@ body.pdp-modal-open .pdp-qty__select {
 	margin: 0;
 }
 
+/* Gallery carousel track — built by JS on mobile */
+.pdp-gallery__carousel-track {
+	display: flex;
+	height: 100%;
+	width: 100%;
+	will-change: transform;
+}
+
+.pdp-gallery__carousel-track .pdp-gallery__hero-img {
+	flex: 0 0 100%;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transform: none !important;
+}
+
+/* Slider nav — hidden on desktop, shown only on mobile via media query */
+.pdp-ingredients__slider-nav {
+	display: none;
+}
+
 /* ─── Lightbox Modal ─────────────────────────────────────────────────────── */
 
 /* When modal is open, hide header, sidebar, and select dropdowns completely */
@@ -1175,6 +1196,190 @@ body.pdp-modal-open select {
 
 .pdp-modal__thumb {
 	display: none;
+}
+
+/* ─── 1024px: Thumbs move below hero ────────────────────────────────────── */
+@media (max-width: 1024px) {
+	.pdp-breadcrumb {
+		padding-left: var(--space-10);
+	}
+
+	.pdp-gallery {
+		flex-direction: column-reverse;
+		align-items: stretch;
+	}
+
+	.pdp-gallery__hero {
+		flex: none;
+		height: 500px;
+	}
+
+	.pdp-gallery__thumbs {
+		flex-direction: row;
+		justify-content: flex-start;
+		overflow-x: auto;
+		gap: 12px;
+	}
+
+	.pdp-gallery__thumb {
+		width: 60px;
+		height: 60px;
+		flex-shrink: 0;
+	}
+
+	.pdp-gallery__hero .pdp-gallery__hero-img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: opacity 0.2s ease;
+		will-change: auto;
+		transform: none !important;
+	}
+}
+
+/* ─── 700px: Single-column layout ───────────────────────────────────────── */
+@media (max-width: 700px) {
+	.pdp-layout {
+		flex-direction: column;
+		gap: 40px;
+	}
+
+	.pdp-gallery,
+	.pdp-right {
+		width: 100%;
+		max-width: 100%;
+		flex: none;
+		position: static;
+	}
+
+	.pdp-gallery__hero {
+		height: auto;
+		aspect-ratio: 1 / 1;
+	}
+
+	/* Ingredients slider */
+	.pdp-ingredients__slider-wrap {
+		overflow: hidden;
+	}
+
+	.pdp-ingredients__grid {
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+		gap: 0;
+		padding: 0;
+		transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	}
+
+	.pdp-ingredients__title {
+		padding-left: 40px;
+		padding-right: 40px;
+	}
+
+	.pdp-ingredients__card {
+		flex: 0 0 100%;
+		min-width: 0;
+		padding: 0 40px 24px;
+	}
+
+	.pdp-ingredients__img {
+		height: auto;
+		aspect-ratio: 4 / 5;
+	}
+
+	.pdp-ingredients__slider-nav {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		padding: 16px 40px 32px;
+	}
+
+	.pdp-ingredients__slider-btn {
+		background: none;
+		border: none;
+		cursor: pointer;
+		color: var(--color-primary);
+		padding: 8px;
+		opacity: 0.5;
+		transition: opacity 0.2s ease;
+		flex-shrink: 0;
+	}
+
+	.pdp-ingredients__slider-btn:hover {
+		opacity: 1;
+	}
+
+	.pdp-ingredients__slider-progress {
+		flex: 1;
+		height: 2px;
+		background: rgba(2, 39, 39, 0.15);
+		border-radius: 1px;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.pdp-ingredients__slider-fill {
+		position: absolute;
+		inset: 0 auto 0 0;
+		height: 100%;
+		background: var(--color-primary);
+		border-radius: 1px;
+		transition: width 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	}
+
+	.pdp-feature {
+		flex-direction: column-reverse;
+		gap: 40px;
+		padding: 0 40px 40px;
+	}
+
+	.pdp-feature__text {
+		flex: none;
+		width: 100%;
+		padding-top: 0;
+		padding-right: 0;
+		position: static;
+	}
+
+	.pdp-feature__image {
+		flex: none;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 5 / 4;
+	}
+
+	.pdp-feature__img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+}
+
+/* ─── 600px: Reduce side padding from 40px → 20px ───────────────────────── */
+@media (max-width: 600px) {
+	.pdp-layout {
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+
+	.pdp-feature {
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+
+	.pdp-ingredients__title {
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+
+	.pdp-ingredients__card {
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+
+	.pdp-ingredients__slider-nav {
+		padding-left: 20px;
+		padding-right: 20px;
+	}
 }
 
 /* Mobile/Touch optimizations */
