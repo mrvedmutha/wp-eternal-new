@@ -1,0 +1,286 @@
+/**
+ * Related Products section
+ *
+ * Desktop-first. Responsive pass is a separate spec.
+ * All colour tokens from _custom-properties.css.
+ */
+
+/* ─── Section shell ──────────────────────────────────────────────────────── */
+
+.related-products {
+	width: 100%;
+	padding: var(--space-20) 0;
+	background: var(--color-white);
+}
+
+.related-products__inner {
+	max-width: var(--page-width);
+	margin: 0 auto;
+	padding: 0 var(--page-padding);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--space-20);
+}
+
+/* ─── Heading ────────────────────────────────────────────────────────────── */
+
+.related-products__heading {
+	font-family: var(--font-display);
+	font-size: 40px;
+	font-weight: 400;
+	font-style: normal;
+	line-height: 48px;
+	letter-spacing: -2px;
+	color: var(--color-primary);
+	text-align: center;
+	margin: 0;
+}
+
+/* ─── Slider wrapper + track ─────────────────────────────────────────────── */
+
+.related-products__slider-wrap {
+	width: 100%;
+	overflow: hidden;
+}
+
+.related-products__track {
+	display: flex;
+	flex-wrap: nowrap;
+	will-change: transform;
+}
+
+/* ─── Page (group of ≤3 cards) ───────────────────────────────────────────── */
+/* Width is set in JS to match the wrapper's offsetWidth exactly. */
+
+.related-products__page {
+	display: flex;
+	gap: var(--space-8); /* 32px */
+	flex-shrink: 0;
+	/* width set by JS */
+}
+
+/* ─── Card ───────────────────────────────────────────────────────────────── */
+
+.related-products__card {
+	flex: 1 1 0;
+	min-width: 0;
+	max-width: none;
+	display: flex;
+	flex-direction: column;
+}
+
+/* ─── Image zone ─────────────────────────────────────────────────────────── */
+
+.related-products__img-zone {
+	position: relative;
+	overflow: hidden;
+	background: var(--color-white);
+	aspect-ratio: 316 / 423;
+	cursor: pointer;
+}
+
+/* Transparent full-zone link for image-area clicks */
+.related-products__img-zone-link {
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	display: block;
+}
+
+.related-products__img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	display: block;
+}
+
+/* Hover image sits on top of main; initial state driven by GSAP */
+.related-products__img--hover {
+	z-index: 1;
+	/* opacity and scale are set/animated by GSAP – no CSS transition needed */
+}
+
+/* ─── ADD TO BAG bar ─────────────────────────────────────────────────────── */
+
+.related-products__atb {
+	position: absolute;
+	bottom: var(--space-4);
+	left: var(--space-4);
+	right: var(--space-4);
+	height: 46px;
+	z-index: 3;
+	background: var(--color-primary);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background 0.25s ease;
+	/* yPercent: 100, y: 16 set by GSAP on init — hidden below img-zone (overflow:hidden) */
+}
+
+.related-products__atb.is-adding {
+	background: var(--color-grey);
+}
+
+.related-products__atb-link,
+.related-products__atb-link:hover,
+.related-products__atb-link:focus,
+.related-products__atb-link:visited {
+	pointer-events: none; /* ATB div handles all clicks */
+	font-family: var(--font-body);
+	font-size: 10px;
+	font-weight: 500;
+	letter-spacing: 1.6px;
+	line-height: 13px;
+	color: #f5f1ec;
+	text-decoration: none;
+	text-transform: uppercase;
+	white-space: nowrap;
+	outline: none;
+	transition: color 0.2s ease;
+}
+
+.related-products__atb.is-adding .related-products__atb-link {
+	color: var(--color-primary);
+	cursor: wait;
+}
+
+/* ─── Product info ────────────────────────────────────────────────────────── */
+
+.related-products__info {
+	display: flex;
+	flex-direction: column;
+	padding-top: var(--space-4);
+	padding-right: var(--space-4);
+}
+
+/* Variant pills */
+.related-products__pills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-2);
+	margin-bottom: 0;
+}
+
+.related-products__pill {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 32px;
+	padding: 0 10px;
+	border: 0.5px solid var(--color-black);
+	font-family: var(--font-body);
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: var(--color-black);
+	white-space: nowrap;
+}
+
+/* Product names */
+.related-products__names {
+	margin-top: var(--space-4);
+}
+
+.related-products__name-link {
+	text-decoration: none;
+}
+
+.related-products__name {
+	font-family: var(--font-body);
+	font-size: 15px;
+	font-weight: 400;
+	line-height: 23px;
+	letter-spacing: 0.15px;
+	color: var(--color-primary);
+	margin: 0;
+}
+
+.related-products__name-fr {
+	font-family: var(--font-body);
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: var(--color-primary);
+	margin: 0;
+}
+
+/* Tagline */
+.related-products__tagline {
+	margin: var(--space-2) 0 0;
+	font-family: var(--font-body);
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: var(--color-muted);
+}
+
+/* Price */
+.related-products__price {
+	padding: var(--space-4) 0;
+}
+
+.related-products__price .price,
+.related-products__price .amount {
+	font-family: var(--font-body);
+	font-size: 17px;
+	font-weight: 400;
+	line-height: 30px;
+	letter-spacing: 0;
+	color: var(--color-black);
+}
+
+/* ─── Dot navigation ─────────────────────────────────────────────────────── */
+
+.related-products__dots {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.related-products__dot {
+	appearance: none;
+	border-radius: 0;
+	width: 10px;
+	height: 10px;
+	padding: 0;
+	border: 1px solid var(--color-black);
+	background: transparent;
+	cursor: pointer;
+	transition: background 0.2s ease;
+}
+
+.related-products__dot.is-active {
+	background: var(--color-black);
+}
+
+.related-products__dot:focus-visible {
+	outline: 2px solid var(--color-primary);
+	outline-offset: 2px;
+}
+
+/* ─── Tablet & mobile (≤ 1024px): no hover effects ──────────────────────── */
+
+@media (max-width: 1024px) {
+	.related-products__atb {
+		display: none;
+	}
+}
+
+/* ─── Mobile (≤ 600px) ───────────────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+	.related-products__inner {
+		gap: var(--space-10);
+		padding: 0 var(--space-5);
+	}
+
+	.related-products__page {
+		gap: var(--space-4);
+	}
+}

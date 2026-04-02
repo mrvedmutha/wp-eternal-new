@@ -164,6 +164,7 @@ class Theme {
 			new Newsletter\Component(),
 			new Search\Component(),
 			new Product_Detail\Component(),
+			// new Related_Products\Component(), // TODO: re-enable after confirming all files uploaded
 		);
 
 		if ( defined( 'JETPACK__VERSION' ) ) {
