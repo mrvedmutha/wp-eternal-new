@@ -179,6 +179,15 @@ try {
 				fs.mkdirSync( buildPath, { recursive: true } );
 			}
 
+			// Re-create empty CSS placeholders so the SFTP watcher never
+			// errors on files it has previously uploaded to the server.
+			for ( const cssFile of [ 'style.css', 'editor.css' ] ) {
+				const cssPath = path.join( buildPath, cssFile );
+				if ( ! fs.existsSync( cssPath ) ) {
+					fs.writeFileSync( cssPath, '' );
+				}
+			}
+
 			// Find the entry file (index.js/ts/tsx)
 			const entryFiles = [];
 			for ( const ext of [ '.js', '.jsx', '.ts', '.tsx' ] ) {

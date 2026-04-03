@@ -1,0 +1,33 @@
+{
+  "name": "wp-rig/product-showcase",
+  "apiVersion": 2,
+  "title": "Product Showcase",
+  "category": "widgets",
+  "icon": "grid-view",
+  "description": "Configurable product slider — filter by category, sort order, and WooCommerce grouping.",
+  "textdomain": "wp-rig",
+  "render": "file:./render.php",
+  "editorScript": "file:./build/index.js",
+  "supports": {
+    "html": false,
+    "align": [ "full", "wide" ]
+  },
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "Explore Our Collection"
+    },
+    "category": {
+      "type": "string",
+      "default": ""
+    },
+    "orderby": {
+      "type": "string",
+      "default": "rand"
+    },
+    "limit": {
+      "type": "integer",
+      "default": 9
+    }
+  }
+}
