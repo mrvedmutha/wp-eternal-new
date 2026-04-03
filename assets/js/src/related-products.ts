@@ -11,7 +11,7 @@
 
 import { gsap } from 'gsap';
 
-const AUTO_DELAY = 10000; // ms between auto-advances
+const AUTO_DELAY = 15000; // ms between auto-advances
 
 document.addEventListener('DOMContentLoaded', () => {
 	document

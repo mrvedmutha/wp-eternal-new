@@ -88,19 +88,23 @@
 	display: block;
 }
 
+/* Both images fill the zone completely — object-fit: cover scales to fill
+   top-to-bottom, centres, and clips any horizontal overflow. */
 .related-products__img {
 	position: absolute;
 	inset: 0;
 	width: 100%;
 	height: 100%;
-	object-fit: contain;
+	object-fit: cover;
+	object-position: center top;
 	display: block;
 }
 
 /* Hover image sits on top of main; initial state driven by GSAP */
 .related-products__img--hover {
 	z-index: 1;
-	/* opacity and scale are set/animated by GSAP – no CSS transition needed */
+	opacity: 0; /* hidden by default; GSAP animates on desktop hover */
+	/* scale is set/animated by GSAP – no CSS transition needed */
 }
 
 /* ─── ADD TO BAG bar ─────────────────────────────────────────────────────── */

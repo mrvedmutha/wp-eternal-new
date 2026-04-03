@@ -49,7 +49,7 @@ class Component implements Component_Interface {
 	 * Filter `eternal_related_products_load_script` to force-load on any page.
 	 */
 	public function enqueue_assets(): void {
-		$should_load = is_product() || is_front_page();
+		$should_load = is_product() || is_front_page() || has_block( 'wp-rig/product-showcase' );
 
 		/**
 		 * Filters whether the related-products script should load on the current page.
