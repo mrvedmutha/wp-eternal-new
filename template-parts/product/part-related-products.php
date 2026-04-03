@@ -24,17 +24,37 @@ if ( ! function_exists( 'wc_get_products' ) ) {
 	return;
 }
 
-$context = isset( $args['context'] ) ? $args['context'] : ( is_product() ? 'pdp' : 'general' );
-$limit   = isset( $args['limit'] ) ? (int) $args['limit'] : 9;
+$context      = isset( $args['context'] ) ? $args['context'] : ( is_product() ? 'pdp' : 'general' );
+$limit        = isset( $args['limit'] ) ? (int) $args['limit'] : 9;
+$orderby_arg  = isset( $args['orderby'] ) ? $args['orderby'] : 'rand';
+$category_arg = isset( $args['category'] ) ? (string) $args['category'] : '';
 
 // ─── Build product query ──────────────────────────────────────────────────────
 
 $query_args  = array(
-	'limit'   => $limit,
-	'status'  => 'publish',
-	'orderby' => 'rand',
+	'limit'  => $limit,
+	'status' => 'publish',
 );
 $exclude_ids = array();
+
+// ── Special filter types: on_sale / featured ──────────────────────────────────
+
+if ( 'on_sale' === $orderby_arg ) {
+	$sale_ids = wc_get_product_ids_on_sale();
+	if ( empty( $sale_ids ) ) {
+		return;
+	}
+	shuffle( $sale_ids );
+	$query_args['include'] = array_slice( $sale_ids, 0, $limit );
+	$query_args['orderby'] = 'include';
+} elseif ( 'featured' === $orderby_arg ) {
+	$query_args['featured'] = true;
+	$query_args['orderby']  = 'rand';
+} else {
+	$query_args['orderby'] = $orderby_arg;
+}
+
+// ── Context-specific adjustments ─────────────────────────────────────────────
 
 if ( 'pdp' === $context ) {
 	/** @var \WC_Product|null $current_product */
@@ -44,8 +64,8 @@ if ( 'pdp' === $context ) {
 		return;
 	}
 
-	$exclude_ids               = array( $current_product->get_id() );
-	$query_args['exclude']     = $exclude_ids;
+	$exclude_ids           = array( $current_product->get_id() );
+	$query_args['exclude'] = $exclude_ids;
 
 	$cat_slugs = wc_get_product_terms( $current_product->get_id(), 'product_cat', array( 'fields' => 'slugs' ) );
 	if ( ! empty( $cat_slugs ) ) {
@@ -54,6 +74,11 @@ if ( 'pdp' === $context ) {
 
 	$default_heading = 'Explore Other Skincare Essentials';
 } else {
+	// Block / general context: apply optional category filter.
+	if ( $category_arg ) {
+		$query_args['category'] = array( $category_arg );
+	}
+
 	$default_heading = 'Explore Our Collection';
 }
 

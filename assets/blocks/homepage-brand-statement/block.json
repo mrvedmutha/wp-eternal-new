@@ -9,8 +9,6 @@
   "render": "file:./render.php",
   "editorScript": "file:./build/index.js",
   "viewScript": "file:./build/view.js",
-  "style": "file:./build/style.css",
-  "editorStyle": "file:./build/editor.css",
   "supports": {
     "html": false,
     "align": [ "full" ]

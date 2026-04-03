@@ -8,8 +8,6 @@
   "textdomain": "wp-rig",
   "render": "file:./render.php",
   "editorScript": "file:./build/index.js",
-  "style": "file:./build/style.css",
-  "editorStyle": "file:./build/editor.css",
   "supports": {
     "html": false,
     "align": [ "full" ]
