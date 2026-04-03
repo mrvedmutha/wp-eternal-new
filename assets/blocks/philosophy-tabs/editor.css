@@ -1,0 +1,145 @@
+/**
+ * Philosophy Tabs — editor-only styles.
+ */
+
+.philosophy-tabs-editor {
+	background: #f5f5f5;
+	font-family: inherit;
+}
+
+/* ── Canvas ─────────────────────────────────────────────────────────── */
+.pt-editor-canvas {
+	width: 100%;
+	overflow: hidden;
+}
+
+/* Image preview */
+.pt-editor-image-wrap {
+	width: 100%;
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+	background: #d4d4d4;
+}
+
+.pt-editor-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.pt-editor-image-placeholder {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #666;
+	font-size: 13px;
+	font-style: italic;
+}
+
+/* Tab nav */
+.pt-editor-controls {
+	padding: 0 24px;
+	margin-top: 24px;
+}
+
+.pt-editor-tab-nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.pt-editor-btn {
+	display: inline-flex;
+	align-items: center;
+	padding: 8px 10px;
+	border: 0.5px solid #021f1d;
+	background: transparent;
+	cursor: pointer;
+	color: #021f1d;
+	font-size: 9px;
+	font-weight: 500;
+	letter-spacing: 1.26px;
+	text-transform: uppercase;
+	white-space: nowrap;
+	opacity: 0.5;
+}
+
+.pt-editor-btn.is-active {
+	opacity: 1;
+}
+
+.pt-editor-divider {
+	border: none;
+	border-top: 1px solid rgba( 2, 31, 29, 0.15 );
+	margin: 14px 0 0;
+}
+
+/* Content */
+.pt-editor-content {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 40px;
+	padding: 32px 24px 48px;
+	align-items: start;
+}
+
+.pt-editor-heading {
+	font-family: 'Cormorant Garamond', serif;
+	font-size: 28px;
+	font-weight: 300;
+	font-style: italic;
+	line-height: 1.3;
+	margin: 0;
+	color: #021f1d;
+}
+
+.pt-editor-body {
+	font-size: 14px;
+	line-height: 1.6;
+	color: #021f1d;
+	margin: 0;
+}
+
+/* ── Sidebar tab management ──────────────────────────────────────────── */
+.pt-editor-tab-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+
+.pt-editor-tab-select-btn {
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-align: left;
+	justify-content: flex-start !important;
+}
+
+.pt-editor-add-btn {
+	margin-top: 8px;
+	width: 100%;
+	justify-content: center;
+}
+
+.pt-editor-label {
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	color: #1e1e1e;
+	margin: 16px 0 8px;
+}
+
+.pt-editor-thumb {
+	display: block;
+	width: 100%;
+	aspect-ratio: 16 / 9;
+	object-fit: cover;
+	margin-bottom: 8px;
+	border-radius: 2px;
+}
