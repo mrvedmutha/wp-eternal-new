@@ -1,0 +1,31 @@
+{
+  "name": "wp-rig/simple-rich-text",
+  "apiVersion": 2,
+  "title": "Simple Rich Text",
+  "category": "widgets",
+  "icon": "text",
+  "description": "Editorial text section with heading and two body paragraphs. Scroll-triggered word-by-word reveal animation.",
+  "textdomain": "wp-rig",
+  "render": "file:./render.php",
+  "editorScript": "file:./build/index.js",
+  "viewScript": "file:./build/view.js",
+  "editorStyle": "file:./editor.css",
+  "supports": {
+    "html": false,
+    "align": [ "full" ]
+  },
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "The Science of Vitality"
+    },
+    "bodyPrimary": {
+      "type": "string",
+      "default": "Manufactured in Switzerland and developed with globally sourced ingredients, Eternal Labs formulations are meticulously crafted to support vitality, cellular health, and visible skin wellbeing."
+    },
+    "bodySecondary": {
+      "type": "string",
+      "default": "Our goal is simple: <strong>to help people feel stronger, more confident, and more vibrant in their everyday lives.</strong>"
+    }
+  }
+}

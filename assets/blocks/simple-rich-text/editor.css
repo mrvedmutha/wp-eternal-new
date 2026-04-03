@@ -1,0 +1,31 @@
+/* Editor-only styles for the simple-rich-text block */
+
+.simple-rich-text-editor {
+	padding: 80px 40px;
+	background-color: #fff;
+}
+
+.simple-rich-text-editor__heading {
+	font-family: 'Cormorant Garamond', serif;
+	font-weight: 400;
+	font-size: 40px;
+	line-height: 48px;
+	letter-spacing: -2px;
+	color: #021f1d;
+	margin: 0 0 24px;
+}
+
+.simple-rich-text-editor__body {
+	font-family: 'Maison Neue', sans-serif;
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 23px;
+	letter-spacing: 0.15px;
+	color: #021f1d;
+	max-width: 462px;
+	margin: 0 0 24px;
+}
+
+.simple-rich-text-editor__body:last-child {
+	margin-bottom: 0;
+}

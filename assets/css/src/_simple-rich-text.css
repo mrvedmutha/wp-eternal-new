@@ -1,0 +1,81 @@
+/*--------------------------------------------------------------
+# Simple Rich Text Section
+#
+# Figma reference: node 694:1532
+# Full-width editorial text block: H2 heading + two body paragraphs.
+# GSAP ScrollTrigger drives the word-by-word text reveal.
+--------------------------------------------------------------*/
+
+/* ── Section wrapper ──────────────────────────────────────── */
+
+.simple-rich-text {
+	width:            100%;
+	padding:          80px 40px;
+	box-sizing:       border-box;
+	display:          flex;
+	flex-direction:   column;
+	gap:              24px;
+}
+
+/* ── Heading ──────────────────────────────────────────────── */
+
+.simple-rich-text__heading {
+	font-family:    'Cormorant Garamond', serif;
+	font-weight:    400;
+	font-size:      40px;
+	line-height:    48px;
+	letter-spacing: -2px;
+	color:          #021f1d;
+	margin:         0;
+}
+
+/* ── Body paragraphs ──────────────────────────────────────── */
+
+.simple-rich-text__body {
+	font-family:    'Maison Neue', sans-serif;
+	font-weight:    400;
+	font-size:      15px;
+	line-height:    23px;
+	letter-spacing: 0.15px;
+	color:          #021f1d;
+	max-width:      462px;
+	margin:         0;
+}
+
+.simple-rich-text__body strong {
+	font-weight: 700;
+}
+
+/* ── Word spans injected by JS ────────────────────────────── */
+
+.srt-word {
+	display:    inline;
+	transition: none; /* GSAP owns all transitions */
+}
+
+/* ── Tablet (≤ 1024px) ────────────────────────────────────── */
+
+@media (--bp-tablet) {
+	.simple-rich-text__body {
+		max-width: 100%;
+	}
+}
+
+/* ── Mobile (≤ 600px) — collapse side padding ─────────────── */
+
+@media screen and (max-width: 600px) {
+	.simple-rich-text {
+		padding-left:  20px;
+		padding-right: 20px;
+	}
+}
+
+/* ── Small mobile (≤ 450px) — scale heading down ─────────── */
+
+@media (--bp-mobile-sm) {
+	.simple-rich-text__heading {
+		font-size:      28px;
+		line-height:    36px;
+		letter-spacing: 0;
+	}
+}
