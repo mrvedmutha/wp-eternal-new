@@ -1,0 +1,47 @@
+{
+  "name": "wp-rig/editorial-feature-panel",
+  "apiVersion": 2,
+  "title": "Editorial Feature Panel",
+  "category": "widgets",
+  "icon": "align-pull-right",
+  "description": "Sticky text column with hashtag, heading, body and optional CTA — paired with a full-bleed image on the right.",
+  "textdomain": "wp-rig",
+  "render": "file:./render.php",
+  "editorScript": "file:./build/index.js",
+  "viewScript": "file:./build/view.js",
+  "editorStyle": "file:./build/editor.css",
+  "supports": {
+    "html": false,
+    "align": [ "full" ]
+  },
+  "attributes": {
+    "hashtag": {
+      "type": "string",
+      "default": ""
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "body": {
+      "type": "string",
+      "default": ""
+    },
+    "ctaLabel": {
+      "type": "string",
+      "default": ""
+    },
+    "ctaUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "mediaId": {
+      "type": "integer",
+      "default": 0
+    },
+    "mediaUrl": {
+      "type": "string",
+      "default": ""
+    }
+  }
+}
