@@ -161,6 +161,7 @@ class Theme {
 			new Blocks\Component(),
 			new Homepage_Hero\Component(),
 			new Homepage_Brand_Statement\Component(),
+			new Simple_Rich_Text\Component(),
 			new Newsletter\Component(),
 			new Search\Component(),
 			new Product_Detail\Component(),
