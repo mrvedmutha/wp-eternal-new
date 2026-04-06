@@ -1,0 +1,47 @@
+{
+  "name": "wp-rig/wellness-cta",
+  "apiVersion": 2,
+  "title": "Wellness CTA",
+  "category": "widgets",
+  "icon": "heart",
+  "description": "Centered editorial block with heading, body, portrait image, and a CTA or tagline bottom section.",
+  "textdomain": "wp-rig",
+  "editorScript": "file:./build/index.js",
+  "viewScript": "file:./build/view.js",
+  "editorStyle": "file:./build/editor.css",
+  "render": "file:./render.php",
+  "supports": {
+    "html": false,
+    "align": [ "full" ]
+  },
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "body": {
+      "type": "string",
+      "default": ""
+    },
+    "mediaId": {
+      "type": "integer",
+      "default": 0
+    },
+    "mediaUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "bottomText": {
+      "type": "string",
+      "default": ""
+    },
+    "ctaLabel": {
+      "type": "string",
+      "default": ""
+    },
+    "ctaUrl": {
+      "type": "string",
+      "default": ""
+    }
+  }
+}
