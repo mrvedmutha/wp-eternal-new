@@ -40,6 +40,7 @@
 
 !.babelrc
 !.stylelintrcrc
+!.stylelintrc.json
 !.eslintrc
 !eslint.config.js
 !gulpfile.js
