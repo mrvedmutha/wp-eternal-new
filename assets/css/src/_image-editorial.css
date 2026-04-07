@@ -1,0 +1,197 @@
+/**
+ * Image Editorial Block
+ *
+ * Figma reference: node 694:4246 — "Nature Provides. Science Empowers"
+ *
+ * Layout:
+ *   Desktop  (>768px):  600px section, full-bleed image absolute,
+ *                       text overlaid top-left
+ *   Mobile   (≤768px):  stacked — landscape image on top (16:9),
+ *                       content below
+ *   XS       (≤450px):  headline scales down
+ */
+
+/* ── Section wrapper ─────────────────────────────────────────── */
+
+.image-editorial {
+	position: relative;
+	width: 100%;
+	height: 600px;
+
+	/*
+	 * overflow: clip clips the absolute image without creating a scroll
+	 * container (overflow: hidden would break position: sticky on children).
+	 */
+	overflow: clip;
+	margin: 0;
+	padding: 0;
+}
+
+/* ── Background image ────────────────────────────────────────── */
+
+.image-editorial__image-wrap {
+	position: absolute;
+	inset: 0;
+	margin: 0;
+	padding: 0;
+}
+
+.image-editorial__image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/* ── Content overlay ─────────────────────────────────────────── */
+
+.image-editorial__content {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	pointer-events: none;
+}
+
+.image-editorial__inner {
+	width: 100%;
+	padding: 48px 40px 0;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	pointer-events: auto;
+}
+
+/* ── Headline ────────────────────────────────────────────────── */
+
+.image-editorial__headline {
+	font-family: var(--font-display);
+	font-weight: 400;
+	font-style: normal;
+	font-size: 40px;
+	line-height: 48px;
+	letter-spacing: -2px;
+	color: var(--color-white);
+	margin: 0;
+}
+
+/* ── Body paragraphs ─────────────────────────────────────────── */
+
+.image-editorial__body {
+	display: flex;
+	flex-direction: column;
+	max-width: 472px;
+}
+
+.image-editorial__body-p {
+	font-family: var(--font-body);
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 23px;
+	letter-spacing: 0.15px;
+	color: var(--color-white);
+	margin: 0;
+}
+
+/* ── Large screens ───────────────────────────────────────────── */
+
+@media (--bp-xl) {
+
+	.image-editorial__inner {
+		padding-top: 64px;
+	}
+
+	.image-editorial__headline {
+		font-size: 48px;
+		line-height: 58px;
+	}
+
+	.image-editorial__body {
+		max-width: 540px;
+	}
+
+	.image-editorial__body-p {
+		font-size: 16px;
+		line-height: 25px;
+	}
+}
+
+/* ── Tablet (≤1024px) ────────────────────────────────────────── */
+
+@media (--bp-tablet) {
+
+	.image-editorial__inner {
+		padding: 40px 32px 0;
+	}
+}
+
+/* ── Mobile (≤768px) — stacked layout ───────────────────────── */
+
+@media (--bp-mobile-md) {
+
+	.image-editorial {
+		height: auto;
+		overflow: visible;
+		display: flex;
+		flex-direction: column;
+		background-color: var(--color-white);
+	}
+
+	/* Image back in normal flow — landscape aspect ratio */
+	.image-editorial__image-wrap {
+		position: static;
+		aspect-ratio: 16 / 9;
+		overflow: hidden;
+		flex-shrink: 0;
+	}
+
+	.image-editorial__image {
+		width: 100%;
+		height: 100%;
+	}
+
+	/* Content below image, no longer overlaid */
+	.image-editorial__content {
+		position: static;
+		align-items: stretch;
+	}
+
+	.image-editorial__inner {
+		max-width: 100%;
+		padding: 32px 20px;
+		gap: 16px;
+	}
+
+	.image-editorial__body {
+		max-width: 100%;
+	}
+
+	/* Text below image — black */
+	.image-editorial__headline,
+	.image-editorial__body-p {
+		color: var(--color-black);
+	}
+}
+
+/* ── XS mobile (≤450px) ─────────────────────────────────────── */
+
+@media (--bp-mobile-sm) {
+
+	.image-editorial__headline {
+		font-size: 28px;
+		line-height: 36px;
+		letter-spacing: -1px;
+	}
+}
+
+/* ── Accessibility: reduced motion ──────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+
+	.image-editorial__headline,
+	.image-editorial__body-p {
+		opacity: 1 !important;
+		transform: none !important;
+	}
+}

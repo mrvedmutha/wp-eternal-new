@@ -1,0 +1,23 @@
+/*--------------------------------------------------------------
+# Image Editorial — Block Editor styles
+--------------------------------------------------------------*/
+
+.wp-block-wp-rig-image-editorial .image-editorial__headline {
+	font-family:    'Cormorant Garamond', serif;
+	font-weight:    400;
+	font-size:      40px;
+	line-height:    48px;
+	letter-spacing: -2px;
+	color:          #021f1d;
+	margin:         0;
+}
+
+.wp-block-wp-rig-image-editorial .image-editorial__body-p {
+	font-family:    'Maison Neue', sans-serif;
+	font-weight:    400;
+	font-size:      15px;
+	line-height:    23px;
+	letter-spacing: 0.15px;
+	color:          #021f1d;
+	margin:         0;
+}

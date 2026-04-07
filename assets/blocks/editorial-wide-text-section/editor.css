@@ -1,0 +1,5 @@
+/* Editor-only overrides for wp-rig/editorial-wide-text-section */
+
+.wp-block[data-type="wp-rig/editorial-wide-text-section"] {
+	width: 100%;
+}
