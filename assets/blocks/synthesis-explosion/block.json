@@ -1,0 +1,46 @@
+{
+  "name": "wp-rig/synthesis-explosion",
+  "apiVersion": 2,
+  "title": "Synthesis Explosion",
+  "category": "widgets",
+  "icon": "slides",
+  "description": "Editorial text section with a full-bleed image and an infinite scrolling marquee overlay.",
+  "textdomain": "wp-rig",
+  "render": "file:./render.php",
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/editor.css",
+  "supports": {
+    "html": false,
+    "align": ["full"]
+  },
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "body": {
+      "type": "string",
+      "default": ""
+    },
+    "caption": {
+      "type": "string",
+      "default": ""
+    },
+    "marqueeText": {
+      "type": "string",
+      "default": ""
+    },
+    "mediaId": {
+      "type": "integer",
+      "default": 0
+    },
+    "mediaUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "mediaAlt": {
+      "type": "string",
+      "default": ""
+    }
+  }
+}
