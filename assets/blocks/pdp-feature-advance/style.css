@@ -1,0 +1,241 @@
+/**
+ * PDP Feature Advance — frontend styles.
+ *
+ * Layout:
+ *   .pfa-block         — full-width, 896px tall. GSAP pins this element.
+ *                        pinSpacing:true adds a spacer so footer stays below.
+ *   .pfa-block__inner  — max-width 1440px, centred, full height.
+ *   .pfa-block__left   — flex-1, pl-40px, pt-40px. Contains 440px content.
+ *   .pfa-block__right  — 719px fixed, fills height, bg #eceeeb.
+ *
+ * Scroll states (set by view.js via GSAP scrub):
+ *   .is-active    — title full opacity, body visible, divider + bar visible
+ *   .is-collapsed — title faded, body hidden, divider hidden
+ */
+
+/* ── Section — full-width, 896px, GSAP pins this ────────────────────── */
+/* No overflow:hidden — that breaks position:sticky on children.         */
+.pfa-block {
+	width: 100%;
+	height: 896px;
+	background: var( --color-background, #f9f9f7 );
+}
+
+/* ── Inner — 1440px centred ──────────────────────────────────────────── */
+.pfa-block__inner {
+	display: flex;
+	align-items: flex-start;
+	max-width: 1440px;
+	margin: 0 auto;
+	height: 100%;
+}
+
+/* ── Left — flex-1, content at top-left ─────────────────────────────── */
+.pfa-block__left {
+	flex: 1 0 0;
+	min-width: 0;
+	padding: 40px 40px 40px 40px;
+	display: flex;
+	align-items: flex-start;
+}
+
+/* ── Left content — 440px wide (Figma) ──────────────────────────────── */
+.pfa-block__left-body {
+	width: 440px;
+	max-width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+/* ── Eyebrow ─────────────────────────────────────────────────────────── */
+.pfa-block__eyebrow {
+	font-family: 'Maison Neue', sans-serif;
+	font-size: 11px;
+	font-weight: 500;
+	line-height: 14px;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	color: var( --color-primary, #021f1d );
+	margin: 0 0 24px;
+}
+
+/* ── Items list ──────────────────────────────────────────────────────── */
+.pfa-block__items {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.pfa-block__item {
+	width: 100%;
+}
+
+/* ── Title ───────────────────────────────────────────────────────────── */
+.pfa-block__item-title {
+	font-family: 'Cormorant Garamond', serif;
+	font-size: 40px;
+	font-weight: 400;
+	line-height: 48px;
+	letter-spacing: -2px;
+	color: var( --color-primary, #021f1d );
+	margin: 0;
+	padding-top: 24px;
+	transition: opacity 0.3s ease;
+}
+
+.pfa-block__item.is-collapsed .pfa-block__item-title {
+	opacity: 0.35;
+}
+
+.pfa-block__item.is-active .pfa-block__item-title {
+	opacity: 1;
+}
+
+/* ── Progress-bar divider — only visible on active item ─────────────── */
+.pfa-block__item-divider {
+	position: relative;
+	height: 1px;
+	background: rgba( 2, 31, 29, 0.18 );
+	margin: 16px 0;
+	width: 100%;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.pfa-block__item.is-active .pfa-block__item-divider {
+	opacity: 1;
+}
+
+.pfa-block__item-progress {
+	display: block;
+	position: absolute;
+	inset: 0;
+	background: var( --color-primary, #021f1d );
+	transform: scaleX( 0 );
+	transform-origin: left center;
+}
+
+/* ── Body copy ───────────────────────────────────────────────────────── */
+.pfa-block__item-body {
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.35s ease, opacity 0.35s ease;
+	opacity: 0;
+}
+
+.pfa-block__item.is-active .pfa-block__item-body {
+	max-height: 260px;
+	opacity: 1;
+}
+
+.pfa-block__item-body p {
+	font-family: 'Maison Neue', sans-serif;
+	font-size: 15px;
+	font-weight: 400;
+	line-height: 23px;
+	letter-spacing: 0.15px;
+	color: var( --color-primary, #021f1d );
+	margin: 0;
+}
+
+/* ── Right — 719px fixed, fills section height ───────────────────────── */
+.pfa-block__right {
+	flex: 0 0 719px;
+	width: 719px;
+	background: #eceeeb;
+	height: 896px;    /* explicit height — section has no overflow:hidden */
+	overflow: hidden; /* clips image within the column */
+}
+
+.pfa-block__img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+/* ── No-JS fallback ──────────────────────────────────────────────────── */
+.pfa-block__item.is-collapsed .pfa-block__item-title {
+	opacity: 1;
+}
+
+.pfa-block__item-body {
+	/* overridden above — selectors handle it */
+}
+
+/* ── Nav controls — mobile only ──────────────────────────────────────── */
+.pfa-block__nav {
+	display: none;
+	align-items: center;
+	width: 100%;
+	margin-top: 28px;
+}
+
+.pfa-block__nav-btn {
+	background: none;
+	border: none;
+	padding: 8px 0;
+	cursor: pointer;
+	color: var( --color-primary, #021f1d );
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.pfa-block__nav-btn:focus-visible {
+	outline: 2px solid var( --color-primary, #021f1d );
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+
+/* Horizontal line stretching between the two chevrons */
+.pfa-block__nav-sep {
+	flex: 1;
+	height: 1px;
+	background: rgba( 2, 31, 29, 0.3 );
+	margin: 0 12px;
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────── */
+@media ( max-width: 700px ) {
+	.pfa-block {
+		height: auto;
+	}
+
+	.pfa-block__inner {
+		flex-direction: column;
+		height: auto;
+	}
+
+	/* Image moves to top */
+	.pfa-block__right {
+		order: -1;
+		flex: none;
+		width: 100%;
+		height: 60vw;
+	}
+
+	.pfa-block__left {
+		padding: 32px 24px 40px;
+	}
+
+	.pfa-block__left-body {
+		width: 100%;
+	}
+
+	.pfa-block__item-title {
+		font-size: 28px;
+		line-height: 36px;
+		letter-spacing: -1px;
+	}
+
+	.pfa-block__nav {
+		display: flex;
+	}
+}
