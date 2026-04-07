@@ -16,7 +16,7 @@
     "variant": {
       "type": "string",
       "default": "heading-only",
-      "enum": [ "heading-only", "pull-quote", "heading-body" ]
+      "enum": [ "heading-only", "pull-quote", "heading-body", "heading-body-left" ]
     },
     "headingText": {
       "type": "string",

@@ -52,6 +52,16 @@
 	min-height: 400px;
 }
 
+.ewts--heading-body-left {
+	justify-content: center;
+	padding-block: 80px;
+}
+
+.ewts--heading-body-left .ewts__inner {
+	align-items: flex-start;
+	min-height: 400px;
+}
+
 /* --- Typography --- */
 
 .ewts__heading {
@@ -63,6 +73,10 @@
 	letter-spacing: -0.02em;
 	text-align: center;
 	margin: 0;
+}
+
+.ewts--heading-body-left .ewts__heading {
+	text-align: left;
 }
 
 .ewts__quote {
@@ -90,6 +104,12 @@
 	margin-bottom: 0;
 }
 
+.ewts__body--left {
+	text-align: left;
+	max-width: 463px;
+	margin-top: 0;
+}
+
 /* --- Mobile --- */
 
 @media ( max-width: 768px ) {
@@ -109,7 +129,8 @@
 		padding-block: 40px;
 	}
 
-	.ewts--heading-body {
+	.ewts--heading-body,
+	.ewts--heading-body-left {
 		padding-block: 56px;
 	}
 }
