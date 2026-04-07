@@ -1,0 +1,55 @@
+{
+  "name": "wp-rig/pdp-feature-medium",
+  "apiVersion": 2,
+  "title": "PDP Feature Medium",
+  "category": "widgets",
+  "icon": "align-pull-right",
+  "description": "Two-column editorial section: sticky left text list with N heading/body items and a right media panel (autoplay video or image).",
+  "textdomain": "wp-rig",
+  "render": "file:./render.php",
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./editor.css",
+  "style": "file:./style.css",
+  "supports": {
+    "html": false,
+    "align": [ "full" ]
+  },
+  "attributes": {
+    "eyebrow": {
+      "type": "string",
+      "default": "The 5 Essential Pillars"
+    },
+    "mediaType": {
+      "type": "string",
+      "default": "video"
+    },
+    "mediaId": {
+      "type": "integer",
+      "default": 0
+    },
+    "mediaUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "mediaAlt": {
+      "type": "string",
+      "default": ""
+    },
+    "items": {
+      "type": "array",
+      "default": [
+        {
+          "heading": "(I) Immunity",
+          "body": "Immuno-protection, balance of inflammation and regulation of biological function."
+        }
+      ],
+      "items": {
+        "type": "object",
+        "properties": {
+          "heading": { "type": "string" },
+          "body":    { "type": "string" }
+        }
+      }
+    }
+  }
+}

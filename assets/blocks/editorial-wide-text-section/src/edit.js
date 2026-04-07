@@ -6,6 +6,7 @@ const VARIANT_OPTIONS = [
 	{ label: 'Heading Only', value: 'heading-only' },
 	{ label: 'Pull Quote', value: 'pull-quote' },
 	{ label: 'Heading + Body', value: 'heading-body' },
+	{ label: 'Heading + Body (Left)', value: 'heading-body-left' },
 ];
 
 export default function Edit( { name, attributes, setAttributes } ) {
@@ -23,7 +24,7 @@ export default function Edit( { name, attributes, setAttributes } ) {
 						onChange={ ( val ) => setAttributes( { variant: val } ) }
 					/>
 
-					{ ( variant === 'heading-only' || variant === 'heading-body' ) && (
+					{ ( variant === 'heading-only' || variant === 'heading-body' || variant === 'heading-body-left' ) && (
 						<TextareaControl
 							label="Heading"
 							value={ headingText }
@@ -41,7 +42,7 @@ export default function Edit( { name, attributes, setAttributes } ) {
 						/>
 					) }
 
-					{ variant === 'heading-body' && (
+					{ ( variant === 'heading-body' || variant === 'heading-body-left' ) && (
 						<TextareaControl
 							label="Body"
 							value={ bodyText }
