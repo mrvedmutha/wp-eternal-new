@@ -1,0 +1,46 @@
+{
+  "name": "wp-rig/image-editorial",
+  "apiVersion": 2,
+  "title": "Image Editorial",
+  "category": "widgets",
+  "icon": "format-image",
+  "description": "Full-width editorial section with a landscape background image, display headline, and three body paragraphs.",
+  "textdomain": "wp-rig",
+  "render": "file:./render.php",
+  "editorScript": "file:./build/index.js",
+  "viewScript": "file:./build/view.js",
+  "supports": {
+    "html": false,
+    "align": [ "full" ]
+  },
+  "attributes": {
+    "imageId": {
+      "type": "integer",
+      "default": 0
+    },
+    "imageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "imageAlt": {
+      "type": "string",
+      "default": ""
+    },
+    "headlineText": {
+      "type": "string",
+      "default": "Nature Provides. Science Empowers"
+    },
+    "bodyParagraph1": {
+      "type": "string",
+      "default": "Eternal sources ingredients from diverse ecosystems — including Amazonian botanicals, Kashmiri plant actives and marine-derived compounds."
+    },
+    "bodyParagraph2": {
+      "type": "string",
+      "default": "Many of these ingredients have long-standing historical associations with vitality and regenerative wellbeing."
+    },
+    "bodyParagraph3": {
+      "type": "string",
+      "default": "Modern formulation science allows these traditions to be structured with greater precision, stability and absorption efficiency."
+    }
+  }
+}
