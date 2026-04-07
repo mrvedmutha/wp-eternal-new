@@ -1,0 +1,52 @@
+{
+  "name": "wp-rig/pdp-feature-advance",
+  "apiVersion": 2,
+  "title": "PDP Feature Advance",
+  "category": "widgets",
+  "icon": "table-row-after",
+  "description": "Sticky split-screen section with scroll-driven accordion — each value item has a progress-bar divider that fills as the user scrolls, then collapses to reveal the next.",
+  "textdomain": "wp-rig",
+  "render": "file:./render.php",
+  "editorScript": "file:./build/index.js",
+  "viewScript": "file:./build/view.js",
+  "editorStyle": "file:./editor.css",
+  "style": "file:./style.css",
+  "supports": {
+    "html": false,
+    "align": [ "full" ]
+  },
+  "attributes": {
+    "eyebrow": {
+      "type": "string",
+      "default": "Our Values"
+    },
+    "imageId": {
+      "type": "integer",
+      "default": 0
+    },
+    "imageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "imageAlt": {
+      "type": "string",
+      "default": ""
+    },
+    "items": {
+      "type": "array",
+      "default": [
+        {
+          "title": "Intelligent Solutions",
+          "body": "Eternal Labs well-being products are about instinctual, thoroughly researched solutions, not a miracle or one-fits-all pills."
+        }
+      ],
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "body":  { "type": "string" }
+        }
+      }
+    }
+  }
+}
