@@ -8,9 +8,10 @@
  *   $block      (WP_Block) Block instance.
  *
  * Variants:
- *   heading-only  → centered H2, upright, 48px vertical padding, justify-between
- *   pull-quote    → centered blockquote, italic, 48px vertical padding, justify-center
- *   heading-body  → centered H2 + body paragraph, 80px vertical padding, justify-center
+ *   heading-only       → centered H2, upright, 48px vertical padding, justify-between
+ *   pull-quote         → centered blockquote, italic, 48px vertical padding, justify-center
+ *   heading-body       → centered H2 + body paragraph, 80px vertical padding, justify-center
+ *   heading-body-left  → left-aligned H2 + body paragraph (max 463px), 80px vertical padding
  *
  * @package wp_rig
  */
@@ -52,6 +53,12 @@ $wrapper_attrs = wp_rig()->block_wrapper_attributes( array( 'ewts', 'ewts--' . $
 
 			<?php if ( 'heading-body' === $variant && $body_text ) : ?>
 			<p class="ewts__body">
+				<?php echo esc_html( $body_text ); ?>
+			</p>
+			<?php endif; ?>
+
+			<?php if ( 'heading-body-left' === $variant && $body_text ) : ?>
+			<p class="ewts__body ewts__body--left">
 				<?php echo esc_html( $body_text ); ?>
 			</p>
 			<?php endif; ?>
