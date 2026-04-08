@@ -21,6 +21,7 @@ get_template_part(
 	array(
 		'context'  => 'general',
 		'heading'  => $attributes['heading'] ?? __( 'Explore Our Collection', 'wp-rig' ),
+		'body'     => $attributes['body'] ?? '',
 		'orderby'  => $attributes['orderby'] ?? 'rand',
 		'category' => $attributes['category'] ?? '',
 		'limit'    => isset( $attributes['limit'] ) ? (int) $attributes['limit'] : 9,

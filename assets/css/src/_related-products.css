@@ -25,6 +25,12 @@
 
 /* ─── Heading ────────────────────────────────────────────────────────────── */
 
+.related-products__header {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
 .related-products__heading {
 	font-family: var(--font-display);
 	font-size: 40px;
@@ -35,6 +41,18 @@
 	color: var(--color-primary);
 	text-align: center;
 	margin: 0;
+}
+
+.related-products__body {
+	font-family: var(--font-body);
+	font-size: 15px;
+	font-weight: 400;
+	line-height: 23px;
+	letter-spacing: 0.15px;
+	color: var(--color-primary);
+	text-align: center;
+	max-width: 699px;
+	margin: 0 auto;
 }
 
 /* ─── Slider wrapper + track ─────────────────────────────────────────────── */
@@ -51,12 +69,14 @@
 }
 
 /* ─── Page (group of ≤3 cards) ───────────────────────────────────────────── */
+
 /* Width is set in JS to match the wrapper's offsetWidth exactly. */
 
 .related-products__page {
 	display: flex;
 	gap: var(--space-8); /* 32px */
 	flex-shrink: 0;
+
 	/* width set by JS */
 }
 
@@ -104,6 +124,7 @@
 .related-products__img--hover {
 	z-index: 1;
 	opacity: 0; /* hidden by default; GSAP animates on desktop hover */
+
 	/* scale is set/animated by GSAP – no CSS transition needed */
 }
 
@@ -121,7 +142,9 @@
 	align-items: center;
 	justify-content: center;
 	transition: background 0.25s ease;
-	/* yPercent: 100, y: 16 set by GSAP on init — hidden below img-zone (overflow:hidden) */
+
+	/* yPercent: 100, y: 16 set by GSAP on init
+	 * hidden below img-zone (overflow:hidden) */
 }
 
 .related-products__atb.is-adding {
@@ -151,7 +174,7 @@
 	cursor: wait;
 }
 
-/* ─── Product info ────────────────────────────────────────────────────────── */
+/* ─── Product info ─────────────────── */
 
 .related-products__info {
 	display: flex;
@@ -271,6 +294,7 @@
 /* ─── Tablet & mobile (≤ 1024px): no hover effects ──────────────────────── */
 
 @media (max-width: 1024px) {
+
 	.related-products__atb {
 		display: none;
 	}
@@ -279,6 +303,7 @@
 /* ─── Mobile (≤ 600px) ───────────────────────────────────────────────────── */
 
 @media (max-width: 600px) {
+
 	.related-products__inner {
 		gap: var(--space-10);
 		padding: 0 var(--space-5);
