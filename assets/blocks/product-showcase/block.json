@@ -17,6 +17,10 @@
       "type": "string",
       "default": "Explore Our Collection"
     },
+    "body": {
+      "type": "string",
+      "default": ""
+    },
     "category": {
       "type": "string",
       "default": ""

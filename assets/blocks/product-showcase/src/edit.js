@@ -1,5 +1,5 @@
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, TextControl, SelectControl, RangeControl, Spinner } from '@wordpress/components';
+import { PanelBody, TextControl, TextareaControl, SelectControl, RangeControl, Spinner } from '@wordpress/components';
 import ServerSideRender from '@wordpress/server-side-render';
 import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
@@ -15,7 +15,7 @@ const ORDER_OPTIONS = [
 
 export default function Edit( { name, attributes, setAttributes } ) {
 	const blockProps = useBlockProps();
-	const { heading, category, orderby, limit } = attributes;
+	const { heading, body, category, orderby, limit } = attributes;
 
 	const [ categories, setCategories ] = useState( [] );
 	const [ loadingCats, setLoadingCats ] = useState( true );
@@ -44,6 +44,13 @@ export default function Edit( { name, attributes, setAttributes } ) {
 						label="Heading"
 						value={ heading }
 						onChange={ ( val ) => setAttributes( { heading: val } ) }
+					/>
+					<TextareaControl
+						label="Body"
+						value={ body }
+						onChange={ ( val ) => setAttributes( { body: val } ) }
+						rows={ 3 }
+						help="Optional paragraph shown below the heading."
 					/>
 				</PanelBody>
 

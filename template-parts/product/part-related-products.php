@@ -57,7 +57,11 @@ if ( 'on_sale' === $orderby_arg ) {
 // ── Context-specific adjustments ─────────────────────────────────────────────
 
 if ( 'pdp' === $context ) {
-	/** @var \WC_Product|null $current_product */
+	/**
+	 * Current product instance.
+	 *
+	 * @var \WC_Product|null $current_product
+	 */
 	$current_product = isset( $args['product'] ) ? $args['product'] : wc_get_product( get_the_ID() );
 
 	if ( ! $current_product ) {
@@ -83,6 +87,7 @@ if ( 'pdp' === $context ) {
 }
 
 $heading = isset( $args['heading'] ) ? $args['heading'] : $default_heading;
+$body    = isset( $args['body'] ) ? sanitize_text_field( $args['body'] ) : '';
 
 $related = wc_get_products( $query_args );
 
@@ -91,8 +96,8 @@ if ( empty( $related ) ) {
 }
 
 // ─── Group products into pages of 3 for the slider ───────────────────────────
-$pages       = array_chunk( $related, 3 );
-$total_pages = count( $pages );
+$product_pages = array_chunk( $related, 3 );
+$total_pages   = count( $product_pages );
 ?>
 
 <section class="related-products" data-related-products>
@@ -100,35 +105,39 @@ $total_pages = count( $pages );
 
 		<div class="related-products__header">
 			<h2 class="related-products__heading"><?php echo esc_html( $heading ); ?></h2>
+			<?php if ( $body ) : ?>
+			<p class="related-products__body"><?php echo esc_html( $body ); ?></p>
+			<?php endif; ?>
 		</div>
 
 		<div class="related-products__slider-wrap" data-rp-wrap>
 			<div class="related-products__track" data-rp-track>
 
-				<?php foreach ( $pages as $page_index => $page_products ) : ?>
+				<?php foreach ( $product_pages as $page_index => $page_products ) : ?>
 				<div class="related-products__page" data-rp-page>
 
-					<?php foreach ( $page_products as $rel_product ) :
+					<?php
+					foreach ( $page_products as $rel_product ) :
 						$pid        = $rel_product->get_id();
 						$permalink  = get_permalink( $pid );
 						$name       = $rel_product->get_name();
 						$price_html = $rel_product->get_price_html();
 						$atc_url    = $rel_product->add_to_cart_url();
 
-						// Images
-						$main_img_id  = $rel_product->get_image_id();
-						$main_src     = $main_img_id ? wp_get_attachment_image_src( $main_img_id, 'woocommerce_single' ) : null;
-						$main_url     = $main_src ? $main_src[0] : wc_placeholder_img_src( 'woocommerce_single' );
-						$main_alt     = $main_img_id ? (string) get_post_meta( $main_img_id, '_wp_attachment_image_alt', true ) : $name;
+						// Product images.
+						$main_img_id = $rel_product->get_image_id();
+						$main_src    = $main_img_id ? wp_get_attachment_image_src( $main_img_id, 'woocommerce_single' ) : null;
+						$main_url    = $main_src ? $main_src[0] : wc_placeholder_img_src( 'woocommerce_single' );
+						$main_alt    = $main_img_id ? (string) get_post_meta( $main_img_id, '_wp_attachment_image_alt', true ) : $name;
 
-						$gallery_ids   = $rel_product->get_gallery_image_ids();
-						$hover_url     = '';
+						$gallery_ids = $rel_product->get_gallery_image_ids();
+						$hover_url   = '';
 						if ( ! empty( $gallery_ids ) ) {
 							$hover_src = wp_get_attachment_image_src( $gallery_ids[0], 'woocommerce_single' );
 							$hover_url = $hover_src ? $hover_src[0] : '';
 						}
 
-						// Meta
+						// Product metadata.
 						$meta        = wp_rig()->get_product_meta( $pid );
 						$french_text = $meta['french_text'] ?? '';
 						$tagline     = $meta['caption'] ?? '';
@@ -140,8 +149,8 @@ $total_pages = count( $pages );
 						$buy_unit   = $meta['buy_box_unit'] ?? '';
 						$size_label = trim( $buy_amount . $buy_unit );
 
-						// Variant pills: size label + non-variation product attributes
-						$pills      = array();
+						// Variant pills: size label + non-variation product attributes.
+						$pills = array();
 						if ( $size_label ) {
 							$pills[] = strtoupper( $size_label );
 						}
@@ -154,7 +163,7 @@ $total_pages = count( $pages );
 							}
 						}
 						$pills = array_unique( $pills );
-					?>
+						?>
 
 					<div class="related-products__card" data-rp-card>
 
@@ -163,28 +172,28 @@ $total_pages = count( $pages );
 
 							<!-- Full-zone transparent link (image click → product page) -->
 							<a class="related-products__img-zone-link"
-							   href="<?php echo esc_url( $permalink ); ?>"
-							   aria-label="<?php echo esc_attr( $name ); ?>"
-							   tabindex="0"></a>
+								href="<?php echo esc_url( $permalink ); ?>"
+								aria-label="<?php echo esc_attr( $name ); ?>"
+								tabindex="0"></a>
 
 							<img class="related-products__img related-products__img--main"
-								 src="<?php echo esc_url( $main_url ); ?>"
-								 alt="<?php echo esc_attr( $main_alt ?: $name ); ?>"
-								 width="316" height="423" loading="lazy" />
+								src="<?php echo esc_url( $main_url ); ?>"
+								alt="<?php echo esc_attr( $main_alt ? $main_alt : $name ); ?>"
+								width="316" height="423" loading="lazy" />
 
 							<?php if ( $hover_url ) : ?>
 							<img class="related-products__img related-products__img--hover"
-								 src="<?php echo esc_url( $hover_url ); ?>"
-								 alt="" width="316" height="423"
-								 loading="lazy" aria-hidden="true" />
+								src="<?php echo esc_url( $hover_url ); ?>"
+								alt="" width="316" height="423"
+								loading="lazy" aria-hidden="true" />
 							<?php endif; ?>
 
 							<!-- ADD TO BAG bar (desktop hover, GSAP-animated) -->
 							<div class="related-products__atb" data-rp-atb>
 								<a class="related-products__atb-link"
-								   href="<?php echo esc_url( $atc_url ); ?>"
-								   data-product-id="<?php echo esc_attr( $pid ); ?>"
-								   data-product-type="<?php echo esc_attr( $rel_product->get_type() ); ?>">
+									href="<?php echo esc_url( $atc_url ); ?>"
+									data-product-id="<?php echo esc_attr( $pid ); ?>"
+									data-product-type="<?php echo esc_attr( $rel_product->get_type() ); ?>">
 									ADD TO BAG
 								</a>
 							</div>
@@ -216,7 +225,10 @@ $total_pages = count( $pages );
 							<?php endif; ?>
 
 							<div class="related-products__price">
-								<?php echo $price_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — WC output ?>
+									<?php
+									// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- WooCommerce output is already escaped.
+									echo $price_html;
+									?>
 							</div>
 
 						</div><!-- .related-products__info -->
