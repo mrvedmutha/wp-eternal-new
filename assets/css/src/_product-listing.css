@@ -49,10 +49,10 @@ body.tax-product_cat.has-sidebar .site {
 	gap: unset !important;
 }
 
-/* Ensure FAQ section is visible */
+/* Ensure FAQ section is visible and uses flex layout */
 /* stylelint-disable-next-line no-descending-specificity */
 body.tax-product_cat .plp-faq {
-	display: block !important;
+	display: flex !important;
 }
 
 /* ==========================================================================
@@ -660,26 +660,29 @@ body.tax-product_cat .plp-faq {
 
 /* stylelint-disable-next-line no-descending-specificity */
 .plp-faq {
-	padding-top: 80px;
-	padding-bottom: 80px;
-	padding-left: 40px;
-	padding-right: 40px;
+	padding: 80px 40px;
+	display: flex;
+	flex-direction: column;
 
 	/* Center content on larger screens, max width for optimal design */
 	max-width: 1440px;
 	margin: 0 auto;
+	width: 100%;
 }
 
 .plp-faq__inner {
 	display: flex;
 	align-items: flex-start;
-	gap: 80px;
+	justify-content: space-between;
 	width: 100%;
+	margin: 0 auto;
+	max-width: 1440px;
+	min-width: 0;
 }
 
 .plp-faq__header {
-	width: 480px;
-	flex-shrink: 0;
+	width: 206px; /* Match .plp-filters width */
+	flex: 0 0 auto;
 }
 
 .plp-faq__title {
@@ -694,10 +697,14 @@ body.tax-product_cat .plp-faq {
 }
 
 .plp-faq__accordion {
-	width: 671px;
-	flex-shrink: 0;
+	width: 664px; /* Match .plp-grid__content width */
+	flex: 0 1 auto;
 	display: flex;
 	flex-direction: column;
+
+	/* Prevent overflow */
+	min-width: 0;
+	overflow: hidden;
 }
 
 .plp-faq__item {
@@ -740,6 +747,28 @@ body.tax-product_cat .plp-faq {
 	flex: 1 1 auto;
 	min-width: 0;
 	max-width: 460px;
+}
+
+/* Tablet range: Adjust FAQ widths for better fit */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+	.plp-faq__header {
+		width: 100%;
+		max-width: 360px;
+	}
+
+	.plp-faq__accordion {
+		width: 100%;
+		max-width: 500px;
+	}
+
+	.plp-faq__question-text {
+		max-width: 320px;
+	}
+
+	.plp-faq__answer {
+		max-width: 100%;
+	}
 }
 
 .plp-faq__question::-webkit-details-marker {
@@ -792,8 +821,10 @@ body.tax-product_cat .plp-faq {
 	margin: 0;
 	overflow: hidden;
 
-	/* Answer text max width ~483px per Figma */
+	/* Answer text max width ~483px per Figma, but responsive */
 	max-width: 483px;
+	width: 100%;
+	min-width: 0;
 }
 
 /* ==========================================================================
@@ -980,13 +1011,21 @@ body.tax-product_cat .plp-faq {
 		display: none;
 	}
 
+	/* FAQ maintains side-by-side layout at 1024px with justify-content */
 	.plp-faq__inner {
-		flex-direction: column;
+		justify-content: space-between;
+		padding: 0 20px; /* Reduce padding on smaller screens */
 	}
 
-	.plp-faq__header,
+	/* Keep original widths for alignment */
+	.plp-faq__header {
+		width: 206px;
+		flex-shrink: 0;
+	}
+
 	.plp-faq__accordion {
-		width: 100%;
+		width: 664px;
+		flex-shrink: 0;
 	}
 
 	.plp-grid__top {
@@ -1016,5 +1055,17 @@ body.tax-product_cat .plp-faq {
 	.plp-faq__title {
 		font-size: 36px;
 		line-height: 40px;
+	}
+
+	/* Mobile: FAQ goes to column layout with full width */
+	.plp-faq__inner {
+		flex-direction: column;
+		gap: 40px;
+	}
+
+	.plp-faq__header,
+	.plp-faq__accordion {
+		width: 100%;
+		max-width: 100%;
 	}
 }
