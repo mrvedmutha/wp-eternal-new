@@ -404,6 +404,9 @@ body.tax-product_cat .plp-faq {
 	align-items: flex-start;
 	justify-content: space-between;
 	width: 100%;
+	margin: 0 auto;
+	max-width: 1440px;
+	padding: 0 40px;
 }
 
 /* Left column: Filter Sidebar - Node 694:1732 (206px fixed width) */
@@ -903,6 +906,7 @@ body.tax-product_cat .plp-faq {
 	/* Show filter toggle button on mobile/tablet */
 	.plp-grid__filter-toggle {
 		display: inline-flex;
+		width: 100px;
 	}
 
 	/* Layout changes for mobile */
@@ -952,6 +956,10 @@ body.tax-product_cat .plp-faq {
 /* Mobile (<700px) - 2 products per row */
 @media (max-width: 700px) {
 
+	.plp-grid__columns {
+		padding: 0 20px;
+	}
+
 	.plp-grid__content {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
@@ -979,6 +987,10 @@ body.tax-product_cat .plp-faq {
 	.plp-faq__header,
 	.plp-faq__accordion {
 		width: 100%;
+	}
+
+	.plp-grid__top {
+		flex-direction: row;
 	}
 }
 
