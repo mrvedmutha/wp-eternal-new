@@ -169,6 +169,7 @@ class Theme {
 			new Search\Component(),
 			new Product_Detail\Component(),
 			new Related_Products\Component(),
+			new Product_Listing\Component(),
 		);
 
 		if ( defined( 'JETPACK__VERSION' ) ) {
