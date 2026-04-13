@@ -1,0 +1,33 @@
+/* Editor styles for Styled List block */
+.styled-list-editor {
+	margin: 20px 0;
+}
+
+.styled-list-editor ul.styled-list__items {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.styled-list-editor .wp-block-list-item {
+	display: flex;
+	gap: 14px;
+	align-items: flex-start;
+	font-family: 'Maison Neue', 'Helvetica Neue', Arial, sans-serif;
+	font-size: 15px;
+	line-height: 23px;
+	letter-spacing: 0.15px;
+	color: #021f1d;
+	margin-bottom: 18px;
+}
+
+/* Custom em dash bullet for editor */
+.styled-list-editor .wp-block-list-item::before {
+	content: '—';
+	font-family: 'Inter', sans-serif;
+	font-weight: 300;
+	font-size: 14px;
+	line-height: 24px;
+	color: #868686;
+	flex-shrink: 0;
+}

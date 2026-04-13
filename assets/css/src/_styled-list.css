@@ -1,0 +1,66 @@
+/**
+ * Styled List Block - Frontend Styles
+ * Custom bullet style with em dash matching Figma design
+ */
+
+/* Design Tokens */
+:root {
+	--styled-list-primary: #021f1d;
+	--styled-list-secondary: #868686;
+	--styled-list-font-body: "Maison Neue", "Helvetica Neue", arial, sans-serif;
+	--styled-list-font-bullet: "Inter", sans-serif;
+}
+
+/* Styled List Container */
+.styled-list {
+	margin: 20px 0;
+}
+
+/* List Items */
+.styled-list__items {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.styled-list__items li {
+	display: flex;
+	gap: 14px;
+	align-items: flex-start;
+	font-family: var(--styled-list-font-body);
+	font-size: 15px;
+	line-height: 23px;
+	letter-spacing: 0.15px;
+	color: var(--styled-list-primary);
+	margin-bottom: 18px;
+}
+
+/* Custom em dash bullet */
+.styled-list__items li::marker {
+	display: none; /* Hide default marker */
+}
+
+.styled-list__items li::before {
+	content: "—";
+	font-family: var(--styled-list-font-bullet);
+	font-weight: 300;
+	font-size: 14px;
+	line-height: 24px;
+	color: var(--styled-list-secondary);
+	flex-shrink: 0;
+}
+
+/* Last item should not have margin */
+.styled-list__items li:last-child {
+	margin-bottom: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+	.styled-list__items li {
+		font-size: 15px;
+		line-height: 23px;
+		gap: 12px;
+	}
+}

@@ -6,6 +6,7 @@ const ALLOWED_BLOCKS = [
 	'core/heading',
 	'core/paragraph',
 	'core/list',
+	'wp-rig/styled-list',
 	'core/buttons',
 ];
 

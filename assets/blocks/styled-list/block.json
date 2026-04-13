@@ -1,0 +1,26 @@
+{
+  "name": "wp-rig/styled-list",
+  "apiVersion": 2,
+  "title": "Styled List",
+  "category": "widgets",
+  "icon": "list-view",
+  "description": "Custom styled list with em dash bullets matching Figma design. Perfect for legal pages and informational content.",
+  "textdomain": "wp-rig",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style.css",
+  "editorStyle": "file:./build/editor.css",
+  "attributes": {
+    "items": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "supports": {
+    "align": ["wide", "full"],
+    "html": false,
+    "multiple": false
+  }
+}
