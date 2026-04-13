@@ -137,7 +137,16 @@ export default function Edit( props ) {
 						<InnerBlocks
 							allowedBlocks={ ALLOWED_BLOCKS }
 							template={ [
-								[ 'core/heading', { level: 2, content: 'Section Heading' } ],
+								[ 'core/heading', {
+									level: 2,
+									content: 'Section Heading',
+									placeholder: 'Add H2 heading...',
+								} ],
+								[ 'core/heading', {
+									level: 3,
+									content: 'Subsection Heading',
+									placeholder: 'Add H3 heading...',
+								} ],
 								[ 'core/paragraph', { content: 'Add your content here...' } ],
 							] }
 							templateLock={ false }

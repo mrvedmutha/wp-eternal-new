@@ -65,27 +65,34 @@
 	text-align: left;
 }
 
-/* Main Section Heading (H2) */
-.legal-page-content__content-inner > .wp-block-heading {
-	font-family: var(--legal-font-display);
-	font-size: 32px;
-	font-weight: 400;
-	line-height: 40px;
+/* Main Section Heading (H2) - No Underline */
+.legal-page-content__content-inner > .wp-block-heading,
+.legal-page-content__content-inner h2 {
+	font-family: var(--legal-font-display) !important;
+	font-size: 40px !important;
+	font-weight: 400 !important;
+	line-height: 48px !important;
+	letter-spacing: 0 !important;
 	color: var(--legal-primary);
 	margin-top: 0;
-	margin-bottom: 24px;
+	margin-bottom: 18px;
+	border-bottom: none;
 }
 
 /* H2 Specific - No Underline */
 .legal-page-content__content-inner > .wp-block-heading h2 {
-	border-bottom: none !important;
+	border-bottom: none;
 }
 
-/* Subsection Headings (H3, H4) */
-.legal-page-content__content-inner > .wp-block-heading:not(:first-child) {
-	font-size: 24px;
-	font-weight: 500;
-	line-height: 31px;
+/* H3 - Higher specificity to override wp-block-heading + Fit Text */
+.legal-page-content__content-inner h3.wp-block-heading,
+.legal-page-content__content-inner h3.has-fit-text,
+.legal-page-content__content-inner > h3 {
+	font-family: var(--legal-font-display) !important;
+	font-size: 32px !important;
+	font-weight: 400 !important;
+	line-height: 42px !important;
+	letter-spacing: 0 !important;
 	color: var(--legal-primary);
 	margin-top: 32px;
 	margin-bottom: 18px;
@@ -93,6 +100,73 @@
 	position: relative;
 	border-bottom: 0.5px solid var(--legal-divider);
 }
+
+/* H4 - Higher specificity to override wp-block-heading + Fit Text */
+.legal-page-content__content-inner h4.wp-block-heading,
+.legal-page-content__content-inner h4.has-fit-text,
+.legal-page-content__content-inner > h4 {
+	font-family: var(--legal-font-display) !important;
+	font-size: 24px !important;
+	font-weight: 500 !important;
+	line-height: 31px !important;
+	letter-spacing: 0 !important;
+	color: var(--legal-primary);
+	margin-top: 32px;
+	margin-bottom: 18px;
+	padding-bottom: 18px;
+	position: relative;
+	border-bottom: 0.5px solid var(--legal-divider);
+}
+
+/* H5 - Higher specificity to override wp-block-heading + Fit Text */
+.legal-page-content__content-inner h5.wp-block-heading,
+.legal-page-content__content-inner h5.has-fit-text,
+.legal-page-content__content-inner > h5 {
+	font-family: var(--legal-font-display) !important;
+	font-size: 20px !important;
+	font-weight: 400 !important;
+	line-height: 26px !important;
+	letter-spacing: 0 !important;
+	color: var(--legal-primary);
+	margin-top: 32px;
+	margin-bottom: 18px;
+	padding-bottom: 18px;
+	position: relative;
+	border-bottom: 0.5px solid var(--legal-divider);
+}
+
+/* Fallback for other headings */
+.legal-page-content__content-inner > .wp-block-heading:not(:first-child) {
+	border-bottom: 0.5px solid var(--legal-divider);
+	padding-bottom: 18px;
+}
+
+/* No Underline Class - Removes underline from any heading */
+.legal-page-content__content-inner .has-no-underline {
+	border-bottom: none !important;
+	padding-bottom: 0 !important;
+}
+
+/* Has Underline Class - Explicitly adds underline (user-controlled) */
+.legal-page-content__content-inner h1.has-underline,
+.legal-page-content__content-inner h3.has-underline,
+.legal-page-content__content-inner h4.has-underline,
+.legal-page-content__content-inner h5.has-underline,
+.legal-page-content__content-inner h6.has-underline {
+	border-bottom: 0.5px solid var(--legal-divider);
+	padding-bottom: 18px;
+}
+
+/* All headings - ensure letter-spacing is 0px */
+.legal-page-content__content-inner h1,
+.legal-page-content__content-inner h3,
+.legal-page-content__content-inner h4,
+.legal-page-content__content-inner h5,
+.legal-page-content__content-inner h6 {
+	letter-spacing: 0 !important;
+}
+
+/* Note: H2 never shows underline regardless of checkbox setting */
 
 /* Paragraphs */
 .legal-page-content__content-inner > .wp-block-paragraph,
@@ -170,7 +244,38 @@
 		padding: 60px 20px;
 	}
 
-	.legal-page-content__content-inner > .wp-block-heading {
-		font-size: 28px;
+	/* H2 - Mobile */
+	.legal-page-content__content-inner > .wp-block-heading,
+	.legal-page-content__content-inner h2 {
+		font-size: 32px !important;
+		line-height: 40px !important;
+		letter-spacing: 0 !important;
+	}
+
+	/* H3 - Mobile */
+	.legal-page-content__content-inner h3.wp-block-heading,
+	.legal-page-content__content-inner h3.has-fit-text,
+	.legal-page-content__content-inner > h3 {
+		font-size: 28px !important;
+		line-height: 36px !important;
+		letter-spacing: 0 !important;
+	}
+
+	/* H4 - Mobile */
+	.legal-page-content__content-inner h4.wp-block-heading,
+	.legal-page-content__content-inner h4.has-fit-text,
+	.legal-page-content__content-inner > h4 {
+		font-size: 20px !important;
+		line-height: 26px !important;
+		letter-spacing: 0 !important;
+	}
+
+	/* H5 - Mobile */
+	.legal-page-content__content-inner h5.wp-block-heading,
+	.legal-page-content__content-inner h5.has-fit-text,
+	.legal-page-content__content-inner > h5 {
+		font-size: 18px !important;
+		line-height: 24px !important;
+		letter-spacing: 0 !important;
 	}
 }

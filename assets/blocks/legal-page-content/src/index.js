@@ -6,6 +6,9 @@ const { __ } = (wp).i18n;
 import Edit from './edit';
 import { RichText, InnerBlocks } from '@wordpress/block-editor';
 
+// Import block enhancements (heading underline toggle)
+import './block-enhancements';
+
 registerBlockType('wp-rig/legal-page-content', {
 	apiVersion: 2,
 	title: __('Legal Page Content', 'wp-rig'),
