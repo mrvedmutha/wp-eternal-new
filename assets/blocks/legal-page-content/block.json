@@ -1,0 +1,30 @@
+{
+  "name": "wp-rig/legal-page-content",
+  "apiVersion": 2,
+  "title": "Legal Page Content",
+  "category": "widgets",
+  "icon": "text-page",
+  "description": "Hero section with structured content area for legal and informational pages. Includes editable label, heading, last updated date, and flexible InnerBlocks for subsections.",
+  "textdomain": "wp-rig",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style.css",
+  "editorStyle": "file:./build/editor.css",
+  "attributes": {
+    "heroLabel": {
+      "type": "string",
+      "default": "LEGAL"
+    },
+    "heroHeading": {
+      "type": "string",
+      "default": "Page Title"
+    },
+    "heroLastUpdated": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "supports": {
+    "align": [ "full" ],
+    "html": false
+  }
+}

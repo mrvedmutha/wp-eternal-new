@@ -1,0 +1,176 @@
+/**
+ * Legal Page Content Block - Frontend Styles
+ * Matches Figma design specifications
+ */
+
+/* Design Tokens */
+:root {
+	--legal-primary: #021f1d;
+	--legal-secondary: #868686;
+	--legal-divider: #8c8782;
+	--legal-bg: #fff;
+	--legal-font-display: "Cormorant Garamond", "Georgia", serif;
+	--legal-font-body: "Maison Neue", "Helvetica Neue", arial, sans-serif;
+}
+
+/* Hero Section */
+.legal-page-content__hero {
+	text-align: center;
+	padding: 80px 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	align-items: center;
+}
+
+.legal-page-content__hero-label {
+	font-family: var(--legal-font-body);
+	font-size: 15px;
+	line-height: 23px;
+	letter-spacing: 0.15px;
+	color: var(--legal-secondary);
+	margin: 0;
+}
+
+.legal-page-content__hero-heading {
+	font-family: var(--legal-font-display);
+	font-size: 52px;
+	font-weight: 300;
+	line-height: 58px;
+	letter-spacing: -1px;
+	color: var(--legal-primary);
+	margin: 0;
+}
+
+.legal-page-content__hero-date {
+	font-family: var(--legal-font-body);
+	font-size: 15px;
+	line-height: 23px;
+	letter-spacing: 0.15px;
+	color: var(--legal-secondary);
+	margin: 0;
+}
+
+/* Content Section */
+.legal-page-content__content {
+	background-color: var(--legal-bg);
+	display: flex;
+	justify-content: center;
+}
+
+.legal-page-content__content-inner {
+	max-width: 760px;
+	width: 100%;
+	padding: 80px 20px;
+	text-align: left;
+}
+
+/* Main Section Heading (H2) */
+.legal-page-content__content-inner > .wp-block-heading {
+	font-family: var(--legal-font-display);
+	font-size: 32px;
+	font-weight: 400;
+	line-height: 40px;
+	color: var(--legal-primary);
+	margin-top: 0;
+	margin-bottom: 24px;
+}
+
+/* H2 Specific - No Underline */
+.legal-page-content__content-inner > .wp-block-heading h2 {
+	border-bottom: none !important;
+}
+
+/* Subsection Headings (H3, H4) */
+.legal-page-content__content-inner > .wp-block-heading:not(:first-child) {
+	font-size: 24px;
+	font-weight: 500;
+	line-height: 31px;
+	color: var(--legal-primary);
+	margin-top: 32px;
+	margin-bottom: 18px;
+	padding-bottom: 18px;
+	position: relative;
+	border-bottom: 0.5px solid var(--legal-divider);
+}
+
+/* Paragraphs */
+.legal-page-content__content-inner > .wp-block-paragraph,
+.legal-page-content__content-inner > p {
+	font-family: var(--legal-font-body);
+	font-size: 15px;
+	line-height: 23px;
+	letter-spacing: 0.15px;
+	color: var(--legal-primary);
+	margin-bottom: 1em;
+}
+
+/* Lists */
+.legal-page-content__content-inner > .wp-block-list,
+.legal-page-content__content-inner > ul,
+.legal-page-content__content-inner > ol {
+	font-family: var(--legal-font-body);
+	font-size: 15px;
+	line-height: 23px;
+	letter-spacing: 0.15px;
+	color: var(--legal-primary);
+	margin-bottom: 1em;
+	padding-left: 24px;
+}
+
+.legal-page-content__content-inner li {
+	margin-bottom: 0.5em;
+}
+
+/* Custom bullet style matching Figma */
+.legal-page-content__content-inner .wp-block-list-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 14px;
+}
+
+.legal-page-content__content-inner .wp-block-list-item::marker {
+	font-family: Inter, sans-serif;
+	font-weight: 300;
+	font-size: 14px;
+	color: var(--legal-secondary);
+}
+
+/* Links */
+.legal-page-content__content-inner a {
+	color: var(--legal-primary);
+	text-decoration: underline;
+	text-decoration-style: solid;
+	transition: opacity 0.2s ease;
+}
+
+.legal-page-content__content-inner a:hover {
+	opacity: 0.7;
+}
+
+/* Bold text */
+.legal-page-content__content-inner strong,
+.legal-page-content__content-inner b {
+	font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+	.legal-page-content__hero-heading {
+		font-size: 36px;
+		line-height: 1.2;
+	}
+
+	.legal-page-content__hero {
+		padding: 60px 20px;
+	}
+
+	.legal-page-content__content-inner {
+		padding: 60px 20px;
+	}
+
+	.legal-page-content__content-inner > .wp-block-heading {
+		font-size: 28px;
+	}
+}

@@ -1,0 +1,64 @@
+/**
+ * Legal Page Content Block - Editor Styles
+ * Provides editor-specific styling and visual feedback
+ */
+
+/* Editor container */
+.legal-page-content-editor {
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.legal-page-content-editor.is-selected {
+	border-color: #0073aa;
+	box-shadow: 0 0 0 1px #0073aa;
+}
+
+/* Hero section in editor */
+.legal-page-content-editor .legal-page-content__hero {
+	background-color: #f8f9fa;
+	border-bottom: 1px solid #e0e0e0;
+}
+
+/* Hero label inline editor */
+.legal-page-content-editor .legal-page-content__hero-label .rich-text:focus,
+.legal-page-content-editor .legal-page-content__hero-heading .rich-text:focus {
+	outline: 2px solid #0073aa;
+	outline-offset: 2px;
+	border-radius: 2px;
+	padding: 2px 4px;
+	margin: -2px -4px;
+}
+
+/* Content area in editor */
+.legal-page-content-editor .legal-page-content__content {
+	background-color: #ffffff;
+	min-height: 200px;
+}
+
+.legal-page-content-editor .legal-page-content__content-inner {
+	position: relative;
+}
+
+/* Visual cue for empty content area */
+.legal-page-content-editor .legal-page-content__content-inner:empty::before {
+	content: 'Add content blocks here...';
+	color: #888;
+	font-style: italic;
+	padding: 40px 0;
+	text-align: center;
+	display: block;
+}
+
+/* InnerBlocks placeholder */
+.legal-page-content-editor .block-editor-block-list__layout {
+	min-height: 100px;
+}
+
+/* Responsive preview in editor */
+@media (max-width: 960px) {
+	.legal-page-content-editor .legal-page-content__hero-heading {
+		font-size: 36px !important;
+	}
+}
