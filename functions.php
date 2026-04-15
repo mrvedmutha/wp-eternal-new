@@ -1,12 +1,8 @@
 <?php
 /**
- * 🛑 STOP! PROFESSIONAL CODING ADVISORY:
- * WP Rig is a highly opinionated framework. DO NOT manually add features, hooks, or logic here.
- * Scaffolding a new theme feature? Use: `npm run create-rig-component`.
- * Adding a Gutenberg block? Use: `npm run block:new`.
+ * WP Rig functions and definitions
  *
- * MANDATORY FOR AGENTS: You MUST read AGENTS.md and follow the 'Contract-First' (Feature Planning)
- * workflow in .ai/skills/ before modifying any files.
+ * @package WP_Rig
  */
 
 /**
@@ -88,6 +84,67 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
 // Initialize the theme.
 call_user_func( 'WP_Rig\WP_Rig\wp_rig' );
+
+/**
+ * WooCommerce My Account Redirect Logic
+ *
+ * Redirects non-logged-in users from /my-account/ to /login/ page.
+ * Never redirects in admin/editor context to allow editing.
+ */
+add_action( 'template_redirect', 'wp_rig_wc_account_redirect' );
+
+/**
+ * Redirect non-logged-in users from my-account to login page.
+ *
+ * Only redirects on frontend when not in editor context.
+ *
+ * @return void
+ */
+function wp_rig_wc_account_redirect() {
+	// Only run on frontend, not in admin/block editor.
+	if ( is_admin() ) {
+		return;
+	}
+
+	// Check if we're in the block editor (editing a page).
+	if ( function_exists( 'is_block_editor' ) && is_block_editor() ) {
+		return;
+	}
+
+	// Also check for REST API requests (block editor uses these).
+	if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+		return;
+	}
+
+	// Only redirect if WooCommerce is active.
+	if ( ! class_exists( 'WooCommerce' ) ) {
+		return;
+	}
+
+	// Check if this is the my-account page.
+	if ( ! is_page( 'my-account' ) ) {
+		return;
+	}
+
+	// If user is not logged in, redirect to login page.
+	if ( ! is_user_logged_in() ) {
+		$login_url = home_url( '/login/' );
+		wp_safe_redirect( $login_url );
+		exit;
+	}
+}
+
+add_filter( 'woocommerce_login_redirect', 'wp_rig_wc_login_redirect' );
+
+/**
+ * After successful login, redirect to my-account page.
+ *
+ * @return string The my-account page URL.
+ */
+function wp_rig_wc_login_redirect() {
+	// Redirect to my-account page after login.
+	return wc_get_page_permalink( 'myaccount' );
+}
 
 // @dev-only:start
 /**

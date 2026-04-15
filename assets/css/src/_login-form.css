@@ -1,0 +1,420 @@
+/**
+ * Login Form Block Styles
+ *
+ * Based on Figma design: node-id 856:1778
+ * File: aJ4VjKdFNahXA6Ly4jkRtJ
+ *
+ * @package wp_rig
+ */
+
+/* CSS Variables - mapped from Figma design tokens */
+:root {
+	--login-input-border: #bec4c4;
+	--login-primary: #021f1d;
+	--login-grey: #f5f5f5;
+	--login-muted: #929292;
+	--login-border-radius: 2px;
+	--login-input-padding-y: 14px;
+	--login-input-padding-x: 16px;
+	--login-form-max-width: 360px;
+	--login-font-heading: "Cormorant Garamond", serif;
+	--login-font-body: "Maison Neue", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, sans-serif;
+}
+
+/* Remove sidebar grid layout for my-account page */
+body.woocommerce-account.has-sidebar .site,
+body.page-id- .has-sidebar .site,
+body.my-account-page.has-sidebar .site {
+	grid-template-columns: unset !important;
+	grid-gap: unset !important;
+	gap: unset !important;
+	-ms-flex-direction: column !important;
+	flex-direction: column !important;
+	display: -ms-flexbox !important;
+	display: flex !important;
+}
+
+body.woocommerce-account .content-area,
+body.woocommerce-account .widget-area,
+body.page-id- .content-area,
+body.page-id- .widget-area,
+body.my-account-page .content-area,
+body.my-account-page .widget-area {
+	width: 100% !important;
+	max-width: none !important;
+}
+
+/* WooCommerce template wrapper and Block wrapper.
+ * Ensure proper padding and centering.
+ */
+.woocommerce-login-form-wrapper,
+.login-form-wrapper {
+	display: flex !important;
+	justify-content: center;
+	align-items: center;
+	padding: 80px 60px !important;
+	background-color: #fff;
+	width: 100%;
+	min-height: calc(100vh - var(--nav-height) - var(--footer-height, 200px));
+}
+
+/* Main form container */
+.login-form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 16px;
+	width: 100%;
+	max-width: var(--login-form-max-width);
+}
+
+/* Title Section */
+.login-form__title {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	align-items: center;
+	width: 100%;
+	text-align: center;
+}
+
+.login-form__title-main {
+	font-family: var(--login-font-heading);
+	font-size: 32px;
+	line-height: 40px;
+	color: var(--login-primary);
+	margin: 0;
+	font-weight: 400;
+}
+
+/* Form */
+.login-form__form {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	align-items: flex-start;
+	padding: 16px 0;
+	width: 100%;
+	max-width: var(--login-form-max-width);
+}
+
+/* Header */
+.login-form__header {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.login-form__header-text {
+	font-family: var(--login-font-body);
+	font-size: 17px;
+	line-height: 30px;
+	color: var(--login-primary);
+	margin: 0;
+	font-weight: 300;
+	text-align: center;
+}
+
+/* Form Field */
+.login-form__field {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	width: 100%;
+}
+
+/* Password field wrapper needs more gap for forgot password link */
+.login-form__field:has(.login-form__forgot-row) {
+	gap: 12px;
+}
+
+.login-form__label {
+	font-family: var(--login-font-body);
+	font-size: 11px;
+	line-height: 16px;
+	letter-spacing: 0.88px;
+	color: var(--login-primary);
+	text-transform: uppercase;
+	margin: 0;
+	font-weight: 300;
+}
+
+/* Input Wrapper */
+.login-form__input-wrapper {
+	display: flex;
+	align-items: center;
+	background-color: var(--login-grey) !important;
+	border: 1px solid var(--login-input-border) !important;
+	padding: var(--login-input-padding-y) var(--login-input-padding-x);
+	border-radius: var(--login-border-radius);
+	position: relative;
+	width: 100%;
+}
+
+.login-form__input-wrapper--has-toggle {
+	justify-content: space-between;
+	border: 1px solid var(--login-input-border) !important;
+}
+
+/* Input - override global forms.css */
+.login-form__input,
+.login-form-wrapper input[type="text"],
+.login-form-wrapper input[type="email"],
+.login-form-wrapper input[type="password"] {
+	width: 100%;
+	background: transparent !important;
+	border: none !important;
+	outline: none;
+	font-family: var(--login-font-body);
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: var(--login-primary);
+	font-weight: 300;
+	padding: 0 !important;
+	margin: 0;
+	border-radius: 0 !important;
+}
+
+.login-form__input::placeholder {
+	color: var(--login-muted);
+}
+
+.login-form__input:focus {
+	outline: none;
+}
+
+/* Password Toggle Button */
+.login-form__password-toggle {
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--login-muted);
+	transition: color 0.2s ease;
+	flex-shrink: 0;
+	width: 24px;
+	height: 24px;
+}
+
+.login-form__password-toggle:hover {
+	color: var(--login-primary);
+}
+
+.login-form__password-toggle:focus {
+	outline: 2px solid var(--login-primary);
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+
+.login-form__eye-icon {
+	width: 24px;
+	height: 24px;
+}
+
+.login-form__eye-icon--slash {
+	opacity: 0.5;
+}
+
+/* Forgot Password Row */
+.login-form__forgot-row {
+	display: flex;
+	justify-content: flex-start;
+	width: 100%;
+	height: 10px;
+	margin-top: 4px;
+}
+
+.login-form__forgot-link {
+	font-family: var(--login-font-body);
+	font-size: 9px;
+	line-height: 12px;
+	letter-spacing: 1.26px;
+	color: var(--login-primary);
+	text-transform: uppercase;
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.login-form__forgot-link:hover {
+	text-decoration: underline;
+}
+
+/* Submit Button */
+.login-form__submit {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 16px 20px;
+	background-color: var(--login-primary);
+	color: #fff;
+	font-family: var(--login-font-body);
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	border: none;
+	border-radius: var(--login-border-radius);
+	cursor: pointer;
+	transition: opacity 0.2s ease;
+	font-weight: 300;
+}
+
+.login-form__submit:hover {
+	opacity: 0.9;
+}
+
+.login-form__submit:disabled,
+.login-form__submit--loading {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* Footer */
+.login-form__footer {
+	display: flex;
+	gap: 6px;
+	align-items: center;
+	justify-content: center;
+	font-family: var(--login-font-body);
+	font-size: 13px;
+	line-height: 16px;
+	letter-spacing: 0.13px;
+	color: var(--login-primary);
+	text-align: center;
+	margin-top: 8px;
+	white-space: nowrap;
+	width: 100%;
+	align-self: center;
+}
+
+/* Links - match Figma bold + underline style */
+.login-form__link {
+	color: var(--login-primary);
+	text-decoration: underline;
+	font-weight: 700;
+	font-family: var(--login-font-body);
+	text-underline-offset: 2px;
+}
+
+.login-form__link:hover {
+	opacity: 0.8;
+}
+
+/* Messages */
+.login-form__messages {
+	width: 100%;
+}
+
+.login-form__message {
+	padding: 16px;
+	border-radius: var(--login-border-radius);
+	font-family: var(--login-font-body);
+	font-size: 13px;
+	line-height: 20px;
+	margin-top: 8px;
+}
+
+.login-form__message--success {
+	background-color: #d4edda;
+	color: #155724;
+}
+
+.login-form__message--error {
+	background-color: #f8d7da;
+	color: #721c24;
+}
+
+/* WooCommerce Error Messages - style to match our design */
+.woocommerce-login-form-wrapper .woocommerce-error,
+.woocommerce-login-form-wrapper .woocommerce-info,
+.woocommerce-login-form-wrapper .woocommerce-message {
+	display: none !important;
+}
+
+/* Show WooCommerce errors in our custom message container */
+.woocommerce-login-form-wrapper + .woocommerce-notices-wrapper {
+	display: none !important;
+}
+
+/* Hide WooCommerce notices on my-account login page */
+body.woocommerce-account .woocommerce-notices-wrapper {
+	display: none !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 767px) {
+
+	.login-form-wrapper {
+		padding: 60px 20px !important;
+	}
+
+	.login-form__title-main {
+		font-size: 24px;
+		line-height: 32px;
+	}
+
+	.login-form__footer {
+		flex-direction: column;
+		gap: 4px;
+		text-align: center;
+	}
+}
+
+/* Block Editor Preview */
+.block-editor-block-preview__content .login-form-wrapper {
+	padding: 20px;
+	min-height: auto;
+}
+
+.block-editor-block-preview__content .login-form__form {
+	padding: 16px;
+}
+
+.block-editor-block-preview__content .login-form__title-main {
+	font-size: 1rem;
+	line-height: 1.5;
+}
+
+.block-editor-block-preview__content .login-form__preview-text {
+	font-family: var(--login-font-body);
+	font-size: 13px;
+	color: var(--login-muted);
+	text-align: center;
+	padding: 20px;
+}
+
+/* Accessibility: Focus Visible */
+.login-form__input:focus-visible,
+.login-form__submit:focus-visible,
+.login-form__password-toggle:focus-visible,
+.login-form__forgot-link:focus-visible {
+	outline: 2px solid var(--login-primary);
+	outline-offset: 2px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+
+	.login-form__input {
+		border: 1px solid currentcolor;
+	}
+
+	.login-form__submit {
+		border: 2px solid currentcolor;
+	}
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+
+	.login-form__submit,
+	.login-form__password-toggle,
+	.login-form__link,
+	.login-form__forgot-link {
+		transition: none;
+	}
+}
