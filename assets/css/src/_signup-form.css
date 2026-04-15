@@ -22,8 +22,10 @@
 
 /* Remove sidebar grid layout for signup page */
 
-/* Same pattern as product listing */
-body.page-template-page-signup-php.has-sidebar .site {
+/* Target: custom template, page ID 270, and pages with signup block */
+body.page-template-page-signup-php.has-sidebar .site,
+body.page-id-270.has-sidebar .site,
+body.has-sidebar .site:has(.signup-form-wrapper) {
 	grid-template-columns: unset !important;
 	grid-gap: unset !important;
 	gap: unset !important;
@@ -34,13 +36,18 @@ body.page-template-page-signup-php.has-sidebar .site {
 }
 
 body.page-template-page-signup-php .content-area,
-body.page-template-page-signup-php .widget-area {
+body.page-template-page-signup-php .widget-area,
+body.page-id-270 .content-area,
+body.page-id-270 .widget-area,
+body.has-sidebar .content-area:has(~ .widget-area .signup-form-wrapper),
+body.has-sidebar .widget-area:has(~ .content-area .signup-form-wrapper) {
 	width: 100% !important;
 	max-width: none !important;
 }
 
 /* Signup page container */
-body.page-template-signup .signup-page-container {
+body.page-template-signup .signup-page-container,
+body.page-id-270 .signup-page-container {
 	width: 100%;
 	max-width: 100%;
 }
