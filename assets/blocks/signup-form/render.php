@@ -20,8 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use function WP_Rig\WP_Rig\wp_rig;
-
 // If user is already logged in, redirect to my account.
 // Skip this redirect in the block editor context.
 if ( is_user_logged_in() && ! ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) ) {
@@ -46,8 +44,8 @@ $marketing_title       = $attributes['marketingTitle'] ?? 'Sign me up to hear mo
 $marketing_description = $attributes['marketingDescription'] ?? 'By checking this box, you agree to receive marketing emails and other communications from Eternal Labs. To learn more, view our PRIVACY POLICY.';
 $terms_agreement_text  = $attributes['termsAgreementText'] ?? 'By clicking Create Account button I agree to ETERNAL-LABS TERMS & CONDITIONS and PRIVACY POLICY.';
 
-// Build wrapper attributes via namespaced helper (it handles core fallback internally).
-$wrapper_attrs = wp_rig()->block_wrapper_attributes( array( 'signup-form-wrapper' ), $attributes );
+// Build wrapper attributes using WordPress core function.
+$wrapper_attrs = get_block_wrapper_attributes( array( 'class' => 'signup-form-wrapper' ) );
 
 // Sanitize URLs.
 $terms_url      = esc_url( $terms_url );
