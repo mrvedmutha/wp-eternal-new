@@ -1,0 +1,19 @@
+{
+  "name": "wp-rig/lost-password-form",
+  "apiVersion": 2,
+  "title": "Lost Password Form",
+  "category": "widgets",
+  "icon": "admin-network",
+  "description": "WooCommerce lost password form with custom styling matching Figma design.",
+  "textdomain": "wp-rig",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style.css",
+  "editorStyle": "file:./build/editor.css",
+  "render": "file:./render.php",
+  "viewScript": "file:./build/view.js",
+  "attributes": {},
+  "supports": {
+    "align": ["full", "wide"],
+    "html": false
+  }
+}

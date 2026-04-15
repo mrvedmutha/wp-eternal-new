@@ -38,7 +38,7 @@ $attributes = is_array( $attributes ?? null ) ? $attributes : array();
 $block = ( isset( $block ) && $block instanceof WP_Block ) ? $block : null;
 
 // Build URLs.
-$lost_password_url = function_exists( 'wc_lost_password_url' ) ? wc_lost_password_url() : home_url( '/my-account/lost-password/' );
+$lost_password_url = home_url( '/lost-password/' );
 $signup_url        = home_url( '/signup/' );
 
 // Build wrapper attributes using WordPress core function.
