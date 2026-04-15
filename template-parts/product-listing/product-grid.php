@@ -13,12 +13,9 @@ use function WP_Rig\WP_Rig\wp_rig;
 
 global $wp_query;
 
-if ( ! $wp_query->have_posts() ) {
-	return;
-}
-
 $products       = $wp_query->posts;
 $total_products = count( $products );
+$has_products   = $wp_query->have_posts();
 ?>
 
 <div class="plp-grid" data-node-id="694-1726">
@@ -49,78 +46,79 @@ $total_products = count( $products );
 
 		<!-- Product Grid Content -->
 		<div class="plp-grid__content" data-node-id="694-1798">
-			<?php
-			// Fixed pattern: 2-up, single, single, 2-up.
-			$pattern          = array( 'half', 'half', 'full', 'full', 'half', 'half' );
-			$display_products = array_slice( $products, 0, 6 );
+			<?php if ( $has_products ) : ?>
+				<?php
+				// Fixed pattern: 2-up, single, single, 2-up.
+				$pattern          = array( 'half', 'half', 'full', 'full', 'half', 'half' );
+				$display_products = array_slice( $products, 0, 6 );
 
-			foreach ( $display_products as $index => $product_post ) :
-				$product = wc_get_product( $product_post->ID );
+				foreach ( $display_products as $index => $product_post ) :
+					$product = wc_get_product( $product_post->ID );
 
-				if ( ! $product ) {
-					continue;
-				}
+					if ( ! $product ) {
+						continue;
+					}
 
-				$layout        = $pattern[ $index ] ?? 'half';
-				$is_full       = 'full' === $layout;
-				$css_class     = $is_full ? 'plp-grid__item--full' : 'plp-grid__item--half';
-				$is_2up_row    = ( $index < 2 || $index >= 4 );
-				$is_even_index = ( 0 === $index % 2 );
+					$layout        = $pattern[ $index ] ?? 'half';
+					$is_full       = 'full' === $layout;
+					$css_class     = $is_full ? 'plp-grid__item--full' : 'plp-grid__item--half';
+					$is_2up_row    = ( $index < 2 || $index >= 4 );
+					$is_even_index = ( 0 === $index % 2 );
 
-				// Open row div at start of each 2-up pair.
-				if ( $is_2up_row && $is_even_index ) :
-					?>
+					// Open row div at start of each 2-up pair.
+					if ( $is_2up_row && $is_even_index ) :
+						?>
 					<div class="plp-grid__row plp-grid__row--2up">
-					<?php
-				endif;
+						<?php
+					endif;
 
-				// Product data.
-				$pid        = $product->get_id();
-				$permalink  = get_permalink( $pid );
-				$name       = $product->get_name();
-				$price_html = $product->get_price_html();
-				$atc_url    = $product->add_to_cart_url();
+					// Product data.
+					$pid        = $product->get_id();
+					$permalink  = get_permalink( $pid );
+					$name       = $product->get_name();
+					$price_html = $product->get_price_html();
+					$atc_url    = $product->add_to_cart_url();
 
-				// Product images.
-				$main_img_id = $product->get_image_id();
-				$main_src    = $main_img_id ? wp_get_attachment_image_src( $main_img_id, 'woocommerce_single' ) : null;
-				$main_url    = $main_src ? $main_src[0] : wc_placeholder_img_src( 'woocommerce_single' );
-				$main_alt    = $main_img_id ? (string) get_post_meta( $main_img_id, '_wp_attachment_image_alt', true ) : $name;
+					// Product images.
+					$main_img_id = $product->get_image_id();
+					$main_src    = $main_img_id ? wp_get_attachment_image_src( $main_img_id, 'woocommerce_single' ) : null;
+					$main_url    = $main_src ? $main_src[0] : wc_placeholder_img_src( 'woocommerce_single' );
+					$main_alt    = $main_img_id ? (string) get_post_meta( $main_img_id, '_wp_attachment_image_alt', true ) : $name;
 
-				$gallery_ids = $product->get_gallery_image_ids();
-				$hover_url   = '';
-				if ( ! empty( $gallery_ids ) ) {
-					$hover_src = wp_get_attachment_image_src( $gallery_ids[0], 'woocommerce_single' );
-					$hover_url = $hover_src ? $hover_src[0] : '';
-				}
+					$gallery_ids = $product->get_gallery_image_ids();
+					$hover_url   = '';
+					if ( ! empty( $gallery_ids ) ) {
+						$hover_src = wp_get_attachment_image_src( $gallery_ids[0], 'woocommerce_single' );
+						$hover_url = $hover_src ? $hover_src[0] : '';
+					}
 
-				// Product metadata.
-				$meta        = wp_rig()->get_product_meta( $pid );
-				$french_text = $meta['french_text'] ?? '';
-				$tagline     = $meta['caption'] ?? '';
-				if ( ! $tagline ) {
-					$tagline = wp_strip_all_tags( $product->get_short_description() );
-				}
+					// Product metadata.
+					$meta        = wp_rig()->get_product_meta( $pid );
+					$french_text = $meta['french_text'] ?? '';
+					$tagline     = $meta['caption'] ?? '';
+					if ( ! $tagline ) {
+						$tagline = wp_strip_all_tags( $product->get_short_description() );
+					}
 
-				$buy_amount = $meta['buy_box_amount'] ?? '';
-				$buy_unit   = $meta['buy_box_unit'] ?? '';
-				$size_label = trim( $buy_amount . $buy_unit );
+					$buy_amount = $meta['buy_box_amount'] ?? '';
+					$buy_unit   = $meta['buy_box_unit'] ?? '';
+					$size_label = trim( $buy_amount . $buy_unit );
 
-				// Variant pills: size label + non-variation product attributes.
-				$pills = array();
-				if ( $size_label ) {
-					$pills[] = strtoupper( $size_label );
-				}
-				foreach ( $product->get_attributes() as $attribute ) {
-					if ( $attribute->is_taxonomy() && ! $attribute->get_variation() ) {
-						$terms = wc_get_product_terms( $pid, $attribute->get_name(), array( 'fields' => 'names' ) );
-						foreach ( $terms as $term_name ) {
-							$pills[] = strtoupper( $term_name );
+					// Variant pills: size label + non-variation product attributes.
+					$pills = array();
+					if ( $size_label ) {
+						$pills[] = strtoupper( $size_label );
+					}
+					foreach ( $product->get_attributes() as $attribute ) {
+						if ( $attribute->is_taxonomy() && ! $attribute->get_variation() ) {
+							$terms = wc_get_product_terms( $pid, $attribute->get_name(), array( 'fields' => 'names' ) );
+							foreach ( $terms as $term_name ) {
+								$pills[] = strtoupper( $term_name );
+							}
 						}
 					}
-				}
-				$pills = array_unique( $pills );
-				?>
+					$pills = array_unique( $pills );
+					?>
 
 					<div class="plp-grid__item <?php echo esc_attr( $css_class ); ?>">
 						<!-- Image zone -->
@@ -186,23 +184,31 @@ $total_products = count( $products );
 						</div><!-- .plp-product__info -->
 					</div><!-- .plp-grid__item -->
 
-				<?php
-				// Close row div after the second item in each 2-up pair.
-				if ( $is_2up_row && ! $is_even_index ) :
-					?>
-				</div><!-- .plp-grid__row -->
 					<?php
-			endif;
+					// Close row div after the second item in each 2-up pair.
+					if ( $is_2up_row && ! $is_even_index ) :
+						?>
+				</div><!-- .plp-grid__row -->
+						<?php
+				endif;
 
 			endforeach;
 
-			if ( count( $products ) > 6 ) :
-				?>
+				if ( count( $products ) > 6 ) :
+					?>
 				<!-- Show "Load More" button for additional products -->
 				<div class="plp-grid__load-more">
 					<a href="#" class="plp-grid__load-more-link">
 						Load More Products
 					</a>
+				</div>
+				<?php endif; ?>
+			<?php else : ?>
+				<!-- No products found message -->
+				<div class="plp-grid__empty">
+					<p class="plp-grid__empty-message">
+						<?php esc_html_e( 'No products found matching your selection.', 'wp-rig' ); ?>
+					</p>
 				</div>
 			<?php endif; ?>
 		</div><!-- .plp-grid__content -->

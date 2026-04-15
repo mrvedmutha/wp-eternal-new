@@ -3,37 +3,45 @@
  *
  * Handles:
  * - FAQ section initialization from Eternal Product Category FAQ plugin
- * - Filter interactions
  * - Sort dropdown behavior
- * - GSAP hover effects on product cards (matches Related Products)
+ * - GSAP hover effects on product cards
+ * - Mobile filter drawer (works with plugin filters)
+ * - ATB click handlers
+ *
+ * Filter functionality is handled by Eternal Product Category Filter plugin
  *
  * @package wp_rig
  */
+
 import { gsap } from 'gsap';
+
+// ============================================================================
+// FAQ SECTION
+// ============================================================================
+
 /**
  * Escape HTML for question text.
- * Answers come pre-sanitized from the plugin.
  */
 function escapeHtml(text: string): string {
 	const div = document.createElement('div');
 	div.textContent = text;
 	return div.innerHTML;
 }
+
 /**
  * Initialize FAQ Section
- * Reads from window.eternalCategoryFAQ set by Eternal Product Category FAQ plugin
- * Uses GSAP for smooth accordion animations
  */
 function initFAQSection(): void {
 	const container = document.getElementById('plp-faq-container');
 	if (!container) return;
+
 	// Check if plugin has populated FAQ data
 	const pluginData = (window as any).eternalCategoryFAQ;
 	if (!pluginData || !Array.isArray(pluginData) || pluginData.length === 0) {
-		// Show message if no FAQs
 		container.innerHTML = '<p class="plp-faq__empty">No FAQs available for this category.</p>';
 		return;
 	}
+
 	// Render FAQ items from plugin data
 	container.innerHTML = pluginData.map((faq: {question: string, answer: string}, index: number) => `
 		<div class="plp-faq__item">
@@ -48,33 +56,28 @@ function initFAQSection(): void {
 			</details>
 		</div>
 	`).join('');
+
 	// Initialize GSAP animations for each FAQ item
 	const detailsElements = container.querySelectorAll('.plp-faq__details');
 	detailsElements.forEach((detail: HTMLDetailsElement) => {
 		const answer = detail.querySelector('.plp-faq__answer');
 		if (!answer) return;
-		// Set initial state based on whether details is open or closed
+
+		// Set initial state
 		if (detail.open) {
-			gsap.set(answer, {
-				height: 'auto',
-				opacity: 1
-			});
+			gsap.set(answer, { height: 'auto', opacity: 1 });
 		} else {
-			gsap.set(answer, {
-				height: 0,
-				opacity: 0
-			});
+			gsap.set(answer, { height: 0, opacity: 0 });
 		}
+
 		// Listen for toggle events and animate
 		detail.addEventListener('toggle', () => {
 			if (detail.open) {
-				// Opening: expand answer with smooth animation
 				gsap.fromTo(answer,
 					{ height: 0, opacity: 0 },
 					{ height: 'auto', opacity: 1, duration: 0.4, ease: 'power2.out' }
 				);
 			} else {
-				// Closing: collapse answer
 				gsap.to(answer, {
 					height: 0,
 					opacity: 0,
@@ -85,48 +88,25 @@ function initFAQSection(): void {
 		});
 	});
 }
-/**
- * Initialize Filter Sidebar
- */
-function initFilterSidebar(): void {
-	const clearAllLink = document.querySelector('.plp-filters__clear a');
-	if (clearAllLink) {
-		clearAllLink.addEventListener('click', (e) => {
-			// Uncheck all checkboxes
-			const checkboxes = document.querySelectorAll('.plp-filters__checkbox input[type="checkbox"]');
-			checkboxes.forEach(cb => {
-				(cb as HTMLInputElement).checked = false;
-			});
-		});
-	}
-		// Checkbox state management
-		const checkboxes = document.querySelectorAll('.plp-filters__checkbox input[type="checkbox"]');
-		checkboxes.forEach(checkbox => {
-			checkbox.addEventListener('change', () => {
-				const wrapper = checkbox.closest('.plp-filters__checkbox');
-				if (wrapper) {
-					if ((checkbox as HTMLInputElement).checked) {
-						wrapper.classList.add('plp-filters__checkbox--checked');
-					} else {
-						wrapper.classList.remove('plp-filters__checkbox--checked');
-					}
-				}
-			});
-		});
-}
+
+// ============================================================================
+// MOBILE FILTER DRAWER
+// ============================================================================
+
 /**
  * Initialize Mobile Filter Sidebar
- * Handles the full-screen filter overlay for mobile/tablet
  */
 function initMobileFilterSidebar(): void {
 	const filterToggle = document.querySelector('.plp-grid__filter-toggle');
 	const filtersOverlay = document.querySelector('.plp-filters-overlay');
 	const closeBtn = document.querySelector('.plp-filters-drawer__close');
+
 	// Create overlay and drawer if they don't exist
 	if (!filtersOverlay) {
 		const overlay = document.createElement('div');
 		overlay.className = 'plp-filters-overlay';
 		overlay.setAttribute('data-node-id', '694-1729');
+
 		const drawer = document.createElement('div');
 		drawer.className = 'plp-filters-drawer';
 		drawer.innerHTML = `
@@ -134,29 +114,35 @@ function initMobileFilterSidebar(): void {
 			<h2 class="plp-filters-drawer__title">Filters</h2>
 			<div class="plp-filters-drawer__content"></div>
 		`;
+
 		overlay.appendChild(drawer);
 		document.body.appendChild(overlay);
+
 		// Clone filters content into drawer
 		const originalFilters = document.querySelector('.plp-filters');
 		const drawerContent = drawer.querySelector('.plp-filters-drawer__content');
 		if (originalFilters && drawerContent) {
 			drawerContent.innerHTML = originalFilters.innerHTML;
 		}
+
 		// Setup event listeners
 		const newCloseBtn = drawer.querySelector('.plp-filters-drawer__close');
 		const newFilterToggle = document.querySelector('.plp-grid__filter-toggle');
+
 		if (newFilterToggle) {
 			newFilterToggle.addEventListener('click', () => {
 				overlay.classList.add('is-active');
 				document.body.style.overflow = 'hidden';
 			});
 		}
+
 		if (newCloseBtn) {
 			newCloseBtn.addEventListener('click', () => {
 				overlay.classList.remove('is-active');
 				document.body.style.overflow = '';
 			});
 		}
+
 		// Close when clicking outside
 		overlay.addEventListener('click', (e) => {
 			if (e.target === overlay) {
@@ -166,14 +152,15 @@ function initMobileFilterSidebar(): void {
 		});
 	}
 }
+
+// ============================================================================
+// PRODUCT GRID HOVER EFFECTS
+// ============================================================================
+
 /**
  * Initialize Product Grid Hover Effects (GSAP)
- * Matches Related Products animations:
- * - Hover image: zooms out from 1.3 to 1.15 scale while fading in
- * - ATB bar: slides up from below with smooth easing
  */
 function initProductGrid(): void {
-	// Wait a bit for products to potentially load via AJAX
 	setTimeout(() => {
 		const imgZones = document.querySelectorAll('.plp-product__img-zone');
 		if (imgZones.length === 0) {
@@ -184,90 +171,103 @@ function initProductGrid(): void {
 		if (window.innerWidth <= 1024) {
 			return;
 		}
-	imgZones.forEach((zone, index) => {
-		const hoverImg = zone.querySelector('.plp-product__img--hover');
-		const atbBar = zone.querySelector('.plp-product__atb');
-		// Set initial states for GSAP-controlled props
-		if (hoverImg) {
-			gsap.set(hoverImg, {
-				opacity: 0,
-				scale: 1.3,
-				transformOrigin: 'center 20%'
-			});
-		}
-		if (atbBar) {
-			gsap.set(atbBar, {
-				opacity: 0,
-				yPercent: 100,
-				y: 16
-			});
-		}
-		// Bail early if there's nothing animated
-		if (!hoverImg && !atbBar) return;
-		zone.addEventListener('mouseenter', () => {
+
+		imgZones.forEach((zone) => {
+			const hoverImg = zone.querySelector('.plp-product__img--hover');
+			const atbBar = zone.querySelector('.plp-product__atb');
+
+			// Set initial states
 			if (hoverImg) {
-				gsap.to(hoverImg, {
-					opacity: 1,
-					scale: 1.15,
-					duration: 0.5,
-					ease: 'power2.out'
-				});
-			}
-			if (atbBar) {
-				gsap.to(atbBar, {
-					opacity: 1,
-					yPercent: 0,
-					y: -8,
-					duration: 0.38,
-					ease: 'power2.out'
-				});
-			}
-		});
-		zone.addEventListener('mouseleave', () => {
-			if (hoverImg) {
-				gsap.to(hoverImg, {
+				gsap.set(hoverImg, {
 					opacity: 0,
 					scale: 1.3,
-					duration: 0.35,
-					ease: 'power2.in'
+					transformOrigin: 'center 20%'
 				});
 			}
+
 			if (atbBar) {
-				gsap.to(atbBar, {
+				gsap.set(atbBar, {
 					opacity: 0,
 					yPercent: 100,
-					y: 16,
-					duration: 0.3,
-					ease: 'power2.in'
+					y: 16
 				});
 			}
+
+			if (!hoverImg && !atbBar) return;
+
+			zone.addEventListener('mouseenter', () => {
+				if (hoverImg) {
+					gsap.to(hoverImg, {
+						opacity: 1,
+						scale: 1.15,
+						duration: 0.5,
+						ease: 'power2.out'
+					});
+				}
+				if (atbBar) {
+					gsap.to(atbBar, {
+						opacity: 1,
+						yPercent: 0,
+						y: -8,
+						duration: 0.38,
+						ease: 'power2.out'
+					});
+				}
+			});
+
+			zone.addEventListener('mouseleave', () => {
+				if (hoverImg) {
+					gsap.to(hoverImg, {
+						opacity: 0,
+						scale: 1.3,
+						duration: 0.35,
+						ease: 'power2.in'
+					});
+				}
+				if (atbBar) {
+					gsap.to(atbBar, {
+						opacity: 0,
+						yPercent: 100,
+						y: 16,
+						duration: 0.3,
+						ease: 'power2.in'
+					});
+				}
+			});
 		});
-	});
-	}, 500); // Wait 500ms for products to load
+	}, 500);
 }
+
+// ============================================================================
+// ATB CLICK HANDLERS
+// ============================================================================
+
 /**
  * Initialize ATB (Add to Bag) click handlers with AJAX cart
- * Matches Related Products behavior for simple products
  */
 function initATBClickHandlers(): void {
 	const atbElements = document.querySelectorAll<HTMLElement>('[data-plp-atb]');
+
 	atbElements.forEach(atbEl => {
 		const link = atbEl.querySelector<HTMLAnchorElement>('.plp-product__atb-link');
 		if (!link) return;
+
 		const productId = link.dataset.productId ?? '';
 		const productType = link.dataset.productType ?? 'simple';
-		// Make the entire ATB div clickable
+
 		atbEl.style.cursor = 'pointer';
-		// Variable products need PDP - fall through to href
+
 		if (!productId || productType !== 'simple') {
 			atbEl.addEventListener('click', () => { window.location.href = link.href; });
 			return;
 		}
+
 		atbEl.addEventListener('click', async () => {
 			if (atbEl.classList.contains('is-adding') || atbEl.classList.contains('is-added')) return;
-			// Adding state
+
 			atbEl.classList.add('is-adding');
 			link.textContent = 'ADDING...';
+
 			try {
 				const body = new URLSearchParams({ product_id: productId, quantity: '1' });
 				const res = await fetch('/?wc-ajax=add_to_cart', {
@@ -275,13 +275,17 @@ function initATBClickHandlers(): void {
 					headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 					body: body.toString(),
 				});
+
 				const data = await res.json();
+
 				atbEl.classList.remove('is-adding');
+
 				if (data.error) {
 					link.textContent = 'ADD TO BAG';
 					window.location.href = link.href;
 					return;
 				}
+
 				// Update cart fragments
 				if (data.fragments) {
 					Object.entries(data.fragments).forEach(([selector, html]) => {
@@ -289,7 +293,7 @@ function initATBClickHandlers(): void {
 							el.outerHTML = html as string;
 						});
 					});
-					// Trigger WooCommerce event
+
 					if (typeof (window as any).jQuery !== 'undefined') {
 						(window as any).jQuery(document.body).trigger('added_to_cart', [
 							data.fragments,
@@ -297,9 +301,10 @@ function initATBClickHandlers(): void {
 						]);
 					}
 				}
-				// Added state
+
 				atbEl.classList.add('is-added');
 				link.textContent = 'ADDED!';
+
 				setTimeout(() => {
 					atbEl.classList.remove('is-added');
 					link.textContent = 'ADD TO BAG';
@@ -312,16 +317,464 @@ function initATBClickHandlers(): void {
 		});
 	});
 }
+
+// ============================================================================
+// FILTER SYSTEM
+// ============================================================================
+
+/**
+ * Types for filter data
+ */
+interface FilterOption {
+	option_id: string;
+	name: string;
+	slug: string;
+	order: number;
+	count: number;
+}
+
+interface FilterGroup {
+	group_id: string;
+	group_name: string;
+	slug: string;
+	options: FilterOption[];
+}
+
+interface FilterData {
+	category_id: number;
+	category_name: string;
+	category_slug: string;
+	filter_groups: FilterGroup[];
+}
+
+interface PLPData {
+	pluginDataUrl: string;
+	filters: {
+		active: boolean;
+		categoryId: number;
+		endpoint: string;
+		nonce: string;
+	};
+	ajaxUrl: string;
+	restUrl: string;
+}
+
+/**
+ * WooCommerce sorting options
+ */
+const SORT_OPTIONS = [
+	{ value: 'popularity', label: 'Popularity' },
+	{ value: 'rating', label: 'Highest Rated' },
+	{ value: 'price', label: 'Price: Low to High' },
+	{ value: 'price-desc', label: 'Price: High to Low' },
+	{ value: 'title', label: 'Name: A to Z' },
+	{ value: 'title-desc', label: 'Name: Z to A' },
+	{ value: 'date', label: 'Newest' },
+];
+
+/**
+ * Category-specific fallback filters
+ */
+const FALLBACK_FILTERS: Record<string, FilterGroup[]> = {
+	skincare: [
+		{
+			group_id: 'group_0',
+			group_name: 'Product Types',
+			slug: 'product-types',
+			options: [
+				{ option_id: 'opt_0_0', name: 'Face Creme', slug: 'face-creme', order: 1, count: 1 },
+				{ option_id: 'opt_0_1', name: 'Body Oil', slug: 'body-oil', order: 2, count: 0 },
+				{ option_id: 'opt_0_2', name: 'Hair & Body Serum', slug: 'hair-body-serum', order: 3, count: 0 },
+				{ option_id: 'opt_0_3', name: 'Essential Oil', slug: 'essential-oil', order: 4, count: 0 },
+			],
+		},
+		{
+			group_id: 'group_1',
+			group_name: 'Skin Type',
+			slug: 'skin-type',
+			options: [
+				{ option_id: 'opt_1_0', name: 'All Skin Types', slug: 'all-skin-types', order: 1, count: 1 },
+				{ option_id: 'opt_1_1', name: 'Dry Skin', slug: 'dry-skin', order: 2, count: 0 },
+				{ option_id: 'opt_1_2', name: 'Sensitive Skin', slug: 'sensitive-skin', order: 3, count: 0 },
+				{ option_id: 'opt_1_3', name: 'Hair & Scalp Care', slug: 'hair-scalp-care', order: 4, count: 0 },
+			],
+		},
+		{
+			group_id: 'group_2',
+			group_name: 'Benefits',
+			slug: 'benefits',
+			options: [
+				{ option_id: 'opt_2_0', name: 'Hydration', slug: 'hyderation', order: 1, count: 1 },
+				{ option_id: 'opt_2_1', name: 'Nourishment', slug: 'nourishment', order: 2, count: 1 },
+				{ option_id: 'opt_2_2', name: 'Radiance', slug: 'radiance', order: 3, count: 0 },
+				{ option_id: 'opt_2_3', name: 'Firmness & Renewal', slug: 'firmness-renewal', order: 4, count: 0 },
+				{ option_id: 'opt_2_4', name: 'Revitalising Care', slug: 'revitalizing-care', order: 5, count: 0 },
+			],
+		},
+	],
+	nutraceuticals: [
+		{
+			group_id: 'group_0',
+			group_name: 'Formulations For',
+			slug: 'formulations-for',
+			options: [
+				{ option_id: 'opt_0_0', name: 'Men', slug: 'men', order: 1, count: 0 },
+				{ option_id: 'opt_0_1', name: 'Women', slug: 'women', order: 2, count: 0 },
+			],
+		},
+		{
+			group_id: 'group_1',
+			group_name: 'Product Format',
+			slug: 'product-format',
+			options: [
+				{ option_id: 'opt_1_0', name: 'Softgels', slug: 'softgels', order: 1, count: 0 },
+				{ option_id: 'opt_1_1', name: 'Tablets', slug: 'tablets', order: 2, count: 0 },
+			],
+		},
+	],
+};
+
+/**
+ * Filter Manager - handles loading, rendering, and state management
+ */
+class FilterManager {
+	private container: HTMLElement;
+	private categoryId: number;
+	private endpoint: string;
+	private categorySlug: string;
+	private selectedFilters: Set<string> = new Set();
+	private urlFilters: Set<string> = new Set();
+	private selectedSort: string = '';
+	private isLoading = true;
+
+	constructor(container: HTMLElement, data: PLPData['filters'], categorySlug: string) {
+		this.container = container;
+		this.categoryId = data.categoryId;
+		this.endpoint = data.endpoint;
+		this.categorySlug = categorySlug;
+
+		// Parse URL parameters for initial state
+		this.parseURLParams();
+
+		// Load and render filters
+		this.init();
+	}
+
+	private parseURLParams(): void {
+		const params = new URLSearchParams(window.location.search);
+		const filterParam = params.get('eternal_filter');
+		if (filterParam) {
+			filterParam.split(',').forEach(slug => this.urlFilters.add(slug));
+			this.selectedFilters = new Set(this.urlFilters);
+		}
+
+		// Parse sort parameter
+		const sortParam = params.get('orderby');
+		if (sortParam) {
+			this.selectedSort = sortParam;
+		} else {
+			this.selectedSort = 'popularity'; // Default
+		}
+	}
+
+	private async init(): Promise<void> {
+		// Show skeleton loading
+		this.renderSkeleton();
+
+		// Try to load from REST API
+		try {
+			const response = await fetch(this.endpoint);
+			if (!response.ok) throw new Error('Failed to load filters');
+
+			const data: FilterData = await response.json();
+			this.renderFilters(data.filter_groups);
+			this.isLoading = false;
+		} catch (error) {
+			console.warn('Failed to load filters from API, using fallback:', error);
+			// Use category-specific fallback
+			const fallback = FALLBACK_FILTERS[this.categorySlug] || [];
+			this.renderFilters(fallback);
+			this.isLoading = false;
+		}
+	}
+
+	private renderSkeleton(): void {
+		this.container.innerHTML = `
+			<div class="plp-filters__skeleton">
+				<!-- Sort dropdown skeleton -->
+				<div class="plp-filters__skeleton-sort">
+					<div class="plp-filters__skeleton-label"></div>
+					<div class="plp-filters__skeleton-dropdown">
+						<div class="plp-filters__skeleton-value"></div>
+						<div class="plp-filters__skeleton-chevron"></div>
+					</div>
+				</div>
+
+				<div class="plp-filters__skeleton-divider"></div>
+
+				<!-- Filter group 1 skeleton -->
+				<div class="plp-filters__skeleton-group">
+					<div class="plp-filters__skeleton-title"></div>
+					<div class="plp-filters__skeleton-options">
+						<div class="plp-filters__skeleton-option">
+							<div class="plp-filters__skeleton-checkbox"></div>
+							<div class="plp-filters__skeleton-text"></div>
+						</div>
+						<div class="plp-filters__skeleton-option">
+							<div class="plp-filters__skeleton-checkbox"></div>
+							<div class="plp-filters__skeleton-text"></div>
+						</div>
+						<div class="plp-filters__skeleton-option">
+							<div class="plp-filters__skeleton-checkbox"></div>
+							<div class="plp-filters__skeleton-text"></div>
+						</div>
+						<div class="plp-filters__skeleton-option">
+							<div class="plp-filters__skeleton-checkbox"></div>
+							<div class="plp-filters__skeleton-text"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="plp-filters__skeleton-divider"></div>
+
+				<!-- Filter group 2 skeleton -->
+				<div class="plp-filters__skeleton-group">
+					<div class="plp-filters__skeleton-title"></div>
+					<div class="plp-filters__skeleton-options">
+						<div class="plp-filters__skeleton-option">
+							<div class="plp-filters__skeleton-checkbox"></div>
+							<div class="plp-filters__skeleton-text"></div>
+						</div>
+						<div class="plp-filters__skeleton-option">
+							<div class="plp-filters__skeleton-checkbox"></div>
+							<div class="plp-filters__skeleton-text"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="plp-filters__skeleton-divider"></div>
+
+				<!-- Filter group 3 skeleton -->
+				<div class="plp-filters__skeleton-group">
+					<div class="plp-filters__skeleton-title"></div>
+					<div class="plp-filters__skeleton-options">
+						<div class="plp-filters__skeleton-option">
+							<div class="plp-filters__skeleton-checkbox"></div>
+							<div class="plp-filters__skeleton-text"></div>
+						</div>
+						<div class="plp-filters__skeleton-option">
+							<div class="plp-filters__skeleton-checkbox"></div>
+							<div class="plp-filters__skeleton-text"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		`;
+	}
+
+	private renderFilters(groups: FilterGroup[]): void {
+		const hasActiveFilters = this.urlFilters.size > 0;
+
+		this.container.innerHTML = `
+			${hasActiveFilters ? `
+				<div class="plp-filters__clear-all">
+					<button class="plp-filters__clear-btn" data-action="clear">
+						CLEAR ALL
+					</button>
+				</div>
+			` : ''}
+
+			<div class="plp-filters__sort">
+				<div class="plp-filters__sort-label">SORT BY:</div>
+				<div class="plp-filters__sort-dropdown" data-sort-dropdown>
+					<div class="plp-filters__sort-value">${this.getSortLabel(this.selectedSort)}</div>
+					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+						<path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="0.5"/>
+					</svg>
+				</div>
+				<div class="plp-filters__sort-options" data-sort-options>
+					${SORT_OPTIONS.map(option => `
+						<div class="plp-filters__sort-option ${option.value === this.selectedSort ? 'is-selected' : ''}" data-value="${option.value}">
+							${option.label}
+						</div>
+					`).join('')}
+				</div>
+			</div>
+
+			<div class="plp-filters__divider"></div>
+
+			${groups.map((group, index) => `
+				<div class="plp-filters__group" data-group-id="${group.group_id}">
+					<div class="plp-filters__group-title" data-group-toggle>
+						${group.group_name.toUpperCase()}
+					</div>
+					<div class="plp-filters__group-options ${index === 0 ? 'is-open' : ''}">
+						${group.options.map(option => this.renderOption(option)).join('')}
+					</div>
+				</div>
+				${index < groups.length - 1 ? '<div class="plp-filters__divider"></div>' : ''}
+			`).join('')}
+		`;
+
+		this.attachEventListeners();
+	}
+
+	private renderOption(option: FilterOption): string {
+		const isSelected = this.selectedFilters.has(option.slug);
+		const hasCount = option.count > 0;
+
+		return `
+			<label class="plp-filters__option ${isSelected ? 'is-selected' : ''} ${!hasCount ? 'is-disabled' : ''}">
+				<input
+					type="checkbox"
+					value="${option.slug}"
+					${isSelected ? 'checked' : ''}
+					${!hasCount ? 'disabled' : ''}
+					data-option-slug="${option.slug}"
+				>
+				<span class="plp-filters__checkbox"></span>
+				<span class="plp-filters__option-name">${option.name}</span>
+				${option.count > 0 ? `<span class="plp-filters__count"> (${option.count})</span>` : ''}
+			</label>
+		`;
+	}
+
+	private attachEventListeners(): void {
+		// Checkbox changes
+		this.container.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach(checkbox => {
+			checkbox.addEventListener('change', () => this.handleCheckboxChange(checkbox));
+		});
+
+		// Group toggles
+		this.container.querySelectorAll('[data-group-toggle]').forEach(toggle => {
+			toggle.addEventListener('click', () => {
+				const options = toggle.nextElementSibling as HTMLElement;
+				options.classList.toggle('is-open');
+			});
+		});
+
+		// Clear all button
+		const clearBtn = this.container.querySelector('[data-action="clear"]');
+		if (clearBtn) {
+			clearBtn.addEventListener('click', () => this.clearAllFilters());
+		}
+
+		// Sort dropdown toggle
+		const sortDropdown = this.container.querySelector('[data-sort-dropdown]');
+		const sortOptions = this.container.querySelector('[data-sort-options]');
+		if (sortDropdown && sortOptions) {
+			sortDropdown.addEventListener('click', () => {
+				sortOptions.classList.toggle('is-open');
+			});
+
+			// Sort option clicks
+			sortOptions.querySelectorAll('.plp-filters__sort-option').forEach(option => {
+				option.addEventListener('click', (e) => {
+					const value = (e.currentTarget as HTMLElement).dataset.value;
+					if (value) {
+						this.handleSortChange(value);
+						sortOptions.classList.remove('is-open');
+					}
+				});
+			});
+
+			// Close dropdown when clicking outside
+			document.addEventListener('click', (e) => {
+				if (!sortDropdown.contains(e.target as Node)) {
+					sortOptions.classList.remove('is-open');
+				}
+			});
+		}
+	}
+
+	private getSortLabel(value: string): string {
+		const option = SORT_OPTIONS.find(opt => opt.value === value);
+		return option ? option.label : 'Popularity';
+	}
+
+	private handleSortChange(value: string): void {
+		this.selectedSort = value;
+		this.updateURL();
+	}
+
+	private handleCheckboxChange(checkbox: HTMLInputElement): void {
+		const slug = checkbox.value;
+
+		if (checkbox.checked) {
+			this.selectedFilters.add(slug);
+		} else {
+			this.selectedFilters.delete(slug);
+		}
+
+		this.updateURL();
+	}
+
+	private updateURL(): void {
+		const params = new URLSearchParams(window.location.search);
+
+		// Update filters
+		if (this.selectedFilters.size > 0) {
+			params.set('eternal_filter', Array.from(this.selectedFilters).join(','));
+		} else {
+			params.delete('eternal_filter');
+		}
+
+		// Update sort
+		if (this.selectedSort && this.selectedSort !== 'popularity') {
+			params.set('orderby', this.selectedSort);
+		} else {
+			params.delete('orderby');
+		}
+
+		const newURL = `${window.location.pathname}?${params.toString()}`;
+		window.location.href = newURL;
+	}
+
+	private clearAllFilters(): void {
+		this.selectedFilters.clear();
+		const params = new URLSearchParams(window.location.search);
+		params.delete('eternal_filter');
+		window.location.href = `${window.location.pathname}?${params.toString()}`;
+	}
+}
+
+/**
+ * Initialize Filter System
+ */
+function initFilterSystem(): void {
+	const container = document.querySelector<HTMLElement>('#plp-filters-container');
+	if (!container) return;
+
+	// Get PLP data from wp_localize_script
+	const plpData = (window as any).eternalPLP as PLPData;
+	if (!plpData || !plpData.filters) {
+		console.warn('eternalPLP data not found');
+		return;
+	}
+
+	// Get current category slug
+	const categorySlug = document.body.classList.contains('tax-product_cat')
+		? window.location.pathname.split('/').filter(Boolean).pop() || ''
+		: '';
+
+	new FilterManager(container, plpData.filters, categorySlug);
+}
+
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+
 /**
  * Initialize all PLP functionality
  */
 function initPLP(): void {
+	initFilterSystem();
 	initFAQSection();
-	initFilterSidebar();
 	initMobileFilterSidebar();
 	initProductGrid();
 	initATBClickHandlers();
 }
+
 // Initialize on DOM ready
 if (document.readyState === 'loading') {
 	document.addEventListener('DOMContentLoaded', initPLP);

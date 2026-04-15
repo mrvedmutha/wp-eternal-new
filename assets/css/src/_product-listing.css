@@ -49,6 +49,14 @@ body.tax-product_cat.has-sidebar .site {
 	gap: unset !important;
 }
 
+/*
+ * Hide WooCommerce default no products message. We handle it with custom
+ * template.
+ */
+body.tax-product_cat .woocommerce-no-products-found {
+	display: none !important;
+}
+
 /* Ensure FAQ section is visible and uses flex layout */
 /* stylelint-disable-next-line no-descending-specificity */
 body.tax-product_cat .plp-faq {
@@ -164,18 +172,6 @@ body.tax-product_cat .plp-faq {
 	margin: 0;
 }
 
-.plp-filters__count {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-family: "Maison Neue", sans-serif;
-	font-weight: 400;
-	font-size: 13px;
-	line-height: 20px;
-	letter-spacing: 0.13px;
-	color: #021f1d;
-}
-
 .plp-filters__clear {
 	display: flex;
 	align-items: center;
@@ -196,6 +192,87 @@ body.tax-product_cat .plp-faq {
 	text-underline-offset: 2px;
 }
 
+/* Apply/Clear Button */
+.plp-filters__actions {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	padding: 10px 0;
+}
+
+.plp-filters__action-btn {
+	padding: 10px 20px;
+	font-family: "Maison Neue", sans-serif;
+	font-size: 13px;
+	font-weight: 500;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	border: 0.5px solid #021f1d;
+	background: transparent;
+	color: #021f1d;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.plp-filters__action-btn.is-disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+	background: #f5f5f5;
+	color: #868686;
+	border-color: #868686;
+}
+
+.plp-filters__action-btn.is-active {
+	background: #021f1d;
+	color: #fff;
+	border-color: #021f1d;
+}
+
+.plp-filters__action-btn.is-active:hover {
+	background: #033335;
+	border-color: #033335;
+}
+
+.plp-filters__action-btn.is-active:active {
+	transform: scale(0.98);
+}
+
+/* Filter Loading State */
+.plp-filters__loading {
+	padding: 20px 0;
+	font-family: "Maison Neue", sans-serif;
+	font-size: 13px;
+	color: #868686;
+	text-align: center;
+}
+
+/* Filter Fallback (when plugin inactive or no filters) */
+.plp-filters__fallback {
+	display: flex;
+	flex-direction: column;
+	gap: 40px;
+	padding-top: 10px;
+}
+
+.plp-filters__fallback-title {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: #021f1d;
+	text-transform: uppercase;
+}
+
+.plp-filters__fallback-message {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: #868686;
+}
+
 .plp-filters__sort-group {
 	display: flex;
 	flex-direction: column;
@@ -214,62 +291,235 @@ body.tax-product_cat .plp-faq {
 	color: #021f1d;
 }
 
-.plp-filters__sort-dropdown {
-	border: 0.5px solid #000;
-	border-radius: 0;
-	background: #fff;
+/* ==========================================================================
+   CUSTOM FILTER UI STYLES
+   ========================================================================== */
+
+/* Clear All Button */
+.plp-filters__clear-all {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	padding: 6px 10px;
-	min-height: 32px;
-	width: 206px;
-	position: relative;
+	justify-content: flex-start;
+	padding: 10px 0;
 }
 
-.plp-filters__sort-select {
+.plp-filters__clear-btn {
 	font-family: "Maison Neue", sans-serif;
 	font-weight: 400;
 	font-size: 13px;
 	line-height: 20px;
 	letter-spacing: 0.13px;
 	color: #021f1d;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+	background: none;
 	border: none;
-	background: transparent;
-	appearance: none;
 	cursor: pointer;
-	flex: 1;
-	padding-right: 24px; /* Space for chevron */
+	padding: 0;
 }
 
-.plp-filters__sort-select:focus {
-	outline: none;
-}
-
-.plp-filters__sort-chevron {
-	position: absolute;
-	right: 10px;
-	top: 50%;
-	transform: translateY(-50%);
-	width: 16px;
-	height: 16px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	pointer-events: none;
-}
-
-.plp-filters__sort-chevron svg {
-	width: 16px;
-	height: 16px;
-}
-
-.plp-filters__groups {
+/* Skeleton Loading */
+.plp-filters__skeleton {
 	display: flex;
 	flex-direction: column;
 	gap: 20px;
+	animation: skeleton-fade-in 0.3s ease;
 }
 
+@keyframes skeleton-fade-in {
+
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+/* Sort skeleton */
+.plp-filters__skeleton-sort {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.plp-filters__skeleton-label {
+	height: 20px;
+	width: 50px;
+	background: linear-gradient(90deg, #f5f5f5 25%, #e8e8e8 50%, #f5f5f5 75%);
+	background-size: 200% 100%;
+	animation: skeleton-shimmer 1.5s infinite;
+	border-radius: 2px;
+}
+
+.plp-filters__skeleton-dropdown {
+	height: 32px;
+	width: 206px;
+	border: 0.5px solid #e8e8e8;
+	background: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 6px 10px;
+}
+
+.plp-filters__skeleton-value {
+	height: 20px;
+	width: 80px;
+	background: linear-gradient(90deg, #f5f5f5 25%, #e8e8e8 50%, #f5f5f5 75%);
+	background-size: 200% 100%;
+	animation: skeleton-shimmer 1.5s infinite;
+	border-radius: 2px;
+}
+
+.plp-filters__skeleton-chevron {
+	width: 16px;
+	height: 16px;
+	background: linear-gradient(90deg, #f5f5f5 25%, #e8e8e8 50%, #f5f5f5 75%);
+	background-size: 200% 100%;
+	animation: skeleton-shimmer 1.5s infinite;
+	border-radius: 2px;
+}
+
+.plp-filters__skeleton-divider {
+	height: 1px;
+	width: 100%;
+	background: #e8e8e8;
+}
+
+/* Filter group skeleton */
+.plp-filters__skeleton-group {
+	display: flex;
+	flex-direction: column;
+}
+
+.plp-filters__skeleton-title {
+	height: 20px;
+	width: 100px;
+	background: linear-gradient(90deg, #f5f5f5 25%, #e8e8e8 50%, #f5f5f5 75%);
+	background-size: 200% 100%;
+	animation: skeleton-shimmer 1.5s infinite;
+	border-radius: 2px;
+	margin: 10px 10px 10px 0;
+}
+
+.plp-filters__skeleton-options {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.plp-filters__skeleton-option {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 10px 6px 0;
+	height: 32px;
+}
+
+.plp-filters__skeleton-checkbox {
+	width: 10px;
+	height: 10px;
+	background: linear-gradient(90deg, #f5f5f5 25%, #e8e8e8 50%, #f5f5f5 75%);
+	background-size: 200% 100%;
+	animation: skeleton-shimmer 1.5s infinite;
+	border-radius: 2px;
+	flex-shrink: 0;
+}
+
+.plp-filters__skeleton-text {
+	height: 20px;
+	width: 80px;
+	background: linear-gradient(90deg, #f5f5f5 25%, #e8e8e8 50%, #f5f5f5 75%);
+	background-size: 200% 100%;
+	animation: skeleton-shimmer 1.5s infinite;
+	border-radius: 2px;
+	flex: 1;
+}
+
+@keyframes skeleton-shimmer {
+
+	0% {
+		background-position: 200% 0;
+	}
+
+	100% {
+		background-position: -200% 0;
+	}
+}
+
+/* Filter Sort */
+.plp-filters__sort {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-bottom: 12px;
+	position: relative;
+}
+
+.plp-filters__sort-dropdown {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	border: 0.5px solid #000;
+	padding: 6px 10px;
+	min-height: 32px;
+	width: 206px;
+	cursor: pointer;
+	position: relative;
+}
+
+.plp-filters__sort-options {
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	background: #fff;
+	border: 0.5px solid #000;
+	border-top: none;
+	z-index: 10;
+	max-height: 300px;
+	overflow-y: auto;
+}
+
+.plp-filters__sort-options.is-open {
+	display: block;
+}
+
+.plp-filters__sort-option {
+	padding: 10px;
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: #021f1d;
+	cursor: pointer;
+	transition: background 0.2s ease;
+}
+
+.plp-filters__sort-option:hover {
+	background: #f5f5f5;
+}
+
+.plp-filters__sort-option.is-selected {
+	background: #f5f5f5;
+	font-weight: 500;
+}
+
+.plp-filters__sort-value {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: #021f1d;
+}
+
+/* Filter Groups */
 .plp-filters__group {
 	display: flex;
 	flex-direction: column;
@@ -279,35 +529,45 @@ body.tax-product_cat .plp-faq {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	padding: 10px 0;
+	padding: 10px 10px 10px 0;
 	font-family: "Maison Neue", sans-serif;
 	font-weight: 400;
 	font-size: 13px;
 	line-height: 20px;
 	letter-spacing: 0.13px;
 	color: #021f1d;
+	text-transform: uppercase;
+	cursor: pointer;
+	user-select: none;
 }
 
-.plp-filters__group-content {
-	display: flex;
+.plp-filters__group-options {
+	display: none;
 	flex-direction: column;
+	gap: 6px;
 }
 
-.plp-filters__checkbox {
+.plp-filters__group-options.is-open {
+	display: flex;
+}
+
+/* Filter Options */
+.plp-filters__option {
 	display: flex;
 	align-items: center;
 	gap: 6px;
-	padding: 6px 0;
+	padding: 6px 10px 6px 0;
 	cursor: pointer;
+	position: relative;
 }
 
-.plp-filters__checkbox input[type="checkbox"] {
+.plp-filters__option input[type="checkbox"] {
 	position: absolute;
 	opacity: 0;
 	pointer-events: none;
 }
 
-.plp-filters__checkbox-box {
+.plp-filters__checkbox {
 	width: 10px;
 	height: 10px;
 	border: 0.5px solid #868686;
@@ -318,24 +578,15 @@ body.tax-product_cat .plp-faq {
 	justify-content: center;
 }
 
-.plp-filters__checkbox--checked .plp-filters__checkbox-box {
-	border-color: #868686;
-}
-
-.plp-filters__checkbox--checked .plp-filters__checkbox-box::after {
+.plp-filters__option.is-selected .plp-filters__checkbox::after {
 	content: "";
 	position: absolute;
 	width: 3.839px;
 	height: 3.839px;
 	background: #021f1d;
-
-	/* Perfect center using transform */
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
 }
 
-.plp-filters__checkbox-label {
+.plp-filters__option-name {
 	font-family: "Maison Neue", sans-serif;
 	font-weight: 400;
 	font-size: 13px;
@@ -344,7 +595,25 @@ body.tax-product_cat .plp-faq {
 	color: #868686;
 }
 
-.plp-filters__checkbox--checked .plp-filters__checkbox-label {
+.plp-filters__option.is-selected .plp-filters__option-name {
+	color: #021f1d;
+}
+
+.plp-filters__option.is-disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.plp-filters__count {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: #868686;
+}
+
+.plp-filters__option.is-selected .plp-filters__count {
 	color: #021f1d;
 }
 

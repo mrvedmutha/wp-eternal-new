@@ -62,18 +62,9 @@ class Component implements Component_Interface {
 			return;
 		}
 
-		$css_file_path = get_theme_file_path( 'assets/css/product-listing.min.css' );
-		$js_file_path  = get_theme_file_path( 'assets/js/product-listing.min.js' );
+		$js_file_path = get_theme_file_path( 'assets/js/product-listing.min.js' );
 
-		// Enqueue CSS.
-		if ( file_exists( $css_file_path ) ) {
-			wp_enqueue_style(
-				'eternal-product-listing',
-				get_theme_file_uri( 'assets/css/product-listing.min.css' ),
-				array(),
-				file_exists( $css_file_path ) ? filemtime( $css_file_path ) : '1.0.0'
-			);
-		}
+		// Note: Product listing CSS is included in global.min.css via @import.
 
 		// Enqueue JS.
 		if ( file_exists( $js_file_path ) ) {
@@ -85,15 +76,24 @@ class Component implements Component_Interface {
 				true
 			);
 
-			// Localize script for plugin integration.
+			// Prepare filter plugin data.
+			$filter_data = $this->get_filter_plugin_data();
+
+			// Localize script with filter plugin data.
 			wp_localize_script(
 				'eternal-product-listing',
 				'eternalPLP',
 				array(
-					'pluginDataUrl' => home_url( '/product-category/' ),
+					'pluginDataUrl'   => home_url( '/product-category/' ),
+					'filters'         => $filter_data,
+					'ajaxUrl'         => admin_url( 'admin-ajax.php' ),
+					'restUrl'         => get_rest_url( null, 'eternal-filters/v1/category/' ),
 				)
 			);
 		}
+
+		// Add body class when filter plugin is active.
+		$this->add_filter_plugin_body_class();
 	}
 
 	/**
@@ -158,6 +158,54 @@ class Component implements Component_Interface {
 		printf(
 			'<script>window.eternalCategoryFAQ = %s;</script>',
 			wp_json_encode( $faq_data )
+		);
+	}
+
+	/**
+	 * Gets filter plugin data for JavaScript.
+	 *
+	 * @return array Filter plugin data or empty array if plugin inactive.
+	 */
+	private function get_filter_plugin_data(): array {
+		$current_category = get_queried_object();
+
+		if ( ! $current_category || ! isset( $current_category->term_id ) ) {
+			return array();
+		}
+
+		$category_id = intval( $current_category->term_id );
+
+		// Check if the Eternal Product Category Filter plugin has registered the filters.
+		// The plugin sets a global JS variable, so we check if it would be available.
+		// We can check if the plugin's REST endpoint exists.
+		$rest_url = get_rest_url( null, "eternal-filters/v1/category/{$category_id}/filters" );
+
+		// Return filter plugin data for JavaScript.
+		// The actual data comes from the plugin's eternalFiltersData global.
+		return array(
+			'active'     => true, // Plugin provides eternalFiltersData.
+			'categoryId' => $category_id,
+			'endpoint'   => $rest_url,
+			'nonce'      => wp_create_nonce( 'wp_rest' ),
+		);
+	}
+
+	/**
+	 * Adds body class when filter plugin is active for category.
+	 */
+	private function add_filter_plugin_body_class(): void {
+		$filter_data = $this->get_filter_plugin_data();
+
+		if ( empty( $filter_data['active'] ) ) {
+			return;
+		}
+
+		add_filter(
+			'body_class',
+			function ( $classes ) {
+				$classes[] = 'has-eternal-filters';
+				return $classes;
+			}
 		);
 	}
 }
