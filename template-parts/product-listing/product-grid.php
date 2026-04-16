@@ -214,3 +214,8 @@ $has_products   = $wp_query->have_posts();
 		</div><!-- .plp-grid__content -->
 	</div><!-- .plp-grid__columns -->
 </div><!-- .plp-grid -->
+
+<?php
+// Always show FAQ section, even when there are no products.
+get_template_part( 'template-parts/product-listing/faq-section' );
+?>

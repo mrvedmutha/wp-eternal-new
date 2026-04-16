@@ -50,8 +50,8 @@ class Component implements Component_Interface {
 		remove_action( 'woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30 );
 		add_action( 'woocommerce_before_shop_loop', array( $this, 'output_filters_and_grid' ), 10 );
 
-		// Output FAQ section after products.
-		add_action( 'woocommerce_after_shop_loop', array( $this, 'output_faq_section' ), 10 );
+			// Output FAQ data script (always runs, FAQ is in template).
+			add_action( 'wp_footer', array( $this, 'output_faq_data_script' ), 10 );
 	}
 
 	/**
