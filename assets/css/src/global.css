@@ -43,6 +43,8 @@
 @import "_synthesis-explosion.css";
 @import "_product-listing.css";
 @import "_shop.css";
+@import "_cart.css";
+@import "_checkout.css";
 @import "_legal-page-content.css";
 @import "_styled-list.css";
 @import "_signup-form.css";

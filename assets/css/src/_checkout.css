@@ -1,0 +1,569 @@
+/**
+ * Checkout Page Styles
+ *
+ * Based on Eternal theme design system
+ * Matches Shop/Cart page header spacing and PDP button styling
+ *
+ * Design Tokens:
+ * - Primary: #021f1d
+ * - Secondary/Muted: #868686
+ * - Fonts: Cormorant Garamond (display), Maison Neue (body/UI)
+ *
+ * @package wp_rig
+ */
+
+/* ==========================================================================
+   PAGE LAYOUT & HEADER
+   ========================================================================== */
+
+/* Checkout page shell - match cart page pattern */
+body.woocommerce-checkout .site,
+body.woocommerce-checkout.has-sidebar .site {
+	display: flex !important;
+	flex-direction: column;
+	margin: 0;
+}
+
+body.woocommerce-checkout .site-main {
+	width: 100%;
+	max-width: 100%;
+	flex: 1;
+	margin: 0;
+}
+
+/* Checkout Header */
+.checkout-page-header {
+	padding: 128px 40px 40px;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	max-width: 1440px;
+	margin: 0 auto;
+}
+
+.checkout-page-header__title {
+	font-family: "Cormorant Garamond", serif;
+	font-weight: 300;
+	font-style: italic;
+	font-size: 52px;
+	line-height: 58px;
+	letter-spacing: -1px;
+	color: #021f1d;
+	margin: 0;
+}
+
+/* ==========================================================================
+   CHECKOUT BLOCK LAYOUT
+   ========================================================================== */
+
+/* Center the checkout block */
+.wp-block-woocommerce-checkout {
+	max-width: 1440px;
+	margin: 0 auto;
+	padding: 0 40px 80px;
+}
+
+/* Two-column layout enhancement */
+.wc-block-components-sidebar-layout.is-large {
+	display: flex;
+	gap: 60px;
+	align-items: flex-start;
+}
+
+/* Main checkout form area */
+.wc-block-checkout__main {
+	flex: 1;
+	min-width: 0;
+}
+
+/* Order summary sidebar */
+.wc-block-checkout__sidebar {
+	width: 400px;
+	flex: 0 0 auto;
+	position: sticky;
+	top: var(--nav-height, 80px);
+	max-height: calc(100vh - var(--nav-height, 80px) - 40px);
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+/* ==========================================================================
+   CHECKOUT FORM STYLES
+   ========================================================================== */
+
+.wc-block-checkout__form {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+/* Checkout step/container */
+.wc-block-components-checkout-step,
+.wp-block-woocommerce-checkout-contact-information-block,
+.wp-block-woocommerce-checkout-shipping-address-block,
+.wp-block-woocommerce-checkout-shipping-methods-block,
+.wp-block-woocommerce-checkout-payment-block,
+.wp-block-woocommerce-checkout-order-note-block {
+
+	/* margin removed - using gap in form instead */
+}
+
+/* Step heading */
+.wc-block-components-checkout-step__heading {
+	margin-bottom: 16px;
+}
+
+.wc-block-components-checkout-step__title {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 13px;
+	font-weight: 500;
+	letter-spacing: 1.26px;
+	text-transform: uppercase;
+	color: #021f1d;
+}
+
+/* Form inputs */
+.wc-block-components-text-input {
+	width: 100%;
+}
+
+.wc-block-components-text-input input {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 13px;
+	color: #021f1d;
+	background: #fff;
+	border: 0.5px solid #777;
+	border-radius: 5px;
+	padding: 12px 16px;
+	min-height: 44px;
+	transition: border-color 0.15s ease;
+}
+
+.wc-block-components-text-input input:focus {
+	outline: none;
+	border-color: #021f1d;
+}
+
+.wc-block-components-text-input__label,
+.wc-blocks-components-select__label {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 11px;
+	font-weight: 400;
+	letter-spacing: 0.88px;
+	color: #868686;
+	text-transform: uppercase;
+	margin-bottom: 6px;
+	display: block;
+}
+
+/* Select dropdowns */
+.wc-blocks-components-select__select {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 13px;
+	color: #021f1d;
+	background: #fff;
+	border: 0.5px solid #777;
+	border-radius: 5px;
+	padding: 12px 16px;
+	min-height: 44px;
+	width: 100%;
+}
+
+/* Address card */
+.wc-block-components-address-card {
+	background: #f9f9f9;
+	border: 0.5px solid #e5e5e5;
+	border-radius: 8px;
+	padding: 16px;
+	margin-bottom: 16px;
+}
+
+/* Checkbox */
+.wc-block-components-checkbox {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	margin-bottom: 16px;
+}
+
+.wc-block-components-checkbox__input {
+	width: 20px;
+	height: 20px;
+	flex-shrink: 0;
+	margin-top: 2px;
+}
+
+.wc-block-components-checkbox__label {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 13px;
+	color: #021f1d;
+	line-height: 1.5;
+}
+
+/* Radio control for shipping/payment */
+.wc-block-components-radio-control {
+	margin-bottom: 16px;
+}
+
+.wc-block-components-radio-control__option {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 16px;
+	background: none;
+	border: none;
+	cursor: pointer;
+	transition: all 0.15s ease;
+}
+
+.wc-block-components-radio-control__option:hover {
+	opacity: 0.8;
+}
+
+.wc-block-components-radio-control__option-checked {
+	opacity: 1;
+}
+
+.wc-block-components-radio-control__label {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 13px;
+	font-weight: 400;
+	color: #021f1d;
+}
+
+.wc-block-components-radio-control__secondary-label {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 13px;
+	font-weight: 500;
+	color: #021f1d;
+	margin-left: auto;
+}
+
+.wc-block-components-radio-control__description-group,
+.wc-block-components-radio-control__label-group {
+	margin-left: 32px;
+}
+
+/* Shipping/Payment descriptions */
+.wc-block-components-radio-control-accordion-content {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 13px;
+	color: #868686;
+	line-height: 1.5;
+	margin-top: 8px;
+	padding-left: 32px;
+}
+
+/* Place Order button - MATCH PDP CTA */
+.wc-block-components-checkout-place-order-button,
+.wc-block-components-button.contained {
+	height: 46px;
+	background: #021f1d !important;
+	color: #fff !important;
+	font-family: "Maison Neue", sans-serif;
+	font-size: 10px;
+	font-weight: 500;
+	letter-spacing: 1.6px;
+	text-transform: uppercase;
+	border: none !important;
+	border-radius: 0 !important;
+	cursor: pointer;
+	transition: opacity 0.15s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+}
+
+.wc-block-components-checkout-place-order-button:hover,
+.wc-block-components-button.contained:hover {
+	opacity: 0.85 !important;
+	color: #fff !important;
+}
+
+/* Checkout actions */
+.wc-block-checkout__actions_row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	margin-top: 24px;
+}
+
+.wc-block-components-checkout-return-to-cart-button {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 13px;
+	color: #868686;
+	text-decoration: none;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.wc-block-components-checkout-return-to-cart-button:hover {
+	color: #021f1d;
+}
+
+/* Terms checkbox */
+.wc-block-checkout__terms {
+	margin-top: 24px;
+	padding-top: 24px;
+}
+
+/* ==========================================================================
+   ORDER SUMMARY SIDEBAR
+   ========================================================================== */
+
+/* Order summary title */
+.wc-block-components-checkout-order-summary__title {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-bottom: 16px;
+}
+
+.wc-block-components-checkout-order-summary__title-text {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 13px;
+	font-weight: 500;
+	letter-spacing: 1.26px;
+	text-transform: uppercase;
+	color: #021f1d;
+}
+
+.wc-block-components-checkout-order-summary__title-price {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 17px;
+	font-weight: 500;
+	color: #021f1d;
+}
+
+/* Order summary content */
+.wc-block-components-order-summary__content {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+/* Order item */
+.wc-block-components-order-summary-item {
+	display: flex;
+	gap: 16px;
+	padding: 16px 0;
+}
+
+.wc-block-components-order-summary-item__image {
+	width: 80px;
+	height: 80px;
+	flex-shrink: 0;
+	border-radius: 4px;
+	overflow: hidden;
+	background: #f5f5f5;
+}
+
+.wc-block-components-order-summary-item__image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.wc-block-components-order-summary-item__quantity {
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	background: #021f1d;
+	color: #fff;
+	font-family: "Maison Neue", sans-serif;
+	font-size: 10px;
+	font-weight: 500;
+	padding: 2px 6px;
+	border-radius: 10px;
+}
+
+.wc-block-components-order-summary-item__description {
+	flex: 1;
+	min-width: 0;
+}
+
+.wc-block-components-product-name {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 15px;
+	font-weight: 400;
+	color: #021f1d;
+	text-decoration: none;
+	display: block;
+	margin-bottom: 4px;
+}
+
+.wc-block-components-product-name:hover {
+	color: #021f1d;
+	text-decoration: underline;
+}
+
+.wc-block-cart-item__prices {
+	margin: 4px 0;
+}
+
+.wc-block-components-product-price del {
+	color: #868686;
+	text-decoration: line-through;
+	margin-right: 6px;
+}
+
+.wc-block-components-product-price ins {
+	color: #021f1d;
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.wc-block-components-product-metadata__description {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 13px;
+	color: #868686;
+	line-height: 1.5;
+	margin: 4px 0 0;
+}
+
+/* Individual prices in order summary */
+.wc-block-components-order-summary-item__individual-prices {
+	text-align: right;
+}
+
+.wc-block-components-order-summary-item__total-price {
+	text-align: right;
+	margin-top: auto;
+}
+
+/* Cart totals sections */
+.wp-block-woocommerce-checkout-order-summary-cart-items-block,
+.wp-block-woocommerce-checkout-order-summary-coupon-form-block,
+.wp-block-woocommerce-checkout-order-summary-subtotal-block,
+.wp-block-woocommerce-checkout-order-summary-discount-block,
+.wp-block-woocommerce-checkout-order-summary-fee-block,
+.wp-block-woocommerce-checkout-order-summary-shipping-block {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	padding: 16px 0;
+}
+
+/* Totals items */
+.wc-block-components-totals-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.wc-block-components-totals-item__label {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 13px;
+	font-weight: 400;
+	color: #868686;
+}
+
+.wc-block-components-totals-footer-item .wc-block-components-totals-item__label {
+	font-size: 15px;
+	font-weight: 500;
+	color: #021f1d;
+}
+
+.wc-block-components-totals-item__value {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 15px;
+	font-weight: 400;
+	color: #021f1d;
+}
+
+.wc-block-components-totals-footer-item .wc-block-components-totals-item__value {
+	font-size: 24px;
+	font-weight: 500;
+}
+
+/* Coupon form */
+.wc-block-components-totals-coupon {
+	margin-bottom: 8px;
+}
+
+.wc-block-components-panel__button {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 13px;
+	color: #021f1d;
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+/* Tablet (max-width: 1024px) */
+@media (max-width: 1024px) {
+
+	.wp-block-woocommerce-checkout {
+		padding: 0 20px 60px;
+	}
+
+	.wc-block-components-sidebar-layout.is-large {
+		flex-direction: column-reverse;
+		gap: 40px;
+	}
+
+	.wc-block-checkout__sidebar {
+		width: 100%;
+		position: static;
+		max-height: none;
+		order: -1;
+	}
+
+	.wc-block-checkout__main {
+		width: 100%;
+	}
+}
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+
+	.checkout-page-header {
+		padding-top: 100px;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+
+	.checkout-page-header__title {
+		font-size: 36px;
+		line-height: 40px;
+	}
+
+	.wp-block-woocommerce-checkout {
+		padding: 0 20px 60px;
+	}
+
+	.wc-block-components-order-summary-item {
+		flex-direction: row;
+	}
+
+	.wc-block-components-order-summary-item__image {
+		width: 60px;
+		height: 60px;
+	}
+
+	.wc-block-checkout__actions_row {
+		flex-direction: column-reverse;
+	}
+
+	.wc-block-components-checkout-place-order-button {
+		width: 100%;
+	}
+
+	.wc-block-components-checkout-return-to-cart-button {
+		width: 100%;
+		justify-content: center;
+	}
+}
