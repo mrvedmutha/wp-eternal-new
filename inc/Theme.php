@@ -171,6 +171,7 @@ class Theme {
 			new Related_Products\Component(),
 			new Product_Listing\Component(),
 			new Lost_Password_Redirect\Component(),
+			new Shop\Component(),
 		);
 
 		if ( defined( 'JETPACK__VERSION' ) ) {

@@ -1,0 +1,263 @@
+<?php
+/**
+ * Shop Product Grid Section with Filters and Product Display
+ *
+ * Implements the two-column layout from Figma:
+ * - Left: 206px filters sidebar (≈20%)
+ * - Right: Product grid with 2-1-1-2 pattern (≈80%)
+ *
+ * @package wp_rig
+ */
+
+use function WP_Rig\WP_Rig\wp_rig;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+global $wp_query;
+
+$products       = $wp_query->posts;
+$total_products = count( $products );
+$has_products   = $wp_query->have_posts();
+?>
+<div class="shop-grid" data-node-id="694-1726">
+	<div class="shop-grid__top-wrapper">
+			<div class="shop-grid__top" data-node-id="694-1727">
+		<div class="shop-grid__top-row">
+			<div class="shop-grid__count">
+				<?php
+				echo esc_html(
+					sprintf(
+						/* translators: %d: Number of products */
+						_n( '%d PRODUCT', '%d PRODUCTS', $total_products, 'wp-rig' ),
+						intval( $total_products )
+					)
+				);
+				?>
+			</div>
+		</div>
+		<button class="shop-grid__filter-toggle" data-node-id="694-1728">
+			<?php esc_html_e( 'Add Sort', 'wp-rig' ); ?>
+		</button>
+	</div>
+	<div class="shop-grid__divider"></div>
+</div><!-- .shop-grid__top-wrapper -->
+
+<div class="shop-grid__content-wrapper">
+<div class="shop-grid__columns" data-node-id="694-1731">
+		<!-- Filters Sidebar -->
+		<?php get_template_part( 'template-parts/shop/filters-sidebar' ); ?>
+
+		<!-- Product Grid Content -->
+		<div class="shop-grid__content" data-node-id="694-1798">
+			<?php if ( $has_products ) : ?>
+				<?php
+				// Fixed pattern: 2-up, single, single, 2-up.
+				$pattern          = array( 'half', 'half', 'full', 'full', 'half', 'half' );
+				$display_products = array_slice( $products, 0, 6 );
+
+				foreach ( $display_products as $index => $product_post ) :
+					$product = wc_get_product( $product_post->ID );
+
+					if ( ! $product ) {
+						continue;
+					}
+
+					$layout        = $pattern[ $index ] ?? 'half';
+					$is_full       = 'full' === $layout;
+					$css_class     = $is_full ? 'shop-grid__item--full' : 'shop-grid__item--half';
+					$is_2up_row    = ( $index < 2 || $index >= 4 );
+					$is_even_index = ( 0 === $index % 2 );
+
+					// Open row div at start of each 2-up pair.
+					if ( $is_2up_row && $is_even_index ) :
+						?>
+					<div class="shop-grid__row shop-grid__row--2up">
+						<?php
+					endif;
+
+					// Product data.
+					$pid        = $product->get_id();
+					$permalink  = get_permalink( $pid );
+					$name       = $product->get_name();
+					$price_html = $product->get_price_html();
+					$atc_url    = $product->add_to_cart_url();
+
+					// Product images.
+					$main_img_id = $product->get_image_id();
+					$main_src    = $main_img_id ? wp_get_attachment_image_src( $main_img_id, 'woocommerce_single' ) : null;
+					$main_url    = $main_src ? $main_src[0] : wc_placeholder_img_src( 'woocommerce_single' );
+					$main_alt    = $main_img_id ? (string) get_post_meta( $main_img_id, '_wp_attachment_image_alt', true ) : $name;
+
+					$gallery_ids = $product->get_gallery_image_ids();
+					$hover_url   = '';
+					if ( ! empty( $gallery_ids ) ) {
+						$hover_src = wp_get_attachment_image_src( $gallery_ids[0], 'woocommerce_single' );
+						$hover_url = $hover_src ? $hover_src[0] : '';
+					}
+
+					// Product metadata.
+					$meta        = wp_rig()->get_product_meta( $pid );
+					$french_text = $meta['french_text'] ?? '';
+					$tagline     = $meta['caption'] ?? '';
+					if ( ! $tagline ) {
+						$tagline = wp_strip_all_tags( $product->get_short_description() );
+					}
+
+					$buy_amount = $meta['buy_box_amount'] ?? '';
+					$buy_unit   = $meta['buy_box_unit'] ?? '';
+					$size_label = trim( $buy_amount . $buy_unit );
+
+					// Variant pills: size label + non-variation product attributes.
+					$pills = array();
+					if ( $size_label ) {
+						$pills[] = strtoupper( $size_label );
+					}
+					foreach ( $product->get_attributes() as $attribute ) {
+						if ( $attribute->is_taxonomy() && ! $attribute->get_variation() ) {
+							$terms = wc_get_product_terms( $pid, $attribute->get_name(), array( 'fields' => 'names' ) );
+							foreach ( $terms as $term_name ) {
+								$pills[] = strtoupper( $term_name );
+							}
+						}
+					}
+					$pills = array_unique( $pills );
+					?>
+
+					<div class="shop-grid__item <?php echo esc_attr( $css_class ); ?>">
+						<!-- Image zone -->
+						<div class="shop-product__img-zone">
+							<a class="shop-product__img-link"
+								href="<?php echo esc_url( $permalink ); ?>"
+								aria-label="<?php echo esc_attr( $name ); ?>"></a>
+
+							<img class="shop-product__img"
+								src="<?php echo esc_url( $main_url ); ?>"
+								alt="<?php echo esc_attr( $main_alt ? $main_alt : $name ); ?>"
+								<?php echo $is_full ? 'width="664" height="616"' : 'width="316" height="423"'; ?>
+								loading="lazy" />
+
+							<?php if ( $hover_url ) : ?>
+							<img class="shop-product__img shop-product__img--hover"
+								src="<?php echo esc_url( $hover_url ); ?>"
+								alt=""
+								<?php echo $is_full ? 'width="664" height="616"' : 'width="316" height="423"'; ?>
+								loading="lazy" aria-hidden="true" />
+							<?php endif; ?>
+
+							<!-- ADD TO BAG bar -->
+							<div class="shop-product__atb" data-shop-atb>
+								<a class="shop-product__atb-link"
+									href="<?php echo esc_url( $atc_url ); ?>"
+									data-product-id="<?php echo esc_attr( $pid ); ?>"
+									data-product-type="<?php echo esc_attr( $product->get_type() ); ?>">
+									ADD TO BAG
+								</a>
+							</div>
+						</div>
+
+						<!-- Product info -->
+						<div class="shop-product__info">
+							<?php if ( ! empty( $pills ) ) : ?>
+							<div class="shop-product__pills">
+								<?php foreach ( $pills as $pill ) : ?>
+								<span class="shop-product__pill"><?php echo esc_html( $pill ); ?></span>
+								<?php endforeach; ?>
+							</div>
+							<?php endif; ?>
+
+							<div class="shop-product__names">
+								<a class="shop-product__name-link" href="<?php echo esc_url( $permalink ); ?>">
+									<p class="shop-product__name"><?php echo esc_html( strtoupper( $name ) ); ?></p>
+									<?php if ( $french_text ) : ?>
+									<p class="shop-product__name-fr"><?php echo esc_html( strtoupper( $french_text ) ); ?></p>
+									<?php endif; ?>
+								</a>
+							</div>
+
+							<?php if ( $tagline ) : ?>
+							<p class="shop-product__tagline"><?php echo esc_html( $tagline ); ?></p>
+							<?php endif; ?>
+
+							<div class="shop-product__price">
+								<?php
+								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- WooCommerce output is already escaped.
+								echo $price_html;
+								?>
+							</div>
+						</div><!-- .shop-product__info -->
+					</div><!-- .shop-grid__item -->
+
+					<?php
+					// Close row div after the second item in each 2-up pair.
+					if ( $is_2up_row && ! $is_even_index ) :
+						?>
+				</div><!-- .shop-grid__row -->
+						<?php
+					endif;
+
+				endforeach;
+
+				if ( count( $products ) > 6 ) :
+					?>
+					<!-- Show "Load More" button for additional products -->
+					<div class="shop-grid__load-more">
+						<a href="#" class="shop-grid__load-more-link" data-page="2">
+							Load More Products
+						</a>
+					</div>
+				<?php endif; ?>
+			<?php else : ?>
+				<!-- No products found message -->
+				<div class="shop-grid__empty">
+					<p class="shop-grid__empty-message">
+						<?php esc_html_e( 'No products found.', 'wp-rig' ); ?>
+					</p>
+				</div>
+			<?php endif; ?>
+			</div><!-- .shop-grid__content -->
+		</div><!-- .shop-grid__columns -->
+	</div><!-- .shop-grid__content-wrapper -->
+</div><!-- .shop-grid -->
+
+<!-- Mobile Sort Overlay -->
+<div class="shop-filters-overlay" aria-hidden="true">
+	<div class="shop-filters-drawer">
+		<button class="shop-filters-drawer__close" aria-label="Close sort">&times;</button>
+		<div class="shop-filters-drawer__content">
+			<h2 class="shop-filters-drawer__title">Sort By</h2>
+			<div class="shop-filters__sort-dropdown">
+				<form method="get" class="shop-filters__sort-form">
+					<?php
+					// @phpcs:disable WordPress.Security.ValidatedSanitizedInput,WordPress.WP.GlobalVariablesOverride,WordPress.CSRF.NonceVerification.NoNonceVerification
+					$orderby   = isset( $_GET['orderby'] ) ? wc_clean( wp_unslash( $_GET['orderby'] ) ) : apply_filters( 'woocommerce_default_catalog_orderby', get_option( 'woocommerce_default_catalog_orderby' ) );
+					// @phpcs:enable
+					$sort_options = apply_filters(
+						'woocommerce_catalog_orderby',
+						array(
+							'menu_order' => __( 'Popularity', 'wp-rig' ),
+							'popularity' => __( 'Best selling', 'wp-rig' ),
+							'date'       => __( 'Newness', 'wp-rig' ),
+							'price'      => __( 'Price: low to high', 'wp-rig' ),
+							'price-desc' => __( 'Price: high to low', 'wp-rig' ),
+						)
+					);
+					?>
+					<?php foreach ( $sort_options as $value => $label ) : ?>
+						<a href="<?php echo esc_url( add_query_arg( 'orderby', $value ) ); ?>"
+							class="shop-filters__sort-option <?php echo $orderby === $value ? 'shop-filters__sort-option--active' : ''; ?>"
+							data-orderby="<?php echo esc_attr( $value ); ?>">
+							<?php echo esc_html( $label ); ?>
+						</a>
+					<?php endforeach; ?>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<?php
+// Always show FAQ section, even when there are no products.
+get_template_part( 'template-parts/shop/faq-section' );
+?>

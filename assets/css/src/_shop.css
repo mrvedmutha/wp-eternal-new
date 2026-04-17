@@ -1,0 +1,1033 @@
+/**
+ * Shop Page Styles
+ *
+ * Based on Product Listing Page design with complete separation.
+ *
+ * Design Tokens:
+ * - Primary: #021f1d
+ * - Secondary/Muted: #868686
+ * - Image Background: #f5f5f5
+ * - Fonts: Cormorant Garamond (display), Maison Neue (body/UI)
+ *
+ * @package wp_rig
+ */
+
+/* ==========================================================================
+   HIDE WOOCOMMERCE DEFAULT ELEMENTS ON SHOP PAGE
+   ========================================================================== */
+
+/* Hide WooCommerce default breadcrumb */
+body.woocommerce-shop .woocommerce-breadcrumb {
+	display: none !important;
+}
+
+/* Hide WooCommerce default product loop wrapper */
+body.woocommerce-shop ul.products,
+body.woocommerce-shop .products {
+	display: none !important;
+}
+
+/* Hide WooCommerce default pagination */
+body.woocommerce-shop .woocommerce-pagination,
+body.woocommerce-shop .pagination {
+	display: none !important;
+}
+
+/* Hide primary sidebar on shop page */
+body.woocommerce-shop .widget-area,
+body.woocommerce-shop .sidebar,
+body.woocommerce-shop #secondary {
+	display: none !important;
+}
+
+/* But keep our shop filters visible */
+body.woocommerce-shop .shop-filters {
+	display: block !important;
+}
+
+/* Hide WooCommerce default ordering dropdown */
+body.woocommerce-shop .woocommerce-ordering {
+	display: none !important;
+}
+
+/* Hide WooCommerce default result count */
+body.woocommerce-shop .woocommerce-result-count {
+	display: none !important;
+}
+
+/* Hide WooCommerce default page title but keep wrapper for our custom header */
+body.woocommerce-shop h1.woocommerce-products-header__title {
+	display: none !important;
+}
+
+/* Make our custom shop-header visible */
+body.woocommerce-shop .shop-header {
+	display: flex !important;
+}
+
+/* Make the wrapper visible for our custom header */
+body.woocommerce-shop .woocommerce-products-header {
+	display: block !important;
+}
+
+/* But hide the wrapper only if it doesn't contain our custom header */
+body.woocommerce-shop .woocommerce-products-header:not(:has(.shop-header)) {
+	display: none !important;
+}
+
+/* ==========================================================================
+   LAYOUT OVERRIDES FOR SHOP PAGE
+   ========================================================================== */
+
+/* Override grid layout - use flex for full-width Shop page */
+body.woocommerce-shop .site {
+	display: flex !important;
+	flex-direction: column;
+}
+
+/* Ensure site-main takes full width */
+body.woocommerce-shop .site-main {
+	width: 100%;
+	max-width: 100%;
+	flex: 1;
+}
+
+/* Ensure shop-grid gets full width */
+body.woocommerce-shop .shop-grid {
+	width: 100%;
+	max-width: 1440px;
+	margin-left: auto !important;
+	margin-right: auto !important;
+}
+
+body.woocommerce-shop .site > .content-area {
+	width: 100%;
+	max-width: 100%;
+	flex: 1;
+}
+
+/* Remove grid-gap and any grid spacing on shop page */
+body.woocommerce-shop .has-sidebar .site {
+	display: flex !important;
+	flex-direction: column !important;
+	grid-template-columns: none !important;
+	grid-gap: 0 !important;
+	gap: 0 !important;
+}
+
+/* Also override at higher specificity */
+body.woocommerce-shop.has-sidebar .site {
+	display: flex !important;
+	flex-direction: column !important;
+	grid-template-columns: unset !important;
+	grid-gap: unset !important;
+	gap: unset !important;
+}
+
+/*
+ * Hide WooCommerce default no products message. We handle it with custom
+ * template.
+ */
+body.woocommerce-shop .woocommerce-no-products-found {
+	display: none !important;
+}
+
+/* Ensure FAQ section is visible and uses flex layout */
+body.woocommerce-shop .shop-faq {
+	display: flex !important;
+}
+
+/* ==========================================================================
+   HEADER SECTION
+   ========================================================================== */
+
+.shop-header {
+	padding: 128px 0px 40px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	width: 100%;
+	max-width: 1440px;
+	margin: 0 auto;
+}
+
+.shop-header__inner {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	align-items: flex-start;
+	width: 100%;
+}
+
+/* Breadcrumb container - flex row */
+.shop-breadcrumb {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 500;
+	font-size: 9px;
+	letter-spacing: 1.26px;
+	color: #868686;
+	line-height: 12px;
+}
+
+.shop-breadcrumb .woocommerce-breadcrumb a,
+.shop-breadcrumb .woocommerce-breadcrumb span {
+	color: #868686;
+}
+
+.shop-breadcrumb .woocommerce-breadcrumb span:last-child {
+	color: #021f1d;
+}
+
+/* Title + Description group - flex column with 24px gap */
+.shop-title-group {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	align-items: flex-start;
+	justify-content: flex-end;
+	width: 100%;
+}
+
+.shop-title {
+	font-family: "Cormorant Garamond", serif;
+	font-weight: 300;
+	font-style: italic;
+	font-size: 52px;
+	line-height: 58px;
+	letter-spacing: -1px;
+	color: #021f1d;
+	margin: 0;
+}
+
+.shop-description {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: #021f1d;
+	max-width: 365px;
+}
+
+.shop-description p {
+	margin: 0;
+}
+
+/* ==========================================================================
+   FILTER SIDEBAR (SORT ONLY)
+   ========================================================================== */
+
+.shop-filters__inner {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.shop-filters__header {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.shop-filters__sort {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.shop-filters__sort-label {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 500;
+	font-size: 10px;
+	line-height: 14px;
+	letter-spacing: 1.26px;
+	color: #868686;
+	text-transform: uppercase;
+}
+
+.shop-filters__sort-value {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: #021f1d;
+}
+
+/* Sort Dropdown */
+.shop-filters__sort-dropdown {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.shop-filters__sort-form {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	border-top: 1px solid #000;
+	padding-top: 16px;
+}
+
+.shop-filters__sort-option {
+	display: flex;
+	align-items: center;
+	padding: 12px 0;
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: #868686;
+	text-decoration: none;
+	transition: color 0.2s ease;
+	cursor: pointer;
+	border-bottom: 1px solid transparent;
+}
+
+.shop-filters__sort-option:last-child {
+	border-bottom: none;
+}
+
+.shop-filters__sort-option:hover,
+.shop-filters__sort-option:focus {
+	color: #021f1d;
+	text-decoration: none;
+}
+
+.shop-filters__sort-option--active {
+	color: #021f1d;
+	font-weight: 500;
+}
+
+/* ==========================================================================
+   PRODUCT GRID SECTION
+   ========================================================================== */
+
+/* Main container - wrapper only */
+.shop-grid {
+	display: flex;
+	flex-direction: column;
+}
+
+/* Top wrapper with PLP grid styling */
+.shop-grid__top-wrapper {
+	padding: 40px 0px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	align-items: flex-start;
+	max-width: 1440px;
+	margin: 0 auto;
+	width: 100%;
+}
+
+/* Content wrapper - full width */
+.shop-grid__content-wrapper {
+	width: 100%;
+}
+
+.shop-grid__top {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.shop-grid__top-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+}
+
+.shop-grid__count {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: #021f1d;
+}
+
+.shop-grid__divider {
+	width: 100%;
+	height: 1px;
+	background: #000;
+}
+
+/* Two-column layout */
+.shop-grid__columns {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	width: 100%;
+}
+
+/* Left column: Filter Sidebar (206px fixed width) */
+.shop-filters {
+	width: 206px;
+	flex: 0 0 auto;
+	position: sticky;
+	top: 0;
+	max-height: 100vh;
+	overflow-y: auto;
+}
+
+/* Right column: Product Grid Content (664px width, ~76%) */
+.shop-grid__content {
+	width: 664px;
+	flex: 0 1 auto;
+	display: flex;
+	flex-direction: column;
+	gap: 40px;
+}
+
+/* Product Grid Layout within Content */
+.shop-grid__row {
+	display: flex;
+	gap: 32px;
+	width: 100%;
+}
+
+.shop-grid__row--2up {
+	display: flex;
+	gap: 32px;
+	width: 100%;
+}
+
+/* Half-width cards for 2-up rows */
+.shop-grid__item--half {
+	width: 316px; /* (664 - 32) / 2 = 316px */
+	flex-shrink: 0;
+}
+
+/* Full-width cards */
+.shop-grid__item--full {
+	width: 664px;
+	flex-shrink: 0;
+}
+
+.shop-grid__item {
+	position: relative;
+}
+
+/* Override WooCommerce global image styles */
+.woocommerce img,
+.woocommerce-page img {
+	height: stretch !important;
+}
+
+/* Product Card Styles */
+.shop-product__img-zone {
+	background: #f5f5f5;
+	position: relative;
+	overflow: hidden;
+}
+
+.shop-grid__item--half .shop-product__img-zone {
+	height: 423px;
+	width: 100%;
+}
+
+.shop-grid__item--full .shop-product__img-zone {
+	height: 616px;
+	width: 100%;
+}
+
+.shop-product__img-link,
+.shop-product__img-link:hover,
+.shop-product__img-link:focus,
+.shop-product__img-link:visited {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	text-decoration: none;
+	outline: none;
+}
+
+.shop-product__img {
+	height: 100%;
+	object-fit: contain;
+	position: relative;
+	z-index: 0;
+}
+
+/* Full-width cards: anchor image to center horizontally */
+.shop-grid__item--full .shop-product__img {
+	object-position: center center;
+}
+
+.shop-product__img--hover {
+	position: absolute;
+	inset: 0;
+	object-fit: cover;
+	opacity: 0;
+	z-index: 1;
+}
+
+.shop-grid__item--full .shop-product__img--hover {
+	object-position: center center;
+}
+
+.shop-product__atb-link,
+.shop-product__atb-link:hover,
+.shop-product__atb-link:focus,
+.shop-product__atb-link:visited {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 500;
+	font-size: 10px;
+	letter-spacing: 1.6px;
+	color: #fff;
+	text-decoration: none;
+	text-transform: uppercase;
+	white-space: nowrap;
+	pointer-events: none;
+	outline: none;
+}
+
+.shop-product__atb.is-adding {
+	background: #fff;
+}
+
+.shop-product__atb.is-adding .shop-product__atb-link {
+	color: #021f1d;
+	cursor: wait;
+}
+
+.shop-product__atb {
+	position: absolute;
+	left: 16px;
+	right: 16px;
+	bottom: 16px;
+	height: 46px;
+	background: #021f1d;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 2;
+	opacity: 0;
+	transition: background 0.25s ease;
+}
+
+.shop-product__info {
+	padding-top: 16px;
+	padding-right: 16px;
+}
+
+.shop-product__pills {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 16px;
+}
+
+.shop-product__pill {
+	border: 0.5px solid #000;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 32px;
+	padding: 0 10px;
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: #000;
+}
+
+.shop-product__names {
+	margin-bottom: 8px;
+}
+
+.shop-product__name-link,
+.shop-product__name-link:hover,
+.shop-product__name-link:focus,
+.shop-product__name-link:visited {
+	text-decoration: none;
+	display: block;
+}
+
+.shop-product__name {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 23px;
+	letter-spacing: 0.15px;
+	color: #021f1d;
+	margin: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.shop-product__name-fr {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: #021f1d;
+	margin: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.shop-product__tagline {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: #868686;
+	margin: 8px 0;
+}
+
+.shop-product__price {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 17px;
+	line-height: 30px;
+	color: #000;
+	padding: 16px 0;
+}
+
+/* Load More Button */
+.shop-grid__load-more {
+	display: flex;
+	justify-content: center;
+	padding-top: 20px;
+}
+
+.shop-grid__load-more-link {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 500;
+	font-size: 13px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: #021f1d;
+	text-decoration: none;
+	padding: 12px 24px;
+	border: 0.5px solid #021f1d;
+	transition: all 0.2s ease;
+}
+
+.shop-grid__load-more-link:hover {
+	background: #021f1d;
+	color: #fff;
+}
+
+/* Empty State */
+.shop-grid__empty {
+	padding: 40px 0;
+	text-align: center;
+}
+
+.shop-grid__empty-message {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 20px;
+	color: #868686;
+}
+
+/* ==========================================================================
+   FAQ SECTION
+   ========================================================================== */
+
+.shop-faq {
+	padding: 80px 40px;
+	display: flex;
+	flex-direction: column;
+	max-width: 1440px;
+	margin: 0 auto;
+	width: 100%;
+}
+
+.shop-faq__inner {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	width: 100%;
+	margin: 0 auto;
+	max-width: 1440px;
+	min-width: 0;
+}
+
+.shop-faq__header {
+	width: 206px;
+	flex: 0 0 auto;
+}
+
+.shop-faq__title {
+	font-family: "Cormorant Garamond", serif;
+	font-weight: 300;
+	font-style: italic;
+	font-size: 52px;
+	line-height: 58px;
+	letter-spacing: -1px;
+	color: #202727;
+	margin: 0;
+}
+
+.shop-faq__accordion {
+	width: 664px;
+	flex: 0 1 auto;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	overflow: hidden;
+}
+
+.shop-faq__item {
+	border-bottom: 0.5px solid #000;
+	padding-bottom: 8px;
+	margin-bottom: 12px;
+	overflow: hidden;
+}
+
+.shop-faq__item:last-child {
+	border-bottom: none;
+}
+
+.shop-faq__question {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 17px;
+	line-height: 30px;
+	color: #021f1d;
+	cursor: pointer;
+	user-select: none;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	gap: 8px;
+	width: 100%;
+}
+
+.shop-faq__question-text {
+	flex: 1 1 auto;
+	min-width: 0;
+	max-width: 460px;
+}
+
+.shop-faq__question::-webkit-details-marker {
+	display: none;
+}
+
+.shop-faq__toggle {
+	width: 24px;
+	height: 24px;
+	background: #e9e9e9;
+	border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+	position: relative;
+}
+
+/* Plus/minus icons */
+.shop-faq__toggle::before,
+.shop-faq__toggle::after {
+	content: "";
+	position: absolute;
+	background: #021f1d;
+	width: 10.564px;
+	height: 1.5px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	transition: transform 0.3s ease;
+}
+
+.shop-faq__toggle::after {
+	transform: translate(-50%, -50%) rotate(90deg);
+}
+
+/* Toggle state: minus when open */
+.shop-faq__item[open] .shop-faq__toggle::after {
+	transform: translate(-50%, -50%) rotate(0deg);
+}
+
+.shop-faq__answer {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: #868686;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+	max-width: 483px;
+	width: 100%;
+	min-width: 0;
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+/* Sort Toggle Button - Mobile/Tablet Only */
+.shop-grid__filter-toggle {
+	display: none;
+	font-family: "Maison Neue", sans-serif;
+	font-size: 13px;
+	font-weight: 500;
+	color: #021f1d;
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	gap: 8px;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.shop-grid__filter-toggle::before {
+	content: "+";
+	font-size: 18px;
+	font-weight: 400;
+}
+
+.shop-grid__filter-toggle[aria-expanded="true"]::before {
+	content: "−";
+}
+
+/* Mobile Filter Sidebar Overlay */
+.shop-filters-overlay {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 9999;
+	opacity: 0;
+	visibility: hidden;
+	transition:
+		opacity 0.4s ease,
+		visibility 0.4s ease;
+}
+
+.shop-filters-overlay.is-active {
+	display: flex;
+	opacity: 1;
+	visibility: visible;
+}
+
+.shop-filters-drawer {
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 100%;
+	max-width: 400px;
+	height: 100vh;
+	background: #fff;
+	z-index: 10000;
+	transform: translateX(100%);
+	transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+	display: flex;
+	flex-direction: column;
+	padding: 40px 20px;
+	overflow-y: auto;
+}
+
+.shop-filters-overlay.is-active .shop-filters-drawer {
+	transform: translateX(0);
+}
+
+.shop-filters-drawer__close {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	width: 44px;
+	height: 44px;
+	background: none;
+	border: none;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 32px;
+	color: #021f1d;
+	padding: 0;
+	line-height: 1;
+	z-index: 1;
+}
+
+.shop-filters-drawer__content {
+	padding-top: 60px;
+}
+
+.shop-filters-drawer__title {
+	font-family: "Maison Neue", sans-serif;
+	font-size: 24px;
+	font-weight: 500;
+	color: #021f1d;
+	margin: 0 0 32px 0;
+	line-height: 1.2;
+}
+
+/* Sort dropdown in drawer context */
+.shop-filters-drawer .shop-filters__sort-dropdown {
+	border-top: none;
+	padding-top: 0;
+}
+
+.shop-filters-drawer .shop-filters__sort-option {
+	font-size: 16px;
+	padding: 16px 0;
+}
+
+/* Hide hover effects on mobile/tablet */
+@media (max-width: 1024px) {
+	.shop-product__img--hover {
+		display: none;
+	}
+
+	.shop-product__atb {
+		display: none;
+	}
+
+	/* Show sort toggle button on mobile/tablet */
+	.shop-grid__filter-toggle {
+		display: inline-flex;
+		width: 100px;
+	}
+
+	/* Hide left sidebar filter block on mobile */
+	body.woocommerce-shop .shop-filters {
+		display: none !important;
+	}
+
+	/* Show sort overlay when active */
+	.shop-filters-overlay.is-active {
+		display: flex;
+	}
+
+	/* Product cards - 3 per row on tablets */
+	.shop-grid__content {
+		width: 100%;
+		max-width: 100%;
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 12px;
+		align-items: start;
+	}
+
+	.shop-grid__row {
+		display: contents;
+	}
+
+	.shop-grid__item--half,
+	.shop-grid__item--full {
+		grid-column: span 1;
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+		overflow: hidden;
+		width: auto !important;
+	}
+
+	/* Equal height cards */
+	.shop-grid__item--half .shop-product__img-zone,
+	.shop-grid__item--full .shop-product__img-zone {
+		height: auto;
+		aspect-ratio: 4 / 5;
+	}
+
+	.shop-grid__item--half .shop-product__info,
+	.shop-grid__item--full .shop-product__info {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+	}
+
+	.shop-filters {
+		display: none;
+	}
+
+	/* FAQ maintains side-by-side layout at 1024px */
+	.shop-faq__inner {
+		justify-content: space-between;
+		padding: 0 20px;
+	}
+
+	.shop-faq__header {
+		width: 206px;
+		flex-shrink: 0;
+	}
+
+	.shop-faq__accordion {
+		width: 664px;
+		flex-shrink: 0;
+	}
+
+	.shop-grid__top {
+		flex-direction: row;
+	}
+}
+
+/* Mobile (<700px) - 2 products per row */
+@media (max-width: 700px) {
+	.shop-grid__columns {
+		padding: 0 20px;
+	}
+
+	.shop-grid__content {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.shop-grid__item--half .shop-product__img-zone {
+		height: auto;
+		aspect-ratio: 4 / 5;
+	}
+}
+
+@media (max-width: 768px) {
+	.shop-header {
+		padding-top: 100px;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+
+	.shop-grid,
+	.shop-faq {
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+
+	.shop-grid__item--half,
+	.shop-grid__item--full {
+		width: 100%;
+	}
+
+	.shop-faq__title {
+		font-size: 36px;
+		line-height: 40px;
+	}
+
+	/* Mobile: FAQ goes to column layout with full width */
+	.shop-faq__inner {
+		flex-direction: column;
+		gap: 40px;
+	}
+
+	.shop-faq__header,
+	.shop-faq__accordion {
+		width: 100%;
+		max-width: 100%;
+	}
+}

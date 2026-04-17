@@ -327,7 +327,6 @@ body.tax-product_cat .plp-faq {
 }
 
 @keyframes skeleton-fade-in {
-
 	from {
 		opacity: 0;
 	}
@@ -439,7 +438,6 @@ body.tax-product_cat .plp-faq {
 }
 
 @keyframes skeleton-shimmer {
-
 	0% {
 		background-position: 200% 0;
 	}
@@ -629,7 +627,7 @@ body.tax-product_cat .plp-faq {
 	padding-right: 40px;
 	display: flex;
 	flex-direction: column;
-	gap: 40px;
+	gap: 8px;
 	align-items: flex-start;
 
 	/* Center content on larger screens, max width for optimal design */
@@ -649,7 +647,6 @@ body.tax-product_cat .plp-faq {
 	justify-content: space-between;
 	align-items: center;
 	width: 100%;
-	margin-bottom: 8px;
 }
 
 .plp-grid__count {
@@ -699,7 +696,6 @@ body.tax-product_cat .plp-faq {
 
 /* Product Grid Layout within Content */
 .plp-grid__content .plp-grid__item {
-
 	/* Will be set via inline styles for half/full width */
 }
 
@@ -1020,7 +1016,6 @@ body.tax-product_cat .plp-faq {
 
 /* Tablet range: Adjust FAQ widths for better fit */
 @media (min-width: 769px) and (max-width: 1024px) {
-
 	.plp-faq__header {
 		width: 100%;
 		max-width: 360px;
@@ -1194,7 +1189,6 @@ body.tax-product_cat .plp-faq {
 
 /* Hide hover effects on mobile/tablet - no GSAP animations below 1024px */
 @media (max-width: 1024px) {
-
 	.plp-product__img--hover {
 		display: none;
 	}
@@ -1255,7 +1249,6 @@ body.tax-product_cat .plp-faq {
 
 /* Mobile (<700px) - 2 products per row */
 @media (max-width: 700px) {
-
 	.plp-grid__columns {
 		padding: 0 20px;
 	}
@@ -1271,7 +1264,6 @@ body.tax-product_cat .plp-faq {
 }
 
 @media (max-width: 1024px) {
-
 	.plp-grid__inner {
 		flex-direction: column;
 	}
@@ -1303,7 +1295,6 @@ body.tax-product_cat .plp-faq {
 }
 
 @media (max-width: 768px) {
-
 	.plp-header {
 		padding-top: 100px;
 		padding-left: 20px;
