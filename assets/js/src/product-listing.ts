@@ -96,10 +96,105 @@ function initFAQSection(): void {
 /**
  * Initialize Mobile Filter Sidebar
  */
-function initMobileFilterSidebar(): void {
+function initMobileFilterSidebar(filterManager?: FilterManager | null): void {
 	const filterToggle = document.querySelector('.plp-grid__filter-toggle');
 	const filtersOverlay = document.querySelector('.plp-filters-overlay');
 	const closeBtn = document.querySelector('.plp-filters-drawer__close');
+
+	// Function to update drawer content from desktop filters
+	const updateDrawerContent = () => {
+		const overlay = document.querySelector('.plp-filters-overlay');
+		const drawer = overlay?.querySelector('.plp-filters-drawer');
+		const drawerContent = drawer?.querySelector('.plp-filters-drawer__content');
+		const originalFilters = document.querySelector('.plp-filters');
+
+		if (drawerContent && originalFilters) {
+			drawerContent.innerHTML = originalFilters.innerHTML;
+
+			// Re-attach event listeners for the new content
+			reattachDrawerEventListeners(drawer, overlay);
+		}
+	};
+
+	// Re-attach event listeners after content update
+	const reattachDrawerEventListeners = (drawer: Element, overlay: Element) => {
+		const newCloseBtn = drawer.querySelector('.plp-filters-drawer__close');
+		if (newCloseBtn) {
+			newCloseBtn.addEventListener('click', () => {
+				overlay.classList.remove('is-active');
+				document.body.style.overflow = '';
+			});
+		}
+
+		// Re-attach accordion toggle listeners
+		const drawerContent = drawer.querySelector('.plp-filters-drawer__content');
+		if (drawerContent) {
+			drawerContent.querySelectorAll('[data-group-toggle]').forEach(toggle => {
+				toggle.addEventListener('click', () => {
+					const options = toggle.nextElementSibling as HTMLElement;
+					if (options) {
+						options.classList.toggle('is-open');
+					}
+				});
+			});
+
+			// Re-attach checkbox change listeners
+			drawerContent.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach(checkbox => {
+				checkbox.addEventListener('change', () => {
+					// Sync with main filter container
+					const mainContainer = document.querySelector<HTMLElement>('#plp-filters-container');
+					if (mainContainer) {
+						const mainCheckbox = mainContainer.querySelector<HTMLInputElement>(`input[value="${checkbox.value}"]`);
+						if (mainCheckbox) {
+							mainCheckbox.checked = checkbox.checked;
+							// Trigger the change event on the main checkbox
+							mainCheckbox.dispatchEvent(new Event('change'));
+						}
+					}
+				});
+			});
+
+			// Re-attach sort dropdown listeners
+			const sortDropdown = drawerContent.querySelector('[data-sort-dropdown]');
+			const sortOptions = drawerContent.querySelector('[data-sort-options]');
+			if (sortDropdown && sortOptions) {
+				sortDropdown.addEventListener('click', () => {
+					sortOptions.classList.toggle('is-open');
+				});
+
+				sortOptions.querySelectorAll('.plp-filters__sort-option').forEach(option => {
+					option.addEventListener('click', (e) => {
+						const value = (e.currentTarget as HTMLElement).dataset.value;
+						if (value) {
+							// Sync with main filter container
+							const mainContainer = document.querySelector<HTMLElement>('#plp-filters-container');
+							if (mainContainer) {
+								const mainOption = mainContainer.querySelector(`.plp-filters__sort-option[data-value="${value}"]`);
+								if (mainOption) {
+									mainOption.dispatchEvent(new Event('click'));
+								}
+							}
+							sortOptions.classList.remove('is-open');
+						}
+					});
+				});
+			}
+
+			// Re-attach clear all button listener
+			const clearBtn = drawerContent.querySelector('[data-action="clear"]');
+			if (clearBtn) {
+				clearBtn.addEventListener('click', () => {
+					const mainContainer = document.querySelector<HTMLElement>('#plp-filters-container');
+					if (mainContainer) {
+						const mainClearBtn = mainContainer.querySelector('[data-action="clear"]');
+						if (mainClearBtn) {
+							mainClearBtn.dispatchEvent(new Event('click'));
+						}
+					}
+				});
+			}
+		}
+	};
 
 	// Create overlay and drawer if they don't exist
 	if (!filtersOverlay) {
@@ -118,11 +213,12 @@ function initMobileFilterSidebar(): void {
 		overlay.appendChild(drawer);
 		document.body.appendChild(overlay);
 
-		// Clone filters content into drawer
-		const originalFilters = document.querySelector('.plp-filters');
-		const drawerContent = drawer.querySelector('.plp-filters-drawer__content');
-		if (originalFilters && drawerContent) {
-			drawerContent.innerHTML = originalFilters.innerHTML;
+		// Clone filters content into drawer initially
+		updateDrawerContent();
+
+		// Register callback to update drawer when filters finish loading
+		if (filterManager) {
+			filterManager.onLoaded(updateDrawerContent);
 		}
 
 		// Setup event listeners
@@ -446,6 +542,7 @@ class FilterManager {
 	private urlFilters: Set<string> = new Set();
 	private selectedSort: string = '';
 	private isLoading = true;
+	private onFiltersLoaded: (() => void)[] = [];
 
 	constructor(container: HTMLElement, data: PLPData['filters'], categorySlug: string) {
 		this.container = container;
@@ -489,13 +586,29 @@ class FilterManager {
 			const data: FilterData = await response.json();
 			this.renderFilters(data.filter_groups);
 			this.isLoading = false;
+			this.notifyFiltersLoaded();
 		} catch (error) {
 			console.warn('Failed to load filters from API, using fallback:', error);
 			// Use category-specific fallback
 			const fallback = FALLBACK_FILTERS[this.categorySlug] || [];
 			this.renderFilters(fallback);
 			this.isLoading = false;
+			this.notifyFiltersLoaded();
 		}
+	}
+
+	/**
+	 * Register a callback to be called when filters finish loading
+	 */
+	public onLoaded(callback: () => void): void {
+		this.onFiltersLoaded.push(callback);
+	}
+
+	/**
+	 * Notify all registered callbacks that filters have loaded
+	 */
+	private notifyFiltersLoaded(): void {
+		this.onFiltersLoaded.forEach(callback => callback());
 	}
 
 	private renderSkeleton(): void {
@@ -741,15 +854,15 @@ class FilterManager {
 /**
  * Initialize Filter System
  */
-function initFilterSystem(): void {
+function initFilterSystem(): FilterManager | null {
 	const container = document.querySelector<HTMLElement>('#plp-filters-container');
-	if (!container) return;
+	if (!container) return null;
 
 	// Get PLP data from wp_localize_script
 	const plpData = (window as any).eternalPLP as PLPData;
 	if (!plpData || !plpData.filters) {
 		console.warn('eternalPLP data not found');
-		return;
+		return null;
 	}
 
 	// Get current category slug
@@ -757,7 +870,8 @@ function initFilterSystem(): void {
 		? window.location.pathname.split('/').filter(Boolean).pop() || ''
 		: '';
 
-	new FilterManager(container, plpData.filters, categorySlug);
+	const filterManager = new FilterManager(container, plpData.filters, categorySlug);
+	return filterManager;
 }
 
 // ============================================================================
@@ -768,9 +882,9 @@ function initFilterSystem(): void {
  * Initialize all PLP functionality
  */
 function initPLP(): void {
-	initFilterSystem();
+	const filterManager = initFilterSystem();
 	initFAQSection();
-	initMobileFilterSidebar();
+	initMobileFilterSidebar(filterManager);
 	initProductGrid();
 	initATBClickHandlers();
 }
