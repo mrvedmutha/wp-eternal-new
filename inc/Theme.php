@@ -8,6 +8,7 @@
 namespace WP_Rig\WP_Rig;
 
 use InvalidArgumentException;
+use WP_Rig\WP_Rig\Error_404;
 
 /**
  * Main class for the theme.
@@ -172,6 +173,7 @@ class Theme {
 			new Product_Listing\Component(),
 			new Lost_Password_Redirect\Component(),
 			new Shop\Component(),
+			new Error_404\Component(),
 		);
 
 		if ( defined( 'JETPACK__VERSION' ) ) {

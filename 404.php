@@ -14,7 +14,7 @@ get_header();
 wp_rig()->print_styles( 'wp-rig-content' );
 
 ?>
-	<main id="primary" class="site-main">
+	<main id="primary" class="site-main site-main--no-sidebar">
 		<?php get_template_part( 'template-parts/content/error', '404' ); ?>
 	</main><!-- #primary -->
 <?php

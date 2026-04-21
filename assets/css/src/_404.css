@@ -1,0 +1,133 @@
+/**
+ * 404 Error Page Styles
+ *
+ * Based on Eternal theme design system
+ * Centered layout with animated underline link
+ *
+ * Design Tokens:
+ * - Primary: #021f1d
+ * - Secondary/Muted: #868686
+ * - Fonts: Cormorant Garamond (display), Maison Neue (body/UI)
+ *
+ * @package wp_rig
+ */
+
+/* ==========================================================================
+   PAGE LAYOUT
+   ========================================================================== */
+
+body.error404 .site {
+	display: flex !important;
+	flex-direction: column;
+	margin: 0;
+}
+
+body.error404 .site-main {
+	width: 100%;
+	max-width: 100%;
+	flex: 1;
+	margin: 0;
+}
+
+/* ==========================================================================
+   404 CONTENT
+   ========================================================================== */
+
+.error-404 {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 60vh;
+	padding: 128px 80px;
+	max-width: 1440px;
+	margin: 0 auto;
+}
+
+/* Page header */
+.error-404 .page-header {
+	text-align: center;
+	margin-bottom: 48px;
+}
+
+.error-404 .page-title {
+	font-family: "Cormorant Garamond", serif;
+	font-weight: 300;
+	font-style: italic;
+	font-size: 52px;
+	line-height: 58px;
+	letter-spacing: -1px;
+	color: #021f1d;
+	margin: 0;
+}
+
+/* Content wrapper */
+.error-404__content {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+/* ==========================================================================
+   HOME LINK WITH ANIMATED UNDERLINE
+   ========================================================================== */
+
+.error-404__home-link {
+	display: inline-flex;
+	flex-direction: column;
+	gap: 6px;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.error-404__home-link__label {
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 500;
+	font-size: 13px;
+	letter-spacing: 1.6px;
+	color: #021f1d;
+	text-transform: uppercase;
+	line-height: normal;
+	transition: opacity 0.15s ease;
+}
+
+.error-404__home-link:hover .error-404__home-link__label {
+	opacity: 0.8;
+}
+
+.error-404__home-link__line {
+	display: block;
+	height: 1px;
+	width: 100%;
+	background-color: #021f1d;
+	transform: scaleX(1);
+	transform-origin: left center;
+
+	/* GSAP controls the hover animation — no CSS transition needed */
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+/* Tablet (max-width: 1024px) */
+@media (max-width: 1024px) {
+
+	.error-404 {
+		padding: 100px 20px 60px;
+	}
+}
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+
+	.error-404 .page-title {
+		font-size: 36px;
+		line-height: 40px;
+	}
+
+	.error-404__home-link__label {
+		font-size: 11px;
+		letter-spacing: 1.2px;
+	}
+}
