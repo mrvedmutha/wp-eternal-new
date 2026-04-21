@@ -9,7 +9,7 @@
 	margin: 0;
 }
 
-.styled-list-editor .wp-block-list-item {
+.styled-list-editor .styled-list__item {
 	display: flex;
 	gap: 14px;
 	align-items: flex-start;
@@ -22,7 +22,7 @@
 }
 
 /* Custom em dash bullet for editor */
-.styled-list-editor .wp-block-list-item::before {
+.styled-list-editor .styled-list__item::before {
 	content: '—';
 	font-family: 'Inter', sans-serif;
 	font-weight: 300;
@@ -30,4 +30,14 @@
 	line-height: 24px;
 	color: #868686;
 	flex-shrink: 0;
+}
+
+.styled-list-editor .styled-list__remove-btn {
+	margin-left: auto;
+	opacity: 0;
+	transition: opacity 0.15s;
+}
+
+.styled-list-editor .styled-list__item:hover .styled-list__remove-btn {
+	opacity: 1;
 }

@@ -6,21 +6,29 @@
   "icon": "list-view",
   "description": "Custom styled list with em dash bullets matching Figma design. Perfect for legal pages and informational content.",
   "textdomain": "wp-rig",
+  "render": "file:./render.php",
   "editorScript": "file:./build/index.js",
   "style": "file:./build/style.css",
   "editorStyle": "file:./build/editor.css",
   "attributes": {
     "items": {
       "type": "array",
-      "default": [],
+      "default": [
+        { "content": "First list item with custom bullet style" },
+        { "content": "Second list item with custom bullet style" },
+        { "content": "Third list item with custom bullet style" }
+      ],
       "items": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "content": { "type": "string" }
+        }
       }
     }
   },
   "supports": {
     "align": ["wide", "full"],
     "html": false,
-    "multiple": false
+    "multiple": true
   }
 }
