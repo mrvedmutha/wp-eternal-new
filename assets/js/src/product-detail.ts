@@ -15,6 +15,7 @@ declare const EternalPDP: {
 	nonce: string;
 	productId: number;
 	priceDecimals: number;
+	currencySymbol: string;
 	variations: Array<{
 		variation_id: number;
 		attributes: Record<string, string>;
@@ -792,9 +793,7 @@ function initVariantSwitching(): void {
 		if (!amountEl) return;
 
 		if (match) {
-			const symbol = EternalPDP.plans.length
-				? EternalPDP.plans[0].symbol
-				: "₹";
+			const symbol = EternalPDP.currencySymbol;
 			const formatted =
 				symbol + new Intl.NumberFormat("en-IN").format(match.price);
 			amountEl.textContent = formatted;

@@ -109,12 +109,13 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$product    = wc_get_product( $product_id );
 
 		$data = array(
-			'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
-			'nonce'         => wp_create_nonce( 'wc_get_variation' ),
-			'productId'     => $product_id,
-			'priceDecimals' => wc_get_price_decimals(),
-			'variations'    => array(),
-			'plans'         => array(),
+			'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
+			'nonce'          => wp_create_nonce( 'wc_get_variation' ),
+			'productId'      => $product_id,
+			'priceDecimals'  => wc_get_price_decimals(),
+			'currencySymbol' => get_woocommerce_currency_symbol(),
+			'variations'     => array(),
+			'plans'          => array(),
 		);
 
 		if ( $product && $product->is_type( 'variable' ) ) {
