@@ -274,7 +274,7 @@ body.woocommerce-checkout .site-main {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
+	flex: 1;
 }
 
 .wc-block-components-checkout-place-order-button:hover,
@@ -300,6 +300,8 @@ body.woocommerce-checkout .site-main {
 	display: flex;
 	align-items: center;
 	gap: 8px;
+	min-width: 25%;
+	flex-shrink: 0;
 }
 
 .wc-block-components-checkout-return-to-cart-button:hover {
