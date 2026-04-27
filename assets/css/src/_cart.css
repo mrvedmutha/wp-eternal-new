@@ -414,6 +414,30 @@ body.woocommerce-cart .site-main {
 }
 
 /* ==========================================================================
+   EMPTY CART STATE
+   ========================================================================== */
+
+.wp-block-woocommerce-empty-cart-block {
+	max-width: 1440px;
+	margin: 0 auto;
+	padding: 0 40px 40px;
+}
+
+.wp-block-woocommerce-empty-cart-block .wc-block-cart__empty-cart__title,
+.wp-block-woocommerce-empty-cart-block .wp-block-separator {
+	max-width: 600px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* Hide the redundant "New in store" h2 and the WC grid fallback —
+   but keep the empty cart title. */
+.wp-block-woocommerce-empty-cart-block > .wp-block-heading:not(.wc-block-cart__empty-cart__title),
+.wp-block-woocommerce-empty-cart-block .wc-block-grid {
+	display: none;
+}
+
+/* ==========================================================================
    RESPONSIVE BREAKPOINTS
    ========================================================================== */
 
@@ -454,6 +478,10 @@ body.woocommerce-cart .site-main {
 
 /* Mobile (max-width: 768px) */
 @media (max-width: 768px) {
+
+	.wp-block-woocommerce-empty-cart-block {
+		padding: 0 20px 60px;
+	}
 
 	.cart-page-header {
 		padding-top: 100px;
