@@ -465,7 +465,8 @@ body.woocommerce-checkout .site-main {
 	color: #868686;
 }
 
-.wc-block-components-totals-footer-item .wc-block-components-totals-item__label {
+.wc-block-components-totals-footer-item
+.wc-block-components-totals-item__label {
 	font-size: 15px;
 	font-weight: 500;
 	color: #021f1d;
@@ -478,7 +479,8 @@ body.woocommerce-checkout .site-main {
 	color: #021f1d;
 }
 
-.wc-block-components-totals-footer-item .wc-block-components-totals-item__value {
+.wc-block-components-totals-footer-item
+.wc-block-components-totals-item__value {
 	font-size: 24px;
 	font-weight: 500;
 }
@@ -558,6 +560,7 @@ body.woocommerce-checkout .site-main {
 
 	.wc-block-checkout__actions_row {
 		flex-direction: column-reverse;
+		gap: 24px !important;
 	}
 
 	.wc-block-components-checkout-place-order-button {
