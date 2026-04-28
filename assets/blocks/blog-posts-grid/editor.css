@@ -1,0 +1,4 @@
+/* Editor-only styles for Blog Posts Grid block */
+.wp-block[data-type="wp-rig/blog-posts-grid"] {
+	min-height: 300px;
+}

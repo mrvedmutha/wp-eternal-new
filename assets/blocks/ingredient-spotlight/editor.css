@@ -1,0 +1,5 @@
+/* Editor-only styles for Ingredient Spotlight block */
+.wp-block[data-type="wp-rig/ingredient-spotlight"] {
+	background-color: #000;
+	min-height: 200px;
+}

@@ -1,0 +1,41 @@
+{
+  "name": "wp-rig/ingredient-spotlight",
+  "apiVersion": 2,
+  "title": "Ingredient Spotlight",
+  "category": "widgets",
+  "icon": "format-image",
+  "description": "Black-background editorial footer block — editable section label, full-width image, italic article title, and body copy.",
+  "textdomain": "wp-rig",
+  "render": "file:./render.php",
+  "editorScript": "file:./build/index.js",
+  "supports": {
+    "html": false,
+    "align": ["full"]
+  },
+  "attributes": {
+    "sectionHeading": {
+      "type": "string",
+      "default": "Ingredient Spotlight"
+    },
+    "imageId": {
+      "type": "integer",
+      "default": 0
+    },
+    "imageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "imageAlt": {
+      "type": "string",
+      "default": ""
+    },
+    "articleTitle": {
+      "type": "string",
+      "default": "Niacinamide: The Multitasking Skin Vitamin"
+    },
+    "bodyText": {
+      "type": "string",
+      "default": "A closer look at how niacinamide supports hydration, reduces inflammation, and improves skin texture."
+    }
+  }
+}

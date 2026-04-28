@@ -176,6 +176,9 @@ class Theme {
 			new Shop\Component(),
 			new Cart\Component(),
 			new Error_404\Component(),
+			new Blog_Hero\Component(),
+			new Blog_Posts_Grid\Component(),
+			new Ingredient_Spotlight\Component(),
 		);
 
 		if ( defined( 'JETPACK__VERSION' ) ) {

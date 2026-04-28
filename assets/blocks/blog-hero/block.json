@@ -1,0 +1,45 @@
+{
+  "name": "wp-rig/blog-hero",
+  "apiVersion": 2,
+  "title": "Blog Hero",
+  "category": "widgets",
+  "icon": "cover-image",
+  "description": "Full-width editorial hero for the blog page — editable heading, subtitle, CTA text/link, and background image.",
+  "textdomain": "wp-rig",
+  "render": "file:./render.php",
+  "editorScript": "file:./build/index.js",
+  "supports": {
+    "html": false,
+    "align": ["full"]
+  },
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "The Eternal Journal"
+    },
+    "subtitle": {
+      "type": "string",
+      "default": "Insights on skincare science, ingredient intelligence, and rituals for lasting skin health."
+    },
+    "ctaText": {
+      "type": "string",
+      "default": "SHOP NOW"
+    },
+    "ctaUrl": {
+      "type": "string",
+      "default": "/shop"
+    },
+    "bgImageId": {
+      "type": "integer",
+      "default": 0
+    },
+    "bgImageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "bgImageAlt": {
+      "type": "string",
+      "default": ""
+    }
+  }
+}

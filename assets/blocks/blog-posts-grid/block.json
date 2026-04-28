@@ -1,0 +1,25 @@
+{
+  "name": "wp-rig/blog-posts-grid",
+  "apiVersion": 2,
+  "title": "Blog Posts Grid",
+  "category": "widgets",
+  "icon": "grid-view",
+  "description": "Category-tabbed blog posts grid with AJAX filtering and pagination — for the /blog page.",
+  "textdomain": "wp-rig",
+  "render": "file:./render.php",
+  "editorScript": "file:./build/index.js",
+  "supports": {
+    "html": false,
+    "align": ["full"]
+  },
+  "attributes": {
+    "sectionHeading": {
+      "type": "string",
+      "default": "Latest from the Eternal"
+    },
+    "postsPerPage": {
+      "type": "number",
+      "default": 12
+    }
+  }
+}

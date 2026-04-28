@@ -1,0 +1,150 @@
+/*--------------------------------------------------------------
+# Blog Hero
+#
+# Figma reference: node 694:2321
+# Full-viewport editorial hero — dark background image, bottom-left
+# content block with heading, subtitle, and text-link CTA.
+--------------------------------------------------------------*/
+
+.blog-hero {
+	position: relative;
+	width: 100%;
+	height: 640px;
+	background-color: #fbc3b6; /* fallback before image loads */
+	overflow: hidden;
+}
+
+/* ── Background image ────────────────────────────────────── */
+
+.blog-hero__bg {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	max-width: none;
+	object-fit: cover;
+	object-position: center center;
+	z-index: 0;
+}
+
+/* ── Content block — bottom-left ─────────────────────────── */
+
+.blog-hero__content {
+	position: absolute;
+	bottom: 0;
+	left: 41px;
+	display: flex;
+	flex-direction: column;
+	gap: 48px;
+	align-items: flex-start;
+	padding-bottom: 60px;
+	z-index: 1;
+}
+
+/* ── Text ─────────────────────────────────────────────────── */
+
+.blog-hero__text {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	color: var(--color-white);
+}
+
+.blog-hero__heading {
+	font-family: var(--font-display);
+	font-weight: 300; /* Light */
+	font-size: 52px;
+	line-height: 58px;
+	letter-spacing: -1px;
+	color: var(--color-white);
+	margin: 0;
+	max-width: 480px;
+}
+
+.blog-hero__subtitle {
+	font-family: var(--font-body);
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 20px;
+	letter-spacing: 0.13px;
+	color: var(--color-white);
+	margin: 0;
+	max-width: 302px;
+}
+
+/* ── CTA — label + underline rule ────────────────────────── */
+
+.blog-hero__cta {
+	display: inline-flex;
+	flex-direction: column;
+	gap: 6px;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.blog-hero__cta-label {
+	font-family: "DM Sans", sans-serif;
+	font-weight: 500;
+	font-size: 11px;
+	letter-spacing: 1.98px;
+	text-transform: uppercase;
+	color: var(--color-white);
+	line-height: normal;
+}
+
+.blog-hero__cta-line {
+	display: block;
+	height: 1px;
+	width: 100%;
+	background-color: var(--color-white);
+}
+
+/* ── Tablet (≤ 1024px) ────────────────────────────────────── */
+
+@media (--bp-tablet) {
+
+	.blog-hero {
+		height: auto;
+		min-height: 60vw;
+	}
+
+	.blog-hero__bg {
+		position: relative;
+		inset: auto;
+		width: 100%;
+		height: 60vw;
+	}
+
+	.blog-hero__content {
+		position: absolute;
+		bottom: 0;
+		left: 24px;
+		padding-bottom: 40px;
+		gap: 32px;
+	}
+
+	.blog-hero__heading {
+		font-size: clamp(36px, 8vw, 48px);
+		line-height: 1.15;
+		max-width: none;
+	}
+
+	.blog-hero__subtitle {
+		display: none;
+	}
+}
+
+/* ── Mobile (≤ 480px) ─────────────────────────────────────── */
+
+@media (--bp-mobile-sm) {
+
+	.blog-hero__content {
+		left: 16px;
+		padding-bottom: 32px;
+		gap: 24px;
+	}
+
+	.blog-hero__heading {
+		font-size: clamp(28px, 9vw, 36px);
+	}
+}

@@ -1,0 +1,4 @@
+/* Editor-only styles for Blog Hero block */
+.wp-block[data-type="wp-rig/blog-hero"] {
+	min-height: 200px;
+}
