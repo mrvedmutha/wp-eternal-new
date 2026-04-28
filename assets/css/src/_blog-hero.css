@@ -134,14 +134,32 @@
 	}
 }
 
-/* ── Mobile (≤ 480px) ─────────────────────────────────────── */
+/* ── Mobile-medium (≤ 768px) — 5:4 aspect ratio ─────────── */
+
+@media (--bp-mobile-md) {
+
+	.blog-hero {
+		min-height: 80vw;
+	}
+
+	.blog-hero__bg {
+		height: 80vw;
+	}
+
+	.blog-hero__content {
+		padding-bottom: 20px;
+		gap: 20px;
+	}
+}
+
+/* ── Mobile (≤ 450px) ─────────────────────────────────────── */
 
 @media (--bp-mobile-sm) {
 
 	.blog-hero__content {
 		left: 16px;
-		padding-bottom: 32px;
-		gap: 24px;
+		padding-bottom: 16px;
+		gap: 16px;
 	}
 
 	.blog-hero__heading {
