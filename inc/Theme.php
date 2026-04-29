@@ -10,6 +10,7 @@ namespace WP_Rig\WP_Rig;
 use InvalidArgumentException;
 use WP_Rig\WP_Rig\Cart;
 use WP_Rig\WP_Rig\Error_404;
+use WP_Rig\WP_Rig\Related_Posts;
 
 /**
  * Main class for the theme.
@@ -179,6 +180,7 @@ class Theme {
 			new Blog_Hero\Component(),
 			new Blog_Posts_Grid\Component(),
 			new Ingredient_Spotlight\Component(),
+			new Related_Posts\Component(),
 		);
 
 		if ( defined( 'JETPACK__VERSION' ) ) {

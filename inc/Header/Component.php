@@ -176,6 +176,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		return array(
 			'conditionals' => array(
 				'is_front_page',
+				'is_single',
 			),
 			'slugs'        => array(
 				// Add page slugs here, e.g. 'about', 'skincare'.

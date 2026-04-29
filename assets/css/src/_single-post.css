@@ -1,0 +1,309 @@
+/*--------------------------------------------------------------
+# Blog Single Post
+#
+# Figma reference: nodes 694:5002 (hero), 694:5007 (content)
+# Layout: full-width hero (behind transparent header) →
+#         two-column (TOC + body) → related posts → spotlight
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+# 1. Sidebar grid override
+#
+# content.min.css sets .has-sidebar .site { grid-template-columns: 3fr 1fr }
+# at min-width: 60em. Single posts have no sidebar — collapse to one column.
+--------------------------------------------------------------*/
+
+body.single .site,
+body.single.has-sidebar .site {
+	display: flex !important;
+	flex-direction: column !important;
+	grid-template-columns: unset !important;
+	gap: 0 !important;
+}
+
+/*--------------------------------------------------------------
+# 2. Post Hero
+--------------------------------------------------------------*/
+
+.post-hero {
+	position: relative;
+	height: 557px;
+	overflow: hidden;
+	background-color: #fbc3b6;
+	width: 100%;
+}
+
+.post-hero__bg {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+	display: block;
+}
+
+.post-hero__overlay {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(to bottom, transparent 30%, rgba(0, 0, 0, 0.38) 100%);
+}
+
+.post-hero__content {
+	position: absolute;
+	bottom: var(--space-10);
+	left: var(--space-10);
+	right: var(--space-10);
+}
+
+.post-hero__eyebrow {
+	font-family: var(--font-body);
+	font-weight: 500;
+	font-size: 9px;
+	line-height: 12px;
+	letter-spacing: 1.26px;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.5);
+	margin: 0 0 var(--space-2);
+	display: block;
+}
+
+.post-hero__eyebrow a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.post-hero__title {
+	font-family: var(--font-display);
+	font-weight: 400;
+	font-size: 40px;
+	line-height: 48px;
+	letter-spacing: -2px;
+	color: var(--color-white);
+	margin: 0;
+	max-width: 670px;
+}
+
+/*--------------------------------------------------------------
+# 3. Content layout: sticky TOC + body
+--------------------------------------------------------------*/
+
+.single-post__layout {
+	display: flex;
+	gap: 134px;
+	align-items: flex-start;
+	padding: var(--space-20) var(--space-10);
+	width: 100%;
+	max-width: 1440px;
+	margin: 0 auto;
+	box-sizing: border-box;
+}
+
+/*--------------------------------------------------------------
+# 4. TOC (left column)
+--------------------------------------------------------------*/
+
+.single-post__toc {
+	width: 210px;
+	flex-shrink: 0;
+	position: sticky;
+
+	/* When scrolling, the TOC sticks just below the fixed nav */
+	top: calc(var(--nav-height) + var(--space-8));
+
+	/* Align the first TOC item with the first line of the content */
+	align-self: flex-start;
+}
+
+.single-post__toc-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-3);
+}
+
+.single-post__toc-item a {
+	font-family: var(--font-body);
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 23px;
+	letter-spacing: 0.01em;
+	color: var(--color-muted);
+	text-decoration: none;
+	display: block;
+	transition: color 0.2s ease;
+}
+
+.single-post__toc-item--active a {
+	color: var(--color-primary);
+}
+
+.single-post__toc-item a:hover {
+	color: var(--color-primary);
+}
+
+.single-post__toc-item--sub {
+	padding-left: var(--space-4);
+}
+
+/*--------------------------------------------------------------
+# 5. Post body (right column)
+--------------------------------------------------------------*/
+
+.single-post__content {
+	flex: 1;
+	min-width: 0;
+	max-width: 670px;
+}
+
+/* Reset WP default content constraints inside our custom wrapper */
+.single-post__content .page-content > *,
+.single-post__content .entry-content > * {
+	max-width: none;
+	padding-left: 0;
+	padding-right: 0;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.single-post__content p {
+	font-family: var(--font-body);
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 23px;
+	letter-spacing: 0.15px;
+	color: var(--color-primary);
+	margin: 0 0 var(--space-4);
+}
+
+.single-post__content h2 {
+	font-family: var(--font-body);
+	font-weight: 400;
+	font-size: 24px;
+	line-height: normal;
+	color: var(--color-primary);
+	margin: var(--space-8) 0 var(--space-4);
+}
+
+.single-post__content h3 {
+	font-family: var(--font-body);
+	font-weight: 500;
+	font-size: 17px;
+	line-height: 24px;
+	color: var(--color-primary);
+	margin: var(--space-6) 0 var(--space-3);
+}
+
+.single-post__content img {
+	max-width: 100%;
+	height: auto;
+	display: block;
+	margin: var(--space-6) 0;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.single-post__content a {
+	color: var(--color-primary);
+	text-decoration: underline;
+}
+
+.single-post__content ul,
+.single-post__content ol {
+	padding-left: var(--space-6);
+	margin: 0 0 var(--space-4);
+}
+
+.single-post__content li {
+	font-size: 15px;
+	line-height: 23px;
+	letter-spacing: 0.15px;
+	color: var(--color-primary);
+	margin-bottom: var(--space-2);
+}
+
+/* Zero first-child top margin so TOC top aligns with first heading */
+.single-post__content > *:first-child {
+	margin-top: 0;
+}
+
+/* Strip WP block left/right margins inside our column */
+.single-post__content .wp-block-paragraph,
+.single-post__content .wp-block-heading,
+.single-post__content .wp-block-image,
+.single-post__content .wp-block-list {
+	max-width: none;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+/*--------------------------------------------------------------
+# 6. Tablet
+--------------------------------------------------------------*/
+
+@media (--bp-tablet) {
+
+	.post-hero {
+		height: 420px;
+	}
+
+	.post-hero__title {
+		font-size: 32px;
+		line-height: 40px;
+	}
+
+	.single-post__layout {
+		flex-direction: column;
+		gap: var(--space-10);
+		padding: var(--space-10) var(--space-6);
+	}
+
+	.single-post__toc {
+		width: 100%;
+		position: static;
+		border-bottom: 1px solid var(--color-border);
+		padding-bottom: var(--space-6);
+	}
+
+	.single-post__toc-list {
+		flex-direction: row;
+		flex-wrap: wrap;
+		gap: var(--space-2) var(--space-5);
+	}
+
+	.single-post__toc-item--sub {
+		padding-left: 0;
+	}
+}
+
+/*--------------------------------------------------------------
+# 7. Mobile
+--------------------------------------------------------------*/
+
+@media (--bp-mobile-md) {
+
+	.post-hero {
+		height: 360px;
+	}
+
+	.post-hero__content {
+		left: var(--space-5);
+		right: var(--space-5);
+		bottom: var(--space-8);
+	}
+
+	.post-hero__title {
+		font-size: 26px;
+		line-height: 34px;
+	}
+
+	.single-post__layout {
+		padding: var(--space-8) var(--space-5);
+		gap: var(--space-6);
+	}
+
+	.single-post__toc-list {
+		flex-direction: column;
+	}
+}

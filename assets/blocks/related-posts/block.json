@@ -1,0 +1,23 @@
+{
+  "name": "wp-rig/related-posts",
+  "apiVersion": 2,
+  "title": "Related Posts",
+  "category": "widgets",
+  "icon": "admin-links",
+  "description": "Auto-queries 3 random posts from the same categories. Displays a skeleton loading state while posts load via AJAX.",
+  "textdomain": "wp-rig",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "editorStyle": "file:./build/editor.css",
+  "render": "file:./render.php",
+  "supports": {
+    "html": false,
+    "align": ["full"]
+  },
+  "attributes": {
+    "postsCount": {
+      "type": "number",
+      "default": 3
+    }
+  }
+}
