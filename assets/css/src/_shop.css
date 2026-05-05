@@ -957,20 +957,21 @@ body.woocommerce-shop .shop-faq {
 		overflow: hidden;
 	}
 
-	/* FAQ maintains side-by-side layout at 1024px */
+	/* FAQ switches to column layout at 1024px */
+	.shop-faq {
+		padding-left: 40px;
+		padding-right: 40px;
+	}
+
 	.shop-faq__inner {
-		justify-content: space-between;
-		padding: 0 20px;
+		flex-direction: column;
+		gap: 40px;
 	}
 
-	.shop-faq__header {
-		width: 206px;
-		flex-shrink: 0;
-	}
-
+	.shop-faq__header,
 	.shop-faq__accordion {
-		width: 664px;
-		flex-shrink: 0;
+		width: 100%;
+		max-width: 100%;
 	}
 
 	.shop-grid__top {
@@ -1016,8 +1017,7 @@ body.woocommerce-shop .shop-faq {
 		padding-right: 20px;
 	}
 
-	.shop-faq,
-	.shop-faq__inner {
+	.shop-faq {
 		padding-left: 0;
 		padding-right: 0;
 	}
@@ -1030,17 +1030,5 @@ body.woocommerce-shop .shop-faq {
 	.shop-faq__title {
 		font-size: 36px;
 		line-height: 40px;
-	}
-
-	/* Mobile: FAQ goes to column layout with full width */
-	.shop-faq__inner {
-		flex-direction: column;
-		gap: 40px;
-	}
-
-	.shop-faq__header,
-	.shop-faq__accordion {
-		width: 100%;
-		max-width: 100%;
 	}
 }

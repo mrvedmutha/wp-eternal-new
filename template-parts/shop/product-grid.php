@@ -219,6 +219,9 @@ $has_products   = $wp_query->have_posts();
 			</div><!-- .shop-grid__content -->
 		</div><!-- .shop-grid__columns -->
 	</div><!-- .shop-grid__content-wrapper -->
+
+	<?php get_template_part( 'template-parts/shop/faq-section' ); ?>
+
 </div><!-- .shop-grid -->
 
 <!-- Mobile Sort Overlay -->
@@ -230,8 +233,8 @@ $has_products   = $wp_query->have_posts();
 			<div class="shop-filters__sort-dropdown">
 				<form method="get" class="shop-filters__sort-form">
 					<?php
-					// @phpcs:disable WordPress.Security.ValidatedSanitizedInput,WordPress.WP.GlobalVariablesOverride,WordPress.CSRF.NonceVerification.NoNonceVerification
-					$orderby   = isset( $_GET['orderby'] ) ? wc_clean( wp_unslash( $_GET['orderby'] ) ) : apply_filters( 'woocommerce_default_catalog_orderby', get_option( 'woocommerce_default_catalog_orderby' ) );
+					// @phpcs:disable WordPress.Security.ValidatedSanitizedInput,WordPress.WP.GlobalVariablesOverride,WordPress.CSRF.NonceVerification.NoNonceVerification,WordPress.Security.NonceVerification
+					$orderby = isset( $_GET['orderby'] ) ? wc_clean( wp_unslash( $_GET['orderby'] ) ) : apply_filters( 'woocommerce_default_catalog_orderby', get_option( 'woocommerce_default_catalog_orderby' ) );
 					// @phpcs:enable
 					$sort_options = apply_filters(
 						'woocommerce_catalog_orderby',
@@ -257,7 +260,3 @@ $has_products   = $wp_query->have_posts();
 	</div>
 </div>
 
-<?php
-// Always show FAQ section, even when there are no products.
-get_template_part( 'template-parts/shop/faq-section' );
-?>
