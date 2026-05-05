@@ -40,11 +40,6 @@ body.woocommerce-shop #secondary {
 	display: none !important;
 }
 
-/* But keep our shop filters visible */
-body.woocommerce-shop .shop-filters {
-	display: block !important;
-}
-
 /* Hide WooCommerce default ordering dropdown */
 body.woocommerce-shop .woocommerce-ordering {
 	display: none !important;
@@ -58,11 +53,6 @@ body.woocommerce-shop .woocommerce-result-count {
 /* Hide WooCommerce default page title but keep wrapper for our custom header */
 body.woocommerce-shop h1.woocommerce-products-header__title {
 	display: none !important;
-}
-
-/* Make our custom shop-header visible */
-body.woocommerce-shop .shop-header {
-	display: flex !important;
 }
 
 /* Make the wrapper visible for our custom header */
@@ -90,14 +80,6 @@ body.woocommerce-shop .site-main {
 	width: 100%;
 	max-width: 100%;
 	flex: 1;
-}
-
-/* Ensure shop-grid gets full width */
-body.woocommerce-shop .shop-grid {
-	width: 100%;
-	max-width: 1440px;
-	margin-left: auto !important;
-	margin-right: auto !important;
 }
 
 body.woocommerce-shop .site > .content-area {
@@ -132,23 +114,23 @@ body.woocommerce-shop .woocommerce-no-products-found {
 	display: none !important;
 }
 
-/* Ensure FAQ section is visible and uses flex layout */
-body.woocommerce-shop .shop-faq {
-	display: flex !important;
-}
-
 /* ==========================================================================
    HEADER SECTION
    ========================================================================== */
 
 .shop-header {
-	padding: 128px 0px 40px;
+	padding: 128px 40px 40px 40px;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 	width: 100%;
 	max-width: 1440px;
 	margin: 0 auto;
+}
+
+/* Make our custom shop-header visible */
+body.woocommerce-shop .shop-header {
+	display: flex !important;
 }
 
 .shop-header__inner {
@@ -316,9 +298,17 @@ body.woocommerce-shop .shop-faq {
 	flex-direction: column;
 }
 
+/* Ensure shop-grid gets full width */
+body.woocommerce-shop .shop-grid {
+	width: 100%;
+	max-width: 1440px;
+	margin-left: auto !important;
+	margin-right: auto !important;
+}
+
 /* Top wrapper with PLP grid styling */
 .shop-grid__top-wrapper {
-	padding: 40px 0px;
+	padding: 40px;
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
@@ -367,6 +357,7 @@ body.woocommerce-shop .shop-faq {
 	align-items: flex-start;
 	justify-content: space-between;
 	width: 100%;
+	padding: 0 40px;
 }
 
 /* Left column: Filter Sidebar (206px fixed width) */
@@ -377,6 +368,11 @@ body.woocommerce-shop .shop-faq {
 	top: 0;
 	max-height: 100vh;
 	overflow-y: auto;
+}
+
+/* But keep our shop filters visible */
+body.woocommerce-shop .shop-filters {
+	display: block !important;
 }
 
 /* Right column: Product Grid Content (664px width, ~76%) */
@@ -650,6 +646,11 @@ body.woocommerce-shop .shop-faq {
 	width: 100%;
 }
 
+/* Ensure FAQ section is visible and uses flex layout */
+body.woocommerce-shop .shop-faq {
+	display: flex !important;
+}
+
 .shop-faq__inner {
 	display: flex;
 	align-items: flex-start;
@@ -893,6 +894,7 @@ body.woocommerce-shop .shop-faq {
 
 /* Hide hover effects on mobile/tablet */
 @media (max-width: 1024px) {
+
 	.shop-product__img--hover {
 		display: none;
 	}
@@ -955,10 +957,6 @@ body.woocommerce-shop .shop-faq {
 		overflow: hidden;
 	}
 
-	.shop-filters {
-		display: none;
-	}
-
 	/* FAQ maintains side-by-side layout at 1024px */
 	.shop-faq__inner {
 		justify-content: space-between;
@@ -982,6 +980,7 @@ body.woocommerce-shop .shop-faq {
 
 /* Mobile (<700px) - 2 products per row */
 @media (max-width: 700px) {
+
 	.shop-grid__columns {
 		padding: 0 20px;
 	}
@@ -997,16 +996,30 @@ body.woocommerce-shop .shop-faq {
 }
 
 @media (max-width: 768px) {
+
+	.shop-grid__top-wrapper {
+		padding: 40px 0;
+	}
+
+	.shop-grid__columns {
+		padding: 0;
+	}
+
 	.shop-header {
 		padding-top: 100px;
 		padding-left: 20px;
 		padding-right: 20px;
 	}
 
-	.shop-grid,
-	.shop-faq {
+	.shop-grid {
 		padding-left: 20px;
 		padding-right: 20px;
+	}
+
+	.shop-faq,
+	.shop-faq__inner {
+		padding-left: 0;
+		padding-right: 0;
 	}
 
 	.shop-grid__item--half,
