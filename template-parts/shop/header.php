@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php endif; ?>
 
 		<div class="shop-title-group" data-node-id="694-1721">
-			<h1 class="shop-title" data-node-id="694-1722">SHOP</h1>
+			<h1 class="shop-title" data-node-id="694-1722"><?php echo is_search() ? esc_html__( 'Search Results', 'wp-rig' ) : 'SHOP'; ?></h1>
 
 			<div class="shop-description" data-node-id="694-1723">
 				<p>
