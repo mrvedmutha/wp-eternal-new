@@ -27,9 +27,18 @@ $main_image_id = $product->get_image_id();
 $gallery_ids   = $product->get_gallery_image_ids();
 
 // Build ordered thumbnail list: main image first, then ALL gallery images.
-$thumb_ids    = array_filter( array_merge( array( $main_image_id ), $gallery_ids ) );
+$thumb_ids = array_filter( array_merge( array( $main_image_id ), $gallery_ids ) );
+
+// Video assets from product meta.
+$videos_raw   = get_post_meta( $product->get_id(), 'product_video_assets', true );
+$video_assets = ( is_string( $videos_raw ) && $videos_raw ) ? json_decode( $videos_raw, true ) : array();
+if ( ! is_array( $video_assets ) ) {
+	$video_assets = array();
+}
+
+$total_items  = count( $thumb_ids ) + count( $video_assets );
 $total_images = count( $thumb_ids );
-$has_multiple = $total_images > 1;
+$has_multiple = $total_items > 1;
 
 $main_src    = wp_get_attachment_image_src( $main_image_id, 'large' );
 $main_url    = $main_src ? $main_src[0] : wc_placeholder_img_src( 'large' );
@@ -70,10 +79,39 @@ $main_alt    = $main_image_id ? get_post_meta( $main_image_id, '_wp_attachment_i
 				<?php endif; ?>
 			</button>
 		<?php endforeach; ?>
+
+		<?php foreach ( $video_assets as $v_index => $video ) : ?>
+			<?php
+			$video_url = isset( $video['url'] ) ? esc_url( $video['url'] ) : '';
+			$abs_index = count( $thumb_ids ) + $v_index;
+			if ( ! $video_url ) {
+				continue;
+			}
+			?>
+			<button
+				class="pdp-gallery__thumb pdp-gallery__thumb--video"
+				role="listitem"
+				<?php
+				/* translators: %d: video number */
+				$video_aria_label = esc_attr( sprintf( __( 'Product video %d', 'wp-rig' ), $v_index + 1 ) );
+				?>
+			aria-label="<?php echo $video_aria_label; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"
+				data-type="video"
+				data-video-url="<?php echo esc_url( $video_url ); ?>"
+				data-index="<?php echo esc_attr( $abs_index ); ?>"
+			>
+				<div class="pdp-gallery__thumb-play">
+					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+						<circle cx="10" cy="10" r="10" fill="rgba(0,0,0,0.45)"/>
+						<path d="M8 6.5L14.5 10L8 13.5V6.5Z" fill="white"/>
+					</svg>
+				</div>
+			</button>
+		<?php endforeach; ?>
 	</div><!-- .pdp-gallery__thumbs -->
 
 	<!-- Hero image with navigation -->
-	<div class="pdp-gallery__hero" data-lightbox-trigger data-current-index="0" data-total-images="<?php echo esc_attr( $total_images ); ?>">
+	<div class="pdp-gallery__hero" data-lightbox-trigger data-current-index="0" data-total-images="<?php echo esc_attr( $total_items ); ?>">
 		<!-- Gradient overlays -->
 		<?php if ( $has_multiple ) : ?>
 			<div class="pdp-gallery__gradient pdp-gallery__gradient--left"></div>
@@ -105,6 +143,17 @@ $main_alt    = $main_image_id ? get_post_meta( $main_image_id, '_wp_attachment_i
 			height="700"
 			data-hero-img
 		/>
+
+		<?php if ( ! empty( $video_assets ) ) : ?>
+			<video
+				class="pdp-gallery__hero-video"
+				data-hero-video
+				loop
+				muted
+				playsinline
+				hidden
+			></video>
+		<?php endif; ?>
 	</div><!-- .pdp-gallery__hero -->
 
 

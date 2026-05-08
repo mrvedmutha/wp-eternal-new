@@ -168,15 +168,20 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		$features_raw    = get_post_meta( $product_id, 'product_features', true );
 		$ingredients_raw = get_post_meta( $product_id, 'product_key_ingredients', true );
+		$videos_raw      = get_post_meta( $product_id, 'product_video_assets', true );
 
 		$features    = is_string( $features_raw ) ? json_decode( $features_raw, true ) : array();
 		$ingredients = is_string( $ingredients_raw ) ? json_decode( $ingredients_raw, true ) : array();
+		$videos      = is_string( $videos_raw ) && $videos_raw ? json_decode( $videos_raw, true ) : array();
 
 		if ( ! is_array( $features ) ) {
 			$features = array();
 		}
 		if ( ! is_array( $ingredients ) ) {
 			$ingredients = array();
+		}
+		if ( ! is_array( $videos ) ) {
+			$videos = array();
 		}
 
 		// Normalise encoding artifacts in feature body text.
@@ -217,6 +222,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			'notes_top'             => sanitize_text_field( $raw( 'product_notes_top' ) ),
 			'notes_middle'          => sanitize_text_field( $raw( 'product_notes_middle' ) ),
 			'notes_base'            => sanitize_text_field( $raw( 'product_notes_base' ) ),
+			'video_assets'          => $videos,
 		);
 	}
 

@@ -57,6 +57,7 @@ function initGallery(): void {
 		"[data-lightbox-trigger]",
 	);
 	const heroImg = gallery.querySelector<HTMLImageElement>("[data-hero-img]");
+	const heroVideo = gallery.querySelector<HTMLVideoElement>("[data-hero-video]");
 	const thumbs = gallery.querySelectorAll<HTMLButtonElement>(
 		".pdp-gallery__thumb",
 	);
@@ -65,25 +66,51 @@ function initGallery(): void {
 
 	if (!heroImg || !thumbs.length) return;
 
-	// Update gallery image to specific index
+	const totalItems = heroContainer
+		? parseInt(heroContainer.dataset.totalImages ?? "0", 10)
+		: thumbs.length;
+
+	const showVideo = (videoUrl: string): void => {
+		if (!heroVideo) return;
+		heroImg.style.opacity = "0";
+		heroImg.hidden = true;
+		heroVideo.src = videoUrl;
+		heroVideo.hidden = false;
+		heroVideo.style.opacity = "1";
+		heroVideo.play().catch(() => {});
+	};
+
+	const showImage = (url: string, srcset: string): void => {
+		if (heroVideo) {
+			heroVideo.pause();
+			heroVideo.hidden = true;
+		}
+		heroImg.hidden = false;
+		heroImg.style.opacity = "0";
+		setTimeout(() => {
+			heroImg.src = url;
+			if (srcset) heroImg.srcset = srcset;
+			heroImg.style.opacity = "1";
+		}, 100);
+	};
+
+	// Update gallery to specific index
 	const updateGalleryImage = (index: number): void => {
 		const thumb = thumbs[index];
 		if (!thumb) return;
 
-		const fullUrl = thumb.dataset.fullUrl ?? "";
-		const fullSrcset = thumb.dataset.fullSrcset ?? "";
+		const isVideo = thumb.dataset.type === "video";
 
-		if (!fullUrl) return;
-
-		heroImg.style.opacity = "0";
-
-		setTimeout(() => {
-			heroImg.src = fullUrl;
-			if (fullSrcset) {
-				heroImg.srcset = fullSrcset;
-			}
-			heroImg.style.opacity = "1";
-		}, 100);
+		if (isVideo) {
+			const videoUrl = thumb.dataset.videoUrl ?? "";
+			if (!videoUrl) return;
+			showVideo(videoUrl);
+		} else {
+			const fullUrl = thumb.dataset.fullUrl ?? "";
+			const fullSrcset = thumb.dataset.fullSrcset ?? "";
+			if (!fullUrl) return;
+			showImage(fullUrl, fullSrcset);
+		}
 
 		// Update active state.
 		thumbs.forEach((t) => t.classList.remove("is-active"));
@@ -110,7 +137,7 @@ function initGallery(): void {
 			const newIndex =
 				currentGalleryIndex > 0
 					? currentGalleryIndex - 1
-					: thumbs.length - 1;
+					: totalItems - 1;
 			updateGalleryImage(newIndex);
 		});
 	}
@@ -119,13 +146,12 @@ function initGallery(): void {
 		navNext.addEventListener("click", (e) => {
 			e.stopPropagation();
 			const newIndex =
-				currentGalleryIndex < thumbs.length - 1
+				currentGalleryIndex < totalItems - 1
 					? currentGalleryIndex + 1
 					: 0;
 			updateGalleryImage(newIndex);
 		});
 	}
-
 }
 
 // ─── 1b. Gallery zoom + pan on hover ────────────────────────────────────────
@@ -380,6 +406,12 @@ class PDPLightbox {
 						"[data-nav-prev], [data-nav-next]",
 					)
 				) {
+					return;
+				}
+				// Don't open lightbox when a video is playing
+				const heroVideo =
+					heroContainer.querySelector<HTMLVideoElement>("[data-hero-video]");
+				if (heroVideo && !heroVideo.hidden) {
 					return;
 				}
 				const index = parseInt(
