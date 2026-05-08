@@ -176,7 +176,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		return array(
 			'conditionals' => array(
 				'is_front_page',
-				'is_single',
 			),
 			'slugs'        => array(
 				// Add page slugs here, e.g. 'about', 'skincare'.
@@ -185,7 +184,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				// Add page template filenames here, e.g. 'template-hero.php'.
 			),
 			'post_types'   => array(
-				// Add post type slugs here, e.g. 'product'.
+				'post', // Blog single posts get transparent header (hero overlay).
 			),
 		);
 	}
