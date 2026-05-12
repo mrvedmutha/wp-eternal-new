@@ -84,16 +84,23 @@ $has_products   = $wp_query->have_posts();
 					$price_html = $product->get_price_html();
 					$atc_url    = $product->add_to_cart_url();
 
-					// Product images.
+					// Product images — use shop-card (1328px wide, no crop) for
+					// sharpness; fall back to full if not yet regenerated.
 					$main_img_id = $product->get_image_id();
-					$main_src    = $main_img_id ? wp_get_attachment_image_src( $main_img_id, 'woocommerce_single' ) : null;
-					$main_url    = $main_src ? $main_src[0] : wc_placeholder_img_src( 'woocommerce_single' );
-					$main_alt    = $main_img_id ? (string) get_post_meta( $main_img_id, '_wp_attachment_image_alt', true ) : $name;
+					$main_src    = $main_img_id ? wp_get_attachment_image_src( $main_img_id, 'shop-card' ) : null;
+					if ( ! $main_src && $main_img_id ) {
+						$main_src = wp_get_attachment_image_src( $main_img_id, 'full' );
+					}
+					$main_url = $main_src ? $main_src[0] : wc_placeholder_img_src( 'woocommerce_single' );
+					$main_alt = $main_img_id ? (string) get_post_meta( $main_img_id, '_wp_attachment_image_alt', true ) : $name;
 
 					$gallery_ids = $product->get_gallery_image_ids();
 					$hover_url   = '';
 					if ( ! empty( $gallery_ids ) ) {
-						$hover_src = wp_get_attachment_image_src( $gallery_ids[0], 'woocommerce_single' );
+						$hover_src = wp_get_attachment_image_src( $gallery_ids[0], 'shop-card' );
+						if ( ! $hover_src ) {
+							$hover_src = wp_get_attachment_image_src( $gallery_ids[0], 'full' );
+						}
 						$hover_url = $hover_src ? $hover_src[0] : '';
 					}
 

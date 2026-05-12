@@ -48,5 +48,9 @@ class Component implements Component_Interface {
 	 */
 	public function action_add_image_sizes() {
 		add_image_size( 'wp-rig-featured', 720, 480, true );
+
+		// Shop/PLP product cards — 2× retina width, no height crop so the
+		// full image is preserved. object-fit:cover in CSS handles cropping.
+		add_image_size( 'shop-card', 1328, 0, false );
 	}
 }
