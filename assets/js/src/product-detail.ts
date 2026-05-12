@@ -35,7 +35,6 @@ declare const EternalPDP: {
 
 document.addEventListener("DOMContentLoaded", () => {
 	initGallery();
-	initGalleryZoom();
 	initGalleryCarousel();
 	initLightbox();
 	initAccordion();
@@ -43,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	initVariantSwitching();
 	initSubscriptionToggle();
 	initIngredientsSlider();
+	captureVideoThumbnails();
 });
 
 // ─── 1. Gallery thumbnail switching ─────────────────────────────────────────
@@ -57,35 +57,18 @@ function initGallery(): void {
 		"[data-lightbox-trigger]",
 	);
 	const heroImg = gallery.querySelector<HTMLImageElement>("[data-hero-img]");
-	const heroVideo = gallery.querySelector<HTMLVideoElement>("[data-hero-video]");
 	const thumbs = gallery.querySelectorAll<HTMLButtonElement>(
 		".pdp-gallery__thumb",
 	);
 	const navPrev = gallery.querySelector<HTMLButtonElement>("[data-nav-prev]");
 	const navNext = gallery.querySelector<HTMLButtonElement>("[data-nav-next]");
+	const videoOverlay =
+		gallery.querySelector<HTMLElement>("[data-video-overlay]");
 
 	if (!heroImg || !thumbs.length) return;
 
-	const totalItems = heroContainer
-		? parseInt(heroContainer.dataset.totalImages ?? "0", 10)
-		: thumbs.length;
-
-	const showVideo = (videoUrl: string): void => {
-		if (!heroVideo) return;
-		heroImg.style.opacity = "0";
-		heroImg.hidden = true;
-		heroVideo.src = videoUrl;
-		heroVideo.hidden = false;
-		heroVideo.style.opacity = "1";
-		heroVideo.play().catch(() => {});
-	};
-
 	const showImage = (url: string, srcset: string): void => {
-		if (heroVideo) {
-			heroVideo.pause();
-			heroVideo.hidden = true;
-		}
-		heroImg.hidden = false;
+		if (videoOverlay) videoOverlay.hidden = true;
 		heroImg.style.opacity = "0";
 		setTimeout(() => {
 			heroImg.src = url;
@@ -94,101 +77,146 @@ function initGallery(): void {
 		}, 100);
 	};
 
-	// Update gallery to specific index
 	const updateGalleryImage = (index: number): void => {
 		const thumb = thumbs[index];
 		if (!thumb) return;
 
-		const isVideo = thumb.dataset.type === "video";
-
-		if (isVideo) {
-			const videoUrl = thumb.dataset.videoUrl ?? "";
-			if (!videoUrl) return;
-			showVideo(videoUrl);
-		} else {
-			const fullUrl = thumb.dataset.fullUrl ?? "";
-			const fullSrcset = thumb.dataset.fullSrcset ?? "";
-			if (!fullUrl) return;
-			showImage(fullUrl, fullSrcset);
-		}
-
-		// Update active state.
 		thumbs.forEach((t) => t.classList.remove("is-active"));
 		thumb.classList.add("is-active");
-
-		// Update current index
 		currentGalleryIndex = index;
 		if (heroContainer) {
 			heroContainer.dataset.currentIndex = String(index);
 		}
+
+		if (thumb.dataset.type === "video") {
+			// Show captured frame in hero if available
+			const frameImg =
+				thumb.querySelector<HTMLImageElement>("[data-video-frame]");
+			if (frameImg && frameImg.src && !frameImg.hidden) {
+				heroImg.style.opacity = "0";
+				setTimeout(() => {
+					heroImg.src = frameImg.src;
+					heroImg.srcset = "";
+					heroImg.style.opacity = "1";
+				}, 100);
+			}
+			if (videoOverlay) videoOverlay.hidden = false;
+			return;
+		}
+
+		const fullUrl = thumb.dataset.fullUrl ?? "";
+		const fullSrcset = thumb.dataset.fullSrcset ?? "";
+		if (!fullUrl) return;
+
+		showImage(fullUrl, fullSrcset);
 	};
 
-	// Thumbnail clicks
+	// Thumbnail clicks — images update hero, videos show preview + play overlay
 	thumbs.forEach((thumb, index) => {
 		thumb.addEventListener("click", () => {
 			updateGalleryImage(index);
 		});
 	});
 
-	// Navigation buttons
+	// Clicking the hero area while a video is active opens the lightbox
+	heroContainer?.addEventListener("click", (e) => {
+		const target = e.target as HTMLElement;
+		if (target.closest("[data-gallery-zoom]")) return;
+		if (target.closest("[data-nav-prev]")) return;
+		if (target.closest("[data-nav-next]")) return;
+		const currentThumb = thumbs[currentGalleryIndex];
+		if (currentThumb?.dataset.type === "video") {
+			document.dispatchEvent(
+				new CustomEvent("pdp:open-lightbox", {
+					detail: { index: currentGalleryIndex },
+				}),
+			);
+		}
+	});
+
+	// Nav buttons cycle through all items including video
+	const adjacentIndex = (from: number, dir: 1 | -1): number => {
+		const total = thumbs.length;
+		return ((from + dir) + total) % total;
+	};
+
 	if (navPrev) {
 		navPrev.addEventListener("click", (e) => {
 			e.stopPropagation();
-			const newIndex =
-				currentGalleryIndex > 0
-					? currentGalleryIndex - 1
-					: totalItems - 1;
-			updateGalleryImage(newIndex);
+			updateGalleryImage(adjacentIndex(currentGalleryIndex, -1));
 		});
 	}
 
 	if (navNext) {
 		navNext.addEventListener("click", (e) => {
 			e.stopPropagation();
-			const newIndex =
-				currentGalleryIndex < totalItems - 1
-					? currentGalleryIndex + 1
-					: 0;
-			updateGalleryImage(newIndex);
+			updateGalleryImage(adjacentIndex(currentGalleryIndex, 1));
 		});
 	}
 }
 
-// ─── 1b. Gallery zoom + pan on hover ────────────────────────────────────────
+// ─── 1b. Video thumbnail first-frame capture ────────────────────────────────
 
-function initGalleryZoom(): void {
-	const heroContainer = document.querySelector<HTMLElement>(
-		".pdp-gallery__hero",
+function captureVideoThumbnails(): void {
+	const videoThumbs = document.querySelectorAll<HTMLButtonElement>(
+		".pdp-gallery__thumb--video, .pdp-modal__thumb--video",
 	);
-	const heroImg = document.querySelector<HTMLImageElement>(
-		".pdp-gallery__hero-img",
-	);
-	if (!heroContainer || !heroImg) return;
 
-	const SCALE = 1.3;
+	videoThumbs.forEach((thumb) => {
+		const videoUrl = thumb.dataset.videoUrl;
+		if (!videoUrl) return;
 
-	const applyTransform = (tx: number, ty: number): void => {
-		// translate is applied pre-scale, so divide by SCALE to get correct visual offset
-		heroImg.style.transform = `scale(${SCALE}) translate(${tx / SCALE}px, ${ty / SCALE}px)`;
-	};
+		const frameImg = thumb.querySelector<HTMLImageElement>("[data-video-frame]");
+		if (!frameImg) return;
 
-	heroContainer.addEventListener("mouseenter", () => {
-		applyTransform(0, 0);
-	});
+		const video = document.createElement("video");
+		video.muted = true;
+		video.playsInline = true;
+		video.crossOrigin = "anonymous";
 
-	heroContainer.addEventListener("mousemove", (e: MouseEvent) => {
-		const rect = heroContainer.getBoundingClientRect();
-		// Normalize mouse to -1…1 from center
-		const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-		const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-		// Max translate keeps the scaled image edges flush with the container
-		const maxTx = (rect.width * (SCALE - 1)) / 2;
-		const maxTy = (rect.height * (SCALE - 1)) / 2;
-		applyTransform(nx * maxTx, ny * maxTy);
-	});
+		const cleanup = (): void => {
+			video.src = "";
+		};
 
-	heroContainer.addEventListener("mouseleave", () => {
-		heroImg.style.transform = "";
+		video.addEventListener("loadeddata", () => {
+			video.currentTime = 0.01;
+		});
+
+		video.addEventListener("seeked", () => {
+			try {
+				const canvas = document.createElement("canvas");
+				canvas.width = video.videoWidth || 160;
+				canvas.height = video.videoHeight || 200;
+				const ctx = canvas.getContext("2d");
+				ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
+				const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+				frameImg.src = dataUrl;
+				frameImg.hidden = false;
+
+				// Also fill the matching carousel video slide frame
+				if (thumb.classList.contains("pdp-gallery__thumb--video")) {
+					const slotIndex = thumb.dataset.index;
+					if (slotIndex !== undefined) {
+						const carouselFrame =
+							document.querySelector<HTMLImageElement>(
+								`.pdp-gallery__carousel-slide[data-carousel-index="${slotIndex}"] .pdp-gallery__carousel-frame`,
+							);
+						if (carouselFrame) {
+							carouselFrame.src = dataUrl;
+							carouselFrame.hidden = false;
+						}
+					}
+				}
+			} catch {
+				// Cross-origin taint or other error — keep dark thumb
+			}
+			cleanup();
+		});
+
+		video.addEventListener("error", cleanup);
+
+		video.src = videoUrl;
+		video.load();
 	});
 }
 
@@ -208,14 +236,12 @@ function initGalleryCarousel(): void {
 		heroContainer.querySelector<HTMLImageElement>("[data-hero-img]");
 	if (!heroImg) return;
 
-	const images = thumbs.map((t) => ({
-		url: t.dataset.fullUrl ?? "",
-		srcset: t.dataset.fullSrcset ?? "",
-		alt: t.getAttribute("aria-label") ?? "",
-	}));
-
 	let track: HTMLDivElement | null = null;
 	let isActive = false;
+	// Separate tracker so the MutationObserver can distinguish nav-button
+	// changes (made by initGallery before the attribute fires) from swipe
+	// changes (made after setPos via syncThumbs).
+	let carouselPos = 0;
 
 	const cardWidth = (): number => heroContainer.offsetWidth;
 
@@ -228,6 +254,7 @@ function initGalleryCarousel(): void {
 	};
 
 	const syncThumbs = (index: number): void => {
+		carouselPos = index; // update before writing the attribute
 		thumbs.forEach((t, i) => t.classList.toggle("is-active", i === index));
 		const trigger = document.querySelector<HTMLElement>(
 			"[data-lightbox-trigger]",
@@ -245,18 +272,41 @@ function initGalleryCarousel(): void {
 		track = document.createElement("div");
 		track.className = "pdp-gallery__carousel-track";
 
-		images.forEach((img) => {
-			const el = document.createElement("img");
-			el.className = "pdp-gallery__hero-img";
-			el.src = img.url;
-			if (img.srcset) el.srcset = img.srcset;
-			el.alt = img.alt;
-			el.draggable = false;
-			track!.appendChild(el);
+		thumbs.forEach((thumb) => {
+			if (thumb.dataset.type === "video") {
+				const slide = document.createElement("div");
+				slide.className =
+					"pdp-gallery__carousel-slide pdp-gallery__carousel-slide--video";
+				slide.dataset.carouselIndex = thumb.dataset.index ?? "";
+
+				const frameImg = document.createElement("img");
+				frameImg.className = "pdp-gallery__carousel-frame";
+				frameImg.alt = "";
+				frameImg.hidden = true;
+				frameImg.draggable = false;
+
+				const playIcon = document.createElement("div");
+				playIcon.className = "pdp-gallery__carousel-play";
+				playIcon.innerHTML =
+					'<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="32" cy="32" r="32" fill="rgba(0,0,0,0.5)"/><path d="M26 20L50 32L26 44V20Z" fill="white"/></svg>';
+
+				slide.appendChild(frameImg);
+				slide.appendChild(playIcon);
+				track!.appendChild(slide);
+			} else {
+				const el = document.createElement("img");
+				el.className = "pdp-gallery__hero-img";
+				el.src = thumb.dataset.fullUrl ?? "";
+				if (thumb.dataset.fullSrcset) el.srcset = thumb.dataset.fullSrcset;
+				el.alt = thumb.getAttribute("aria-label") ?? "";
+				el.draggable = false;
+				track!.appendChild(el);
+			}
 		});
 
 		heroContainer.insertBefore(track, heroContainer.firstChild);
 		setPos(currentGalleryIndex, false);
+		carouselPos = currentGalleryIndex;
 
 		let startX = 0;
 		let liveX = 0;
@@ -292,7 +342,7 @@ function initGalleryCarousel(): void {
 			const threshold = cardWidth() * 0.25;
 			let newIndex = currentGalleryIndex;
 
-			if (delta < -threshold && currentGalleryIndex < images.length - 1) {
+			if (delta < -threshold && currentGalleryIndex < thumbs.length - 1) {
 				newIndex = currentGalleryIndex + 1;
 			} else if (delta > threshold && currentGalleryIndex > 0) {
 				newIndex = currentGalleryIndex - 1;
@@ -309,18 +359,31 @@ function initGalleryCarousel(): void {
 		track?.remove();
 		track = null;
 		heroImg.style.display = "";
-		heroImg.src = images[currentGalleryIndex].url;
-		if (images[currentGalleryIndex].srcset)
-			heroImg.srcset = images[currentGalleryIndex].srcset;
+		const thumb = thumbs[currentGalleryIndex];
+		if (thumb?.dataset.type === "video") {
+			const frameImg =
+				thumb.querySelector<HTMLImageElement>("[data-video-frame]");
+			if (frameImg && frameImg.src && !frameImg.hidden) {
+				heroImg.src = frameImg.src;
+				heroImg.srcset = "";
+			}
+		} else if (thumb) {
+			heroImg.src = thumb.dataset.fullUrl ?? "";
+			if (thumb.dataset.fullSrcset) heroImg.srcset = thumb.dataset.fullSrcset;
+		}
 	};
 
-	// Keep carousel in sync when nav buttons / thumbs are used
+	// Keep carousel in sync when nav buttons update data-current-index.
+	// Uses carouselPos instead of currentGalleryIndex because initGallery
+	// writes currentGalleryIndex *before* firing the attribute change, which
+	// would make the old guard (idx !== currentGalleryIndex) always false.
 	const trigger = document.querySelector<HTMLElement>("[data-lightbox-trigger]");
 	if (trigger) {
 		new MutationObserver(() => {
 			if (!isActive || !track) return;
 			const idx = parseInt(trigger.dataset.currentIndex ?? "0", 10);
-			if (!isNaN(idx) && idx !== currentGalleryIndex) {
+			if (!isNaN(idx) && idx !== carouselPos) {
+				carouselPos = idx;
 				setPos(idx, true);
 				currentGalleryIndex = idx;
 			}
@@ -340,6 +403,7 @@ class PDPLightbox {
 	private modal: HTMLElement | null = null;
 	private backdrop: HTMLElement | null = null;
 	private modalImg: HTMLImageElement | null = null;
+	private modalVideo: HTMLVideoElement | null = null;
 	private modalThumbs: NodeListOf<HTMLButtonElement> | null = null;
 	private thumbsContainer: HTMLElement | null = null;
 	private closeBtn: HTMLButtonElement | null = null;
@@ -368,6 +432,8 @@ class PDPLightbox {
 		);
 		this.modalImg =
 			this.modal.querySelector<HTMLImageElement>("[data-modal-img]");
+		this.modalVideo =
+			this.modal.querySelector<HTMLVideoElement>("[data-modal-video]");
 		this.modalThumbs =
 			this.modal.querySelectorAll<HTMLButtonElement>(
 				"[data-modal-thumb]",
@@ -394,33 +460,39 @@ class PDPLightbox {
 	}
 
 	private bindEvents(): void {
-		// Hero image click - open lightbox
-		const heroContainer = document.querySelector<HTMLElement>(
-			"[data-lightbox-trigger]",
+		// Zoom button opens lightbox at current image index
+		const zoomBtn = document.querySelector<HTMLButtonElement>(
+			"[data-gallery-zoom]",
 		);
-		if (heroContainer) {
-			heroContainer.addEventListener("click", (e) => {
-				// Don't open if clicking navigation buttons
-				if (
-					(e.target as HTMLElement).closest(
-						"[data-nav-prev], [data-nav-next]",
-					)
-				) {
-					return;
-				}
-				// Don't open lightbox when a video is playing
-				const heroVideo =
-					heroContainer.querySelector<HTMLVideoElement>("[data-hero-video]");
-				if (heroVideo && !heroVideo.hidden) {
-					return;
-				}
+		if (zoomBtn) {
+			zoomBtn.addEventListener("click", (e) => {
+				e.stopPropagation();
+				const heroContainer = document.querySelector<HTMLElement>(
+					"[data-lightbox-trigger]",
+				);
 				const index = parseInt(
-					heroContainer.dataset.currentIndex ?? "0",
+					heroContainer?.dataset.currentIndex ?? "0",
 					10,
 				);
 				this.open(index);
 			});
 		}
+
+		// Video thumbnail click dispatches this event
+		document.addEventListener("pdp:open-lightbox", (e: Event) => {
+			const index = (e as CustomEvent<{ index: number }>).detail.index;
+			this.open(index);
+		});
+
+		// Modal thumbnail clicks
+		this.modalThumbs?.forEach((thumb) => {
+			thumb.addEventListener("click", (e) => {
+				e.stopPropagation();
+				const idx = parseInt(thumb.dataset.index ?? "0", 10);
+				this.updateItem(idx);
+				this.showGradientsTemporarily();
+			});
+		});
 
 		// Close button
 		this.closeBtn?.addEventListener("click", () => this.close());
@@ -504,8 +576,9 @@ class PDPLightbox {
 			10,
 		);
 
-		// Update image
-		this.updateImage(index);
+		// Update content (image or video) and sync thumb active state
+		this.updateItem(index);
+		this.syncModalThumbActive(index);
 
 		// Show modal
 		this.modal.hidden = false;
@@ -530,6 +603,16 @@ class PDPLightbox {
 		document.body.style.overflow = "";
 		document.body.classList.remove("pdp-modal-open");
 
+		// Stop modal video if playing
+		if (this.modalVideo) {
+			this.modalVideo.pause();
+			this.modalVideo.src = "";
+			this.modalVideo.hidden = true;
+		}
+		if (this.modalImg) {
+			this.modalImg.hidden = false;
+		}
+
 		// Restore focus
 		this.lastFocusedElement?.focus();
 
@@ -552,45 +635,68 @@ class PDPLightbox {
 					? this.currentIndex + 1
 					: 0;
 		}
-		this.updateImage(this.currentIndex);
+		this.updateItem(this.currentIndex);
 	}
 
-	private updateImage(index: number): void {
-		if (!this.modalImg) return;
-
-		// Get image data from modal thumbs (hidden) or gallery thumbs
+	private updateItem(index: number): void {
 		const galleryThumbs = document.querySelectorAll<HTMLButtonElement>(
 			".pdp-gallery__thumb",
 		);
 		const thumb = this.modalThumbs?.[index] || galleryThumbs[index];
 		if (!thumb) return;
 
-		const fullUrl = thumb.dataset.fullUrl ?? "";
-		const fullSrcset = thumb.dataset.fullSrcset ?? "";
+		const isVideo = thumb.dataset.type === "video";
 
-		if (!fullUrl) return;
+		if (isVideo) {
+			const videoUrl = thumb.dataset.videoUrl ?? "";
+			if (!videoUrl || !this.modalVideo) return;
 
-		// Fade out
-		this.modalImg.style.opacity = "0";
-
-		setTimeout(() => {
-			if (!this.modalImg) return;
-
-			this.modalImg.src = fullUrl;
-			if (fullSrcset) {
-				this.modalImg.srcset = fullSrcset;
+			// Hide image, show and play video
+			if (this.modalImg) {
+				this.modalImg.style.opacity = "0";
+				this.modalImg.hidden = true;
 			}
-			this.modalImg.alt = thumb.getAttribute("aria-label") ?? "";
+			this.modalVideo.src = videoUrl;
+			this.modalVideo.hidden = false;
+			this.modalVideo.play().catch(() => {});
+		} else {
+			const fullUrl = thumb.dataset.fullUrl ?? "";
+			const fullSrcset = thumb.dataset.fullSrcset ?? "";
+			if (!fullUrl || !this.modalImg) return;
 
-			// Fade in
-			this.modalImg.style.opacity = "1";
-		}, 150);
+			// Pause video, show image
+			if (this.modalVideo) {
+				this.modalVideo.pause();
+				this.modalVideo.src = "";
+				this.modalVideo.hidden = true;
+			}
+			this.modalImg.hidden = false;
+			this.modalImg.style.opacity = "0";
 
-		// Update current index
+			setTimeout(() => {
+				if (!this.modalImg) return;
+				this.modalImg.src = fullUrl;
+				if (fullSrcset) this.modalImg.srcset = fullSrcset;
+				this.modalImg.alt = thumb.getAttribute("aria-label") ?? "";
+				this.modalImg.style.opacity = "1";
+			}, 150);
+		}
+
 		this.currentIndex = index;
-
-		// Preload adjacent images
+		this.syncModalThumbActive(index);
 		this.preloadAdjacentImages(index);
+	}
+
+	private syncModalThumbActive(activeIndex: number): void {
+		this.modalThumbs?.forEach((thumb) => {
+			const idx = parseInt(thumb.dataset.index ?? "0", 10);
+			thumb.classList.toggle("is-active", idx === activeIndex);
+		});
+		// Scroll active thumb into view
+		const activeThumb = Array.from(this.modalThumbs ?? []).find(
+			(t) => parseInt(t.dataset.index ?? "0", 10) === activeIndex,
+		);
+		if (activeThumb) this.scrollThumbIntoView(activeThumb);
 	}
 
 	private scrollThumbIntoView(thumb: HTMLElement): void {
@@ -614,7 +720,6 @@ class PDPLightbox {
 	private preloadAdjacentImages(currentIndex: number): void {
 		const indicesToPreload = [currentIndex - 1, currentIndex + 1];
 
-		// Get image URLs from gallery thumbnails
 		const galleryThumbs = document.querySelectorAll<HTMLButtonElement>(
 			".pdp-gallery__thumb",
 		);
@@ -622,7 +727,8 @@ class PDPLightbox {
 		indicesToPreload.forEach((idx) => {
 			if (idx >= 0 && idx < this.totalImages) {
 				const thumb = this.modalThumbs?.[idx] || galleryThumbs[idx];
-				const url = thumb?.dataset.fullUrl;
+				if (!thumb || thumb.dataset.type === "video") return;
+				const url = thumb.dataset.fullUrl;
 				if (url) {
 					const img = new Image();
 					img.src = url;

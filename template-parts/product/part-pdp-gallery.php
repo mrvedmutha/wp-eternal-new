@@ -100,6 +100,14 @@ $main_alt    = $main_image_id ? get_post_meta( $main_image_id, '_wp_attachment_i
 				data-video-url="<?php echo esc_url( $video_url ); ?>"
 				data-index="<?php echo esc_attr( $abs_index ); ?>"
 			>
+				<img
+					class="pdp-gallery__thumb-frame"
+					src=""
+					alt=""
+					data-video-frame
+					aria-hidden="true"
+					hidden
+				/>
 				<div class="pdp-gallery__thumb-play">
 					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 						<circle cx="10" cy="10" r="10" fill="rgba(0,0,0,0.45)"/>
@@ -145,15 +153,24 @@ $main_alt    = $main_image_id ? get_post_meta( $main_image_id, '_wp_attachment_i
 		/>
 
 		<?php if ( ! empty( $video_assets ) ) : ?>
-			<video
-				class="pdp-gallery__hero-video"
-				data-hero-video
-				loop
-				muted
-				playsinline
-				hidden
-			></video>
+		<div class="pdp-gallery__video-overlay" data-video-overlay hidden>
+			<div class="pdp-gallery__video-play">
+				<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+					<circle cx="32" cy="32" r="32" fill="rgba(0,0,0,0.5)"/>
+					<path d="M26 20L50 32L26 44V20Z" fill="white"/>
+				</svg>
+			</div>
+		</div>
 		<?php endif; ?>
+
+		<button class="pdp-gallery__zoom" aria-label="<?php esc_attr_e( 'Expand image', 'wp-rig' ); ?>" data-gallery-zoom>
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+				<path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+				<path d="M21.0004 21.0004L16.6504 16.6504" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+				<path d="M11 8V14" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+				<path d="M8 11H14" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+		</button>
 	</div><!-- .pdp-gallery__hero -->
 
 
@@ -169,27 +186,23 @@ $main_alt    = $main_image_id ? get_post_meta( $main_image_id, '_wp_attachment_i
 			</svg>
 		</button>
 
+		<!-- Navigation controls — fixed to viewport edges, outside the image -->
+		<?php if ( $has_multiple ) : ?>
+			<button class="pdp-modal__nav pdp-modal__nav--prev" aria-label="Previous image" data-modal-nav-prev>
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+			</button>
+
+			<button class="pdp-modal__nav pdp-modal__nav--next" aria-label="Next image" data-modal-nav-next>
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+			</button>
+		<?php endif; ?>
+
 		<!-- Image content area -->
 		<div class="pdp-modal__content">
-			<?php if ( $has_multiple ) : ?>
-				<!-- Gradient overlays -->
-				<div class="pdp-modal__gradient pdp-modal__gradient--left"></div>
-				<div class="pdp-modal__gradient pdp-modal__gradient--right"></div>
-
-				<!-- Navigation controls -->
-				<button class="pdp-modal__nav pdp-modal__nav--prev" aria-label="Previous image" data-modal-nav-prev>
-					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-				</button>
-
-				<button class="pdp-modal__nav pdp-modal__nav--next" aria-label="Next image" data-modal-nav-next>
-					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-				</button>
-			<?php endif; ?>
-
 			<!-- Modal hero image -->
 			<img
 				class="pdp-modal__img"
@@ -198,6 +211,16 @@ $main_alt    = $main_image_id ? get_post_meta( $main_image_id, '_wp_attachment_i
 				alt=""
 				data-modal-img
 			/>
+
+			<!-- Modal video -->
+			<video
+				class="pdp-modal__video"
+				data-modal-video
+				controls
+				loop
+				playsinline
+				hidden
+			></video>
 		</div><!-- .pdp-modal__content -->
 
 		<!-- Thumbnail strip -->
@@ -225,11 +248,47 @@ $main_alt    = $main_image_id ? get_post_meta( $main_image_id, '_wp_attachment_i
 							<img
 								src="<?php echo esc_url( $thumb_url ); ?>"
 								alt=""
-								width="80"
-								height="100"
+								width="56"
+								height="56"
 								loading="lazy"
 							/>
 						<?php endif; ?>
+					</button>
+				<?php endforeach; ?>
+
+				<?php foreach ( $video_assets as $v_index => $video ) : ?>
+					<?php
+					$modal_video_url = isset( $video['url'] ) ? esc_url( $video['url'] ) : '';
+					$modal_abs_index = count( $thumb_ids ) + $v_index;
+					if ( ! $modal_video_url ) {
+						continue;
+					}
+					/* translators: %d: video number */
+					$modal_v_label = esc_attr( sprintf( __( 'Product video %d', 'wp-rig' ), $v_index + 1 ) );
+					?>
+					<button
+						class="pdp-modal__thumb pdp-modal__thumb--video"
+						role="listitem"
+						aria-label="<?php echo $modal_v_label; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"
+						data-modal-thumb
+						data-type="video"
+						data-video-url="<?php echo esc_url( $modal_video_url ); ?>"
+						data-index="<?php echo esc_attr( $modal_abs_index ); ?>"
+					>
+						<img
+							class="pdp-modal__thumb-frame"
+							src=""
+							alt=""
+							data-video-frame
+							aria-hidden="true"
+							hidden
+						/>
+						<div class="pdp-modal__thumb-play">
+							<svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+								<circle cx="10" cy="10" r="10" fill="rgba(0,0,0,0.45)"/>
+								<path d="M8 6.5L14.5 10L8 13.5V6.5Z" fill="white"/>
+							</svg>
+						</div>
 					</button>
 				<?php endforeach; ?>
 			</div><!-- .pdp-modal__thumbs -->
