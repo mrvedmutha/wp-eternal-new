@@ -327,6 +327,7 @@ body.tax-product_cat .plp-faq {
 }
 
 @keyframes skeleton-fade-in {
+
 	from {
 		opacity: 0;
 	}
@@ -438,6 +439,7 @@ body.tax-product_cat .plp-faq {
 }
 
 @keyframes skeleton-shimmer {
+
 	0% {
 		background-position: 200% 0;
 	}
@@ -696,6 +698,7 @@ body.tax-product_cat .plp-faq {
 
 /* Product Grid Layout within Content */
 .plp-grid__content .plp-grid__item {
+
 	/* Will be set via inline styles for half/full width */
 }
 
@@ -733,10 +736,9 @@ body.tax-product_cat .plp-faq {
 }
 
 /* Override WooCommerce global image styles for PLP */
-.woocommerce img,
-.woocommerce-page img {
-	height: stretch !important;
-}
+
+/* Do NOT set a global height override here —
+ * height: stretch is non-standard and breaks Safari */
 
 /* Product Card Styles */
 
@@ -768,6 +770,7 @@ body.tax-product_cat .plp-faq {
 }
 
 .plp-product__img {
+	width: 100%;
 	height: 100%;
 	object-fit: contain;
 	position: relative;
@@ -1016,6 +1019,7 @@ body.tax-product_cat .plp-faq {
 
 /* Tablet range: Adjust FAQ widths for better fit */
 @media (min-width: 769px) and (max-width: 1024px) {
+
 	.plp-faq__header {
 		width: 100%;
 		max-width: 360px;
@@ -1189,6 +1193,7 @@ body.tax-product_cat .plp-faq {
 
 /* Hide hover effects on mobile/tablet - no GSAP animations below 1024px */
 @media (max-width: 1024px) {
+
 	.plp-product__img--hover {
 		display: none;
 	}
@@ -1249,6 +1254,7 @@ body.tax-product_cat .plp-faq {
 
 /* Mobile (<700px) - 2 products per row */
 @media (max-width: 700px) {
+
 	.plp-grid__columns {
 		padding: 0 20px;
 	}
@@ -1264,6 +1270,7 @@ body.tax-product_cat .plp-faq {
 }
 
 @media (max-width: 1024px) {
+
 	.plp-grid__inner {
 		flex-direction: column;
 	}
@@ -1295,6 +1302,7 @@ body.tax-product_cat .plp-faq {
 }
 
 @media (max-width: 768px) {
+
 	.plp-header {
 		padding-top: 100px;
 		padding-left: 20px;
