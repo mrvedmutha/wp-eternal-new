@@ -993,14 +993,16 @@ body.pdp-modal-open .pdp-qty__select {
 .pdp-feature {
 	display: flex;
 	align-items: flex-start;
+	justify-content: space-between;
 	width: 100%;
 	padding: 0 0 40px 40px;
 }
 
 .pdp-feature__text {
-	flex: 0 0 40%;
+	flex: 0 0 440px;
+	width: 440px;
 	padding-top: 40px;
-	padding-right: 40px;
+	padding-right: 0;
 	position: sticky;
 	top: var(--nav-height);
 	align-self: flex-start;
@@ -1074,8 +1076,8 @@ body.pdp-modal-open .pdp-qty__select {
 }
 
 .pdp-feature__image {
-	flex: 0 0 60%;
-	aspect-ratio: 720 / 880;
+	flex: 0 0 720px;
+	aspect-ratio: 720 / 800;
 	overflow: hidden;
 }
 
@@ -1709,4 +1711,15 @@ body.pdp-modal-open select {
 	.pdp-gallery__gradient {
 		width: 80px;
 	}
+}
+
+/* ─── WooCommerce height:auto override ──────────────────────────────────────
+ * body.woocommerce-page img { height:auto } (0-1-1) is applied globally by
+ * WooCommerce. These higher-specificity rules (0-2-1) restore height:100% for
+ * PDP images that rely on an explicit container height or aspect-ratio.
+ * Must sit after all component rules to satisfy no-descending-specificity. */
+body.single-product .pdp-gallery img,
+body.single-product .pdp-feature__img,
+body.single-product .pdp-ingredients__img img {
+	height: 100%;
 }

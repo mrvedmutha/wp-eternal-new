@@ -227,7 +227,7 @@ function initCardHover(imgZone: HTMLElement): void {
 		if (hoverImg) {
 			gsap.to(hoverImg, {
 				opacity: 1,
-				scale: 1.15,
+				scale: 1,
 				duration: 0.5,
 				ease: 'power2.out',
 			});

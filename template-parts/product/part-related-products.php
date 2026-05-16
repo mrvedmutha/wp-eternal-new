@@ -129,12 +129,16 @@ $total_pages   = count( $product_pages );
 						$main_src    = $main_img_id ? wp_get_attachment_image_src( $main_img_id, 'woocommerce_single' ) : null;
 						$main_url    = $main_src ? $main_src[0] : wc_placeholder_img_src( 'woocommerce_single' );
 						$main_alt    = $main_img_id ? (string) get_post_meta( $main_img_id, '_wp_attachment_image_alt', true ) : $name;
+						$main_srcset = $main_img_id ? wp_get_attachment_image_srcset( $main_img_id, 'woocommerce_single' ) : '';
+						$main_sizes  = '(min-width: 1280px) 400px, (min-width: 768px) 33vw, 50vw';
 
-						$gallery_ids = $rel_product->get_gallery_image_ids();
-						$hover_url   = '';
+						$gallery_ids  = $rel_product->get_gallery_image_ids();
+						$hover_url    = '';
+						$hover_srcset = '';
 						if ( ! empty( $gallery_ids ) ) {
-							$hover_src = wp_get_attachment_image_src( $gallery_ids[0], 'woocommerce_single' );
-							$hover_url = $hover_src ? $hover_src[0] : '';
+							$hover_src    = wp_get_attachment_image_src( $gallery_ids[0], 'woocommerce_single' );
+							$hover_url    = $hover_src ? $hover_src[0] : '';
+							$hover_srcset = wp_get_attachment_image_srcset( $gallery_ids[0], 'woocommerce_single' );
 						}
 
 						// Product metadata.
@@ -178,12 +182,20 @@ $total_pages   = count( $product_pages );
 
 							<img class="related-products__img related-products__img--main"
 								src="<?php echo esc_url( $main_url ); ?>"
+								<?php if ( $main_srcset ) : ?>
+								srcset="<?php echo esc_attr( $main_srcset ); ?>"
+								sizes="<?php echo esc_attr( $main_sizes ); ?>"
+								<?php endif; ?>
 								alt="<?php echo esc_attr( $main_alt ? $main_alt : $name ); ?>"
 								width="316" height="423" loading="lazy" />
 
 							<?php if ( $hover_url ) : ?>
 							<img class="related-products__img related-products__img--hover"
 								src="<?php echo esc_url( $hover_url ); ?>"
+								<?php if ( $hover_srcset ) : ?>
+								srcset="<?php echo esc_attr( $hover_srcset ); ?>"
+								sizes="<?php echo esc_attr( $main_sizes ); ?>"
+								<?php endif; ?>
 								alt="" width="316" height="423"
 								loading="lazy" aria-hidden="true" />
 							<?php endif; ?>
