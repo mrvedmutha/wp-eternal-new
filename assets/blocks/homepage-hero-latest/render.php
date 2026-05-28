@@ -61,10 +61,11 @@ if ( empty( $clean ) ) {
 
 ?>
 <section class="hhl" data-interval="<?php echo esc_attr( $slide_interval ); ?>">
-	<div class="hhl__slides">
+
+	<?php /* Background images — absolutely stacked, GSAP crossfades between them */ ?>
+	<div class="hhl__slides" aria-hidden="true">
 		<?php foreach ( $clean as $i => $slide ) : ?>
 		<div class="hhl__slide<?php echo 0 === $i ? ' hhl__slide--first' : ''; ?>" data-index="<?php echo esc_attr( $i ); ?>">
-
 			<picture class="hhl__bg">
 				<?php if ( $slide['mobileUrl'] ) : ?>
 				<source
@@ -75,29 +76,33 @@ if ( empty( $clean ) ) {
 				<img
 					src="<?php echo esc_url( $slide['fallback'] ); ?>"
 					alt=""
-					aria-hidden="true"
 					decoding="async"
 					loading="<?php echo 0 === $i ? 'eager' : 'lazy'; ?>"
 				>
 			</picture>
-
-			<div class="hhl__content">
-				<div class="hhl__text">
-					<?php if ( $slide['heading'] ) : ?>
-					<h1 class="hhl__heading"><?php echo esc_html( $slide['heading'] ); ?></h1>
-					<?php endif; ?>
-					<?php if ( $slide['subtext'] ) : ?>
-					<p class="hhl__subtext"><?php echo esc_html( $slide['subtext'] ); ?></p>
-					<?php endif; ?>
-				</div>
-				<?php if ( $slide['ctaUrl'] && $slide['ctaLabel'] ) : ?>
-				<a class="hhl__cta" href="<?php echo esc_url( $slide['ctaUrl'] ); ?>">
-					<span class="hhl__cta-label"><?php echo esc_html( $slide['ctaLabel'] ); ?></span>
-				</a>
-				<?php endif; ?>
-			</div>
-
 		</div>
 		<?php endforeach; ?>
 	</div>
+
+	<?php /* Content — direct child of section so position:sticky works */ ?>
+	<div class="hhl__content">
+		<?php foreach ( $clean as $i => $slide ) : ?>
+		<div class="hhl__panel<?php echo 0 === $i ? ' hhl__panel--first' : ''; ?>" data-index="<?php echo esc_attr( $i ); ?>">
+			<div class="hhl__text">
+				<?php if ( $slide['heading'] ) : ?>
+				<h1 class="hhl__heading"><?php echo esc_html( $slide['heading'] ); ?></h1>
+				<?php endif; ?>
+				<?php if ( $slide['subtext'] ) : ?>
+				<p class="hhl__subtext"><?php echo esc_html( $slide['subtext'] ); ?></p>
+				<?php endif; ?>
+			</div>
+			<?php if ( $slide['ctaUrl'] && $slide['ctaLabel'] ) : ?>
+			<a class="hhl__cta" href="<?php echo esc_url( $slide['ctaUrl'] ); ?>">
+				<span class="hhl__cta-label"><?php echo esc_html( $slide['ctaLabel'] ); ?></span>
+			</a>
+			<?php endif; ?>
+		</div>
+		<?php endforeach; ?>
+	</div>
+
 </section>

@@ -2,25 +2,31 @@ import { gsap } from 'gsap';
 
 document.querySelectorAll( '.hhl' ).forEach( ( hero ) => {
 	const slides = Array.from( hero.querySelectorAll( '.hhl__slide' ) );
+	const panels = Array.from( hero.querySelectorAll( '.hhl__panel' ) );
+
 	if ( ! slides.length ) return;
 
 	const interval = parseInt( hero.dataset.interval, 10 ) || 5000;
 
-	// ── Entrance animation for the first slide's content ─────────────
-	const firstContent = slides[ 0 ].querySelectorAll( '.hhl__heading, .hhl__subtext, .hhl__cta' );
-	if ( firstContent.length ) {
-		gsap.fromTo(
-			firstContent,
-			{ opacity: 0, y: -20 },
-			{ opacity: 1, y: 0, duration: 0.8, stagger: 0.2, ease: 'power2.out', delay: 0.2 }
-		);
+	// ── Entrance animation — first panel's content only ──────────────
+	// CSS holds heading/subtext/cta at opacity:0 on --first panel.
+	// GSAP animates them in, matching the original homepage-hero behaviour.
+	const firstPanel = panels[ 0 ];
+	if ( firstPanel ) {
+		const els = firstPanel.querySelectorAll( '.hhl__heading, .hhl__subtext, .hhl__cta' );
+		if ( els.length ) {
+			gsap.fromTo(
+				els,
+				{ opacity: 0, y: -20 },
+				{ opacity: 1, y: 0, duration: 0.8, stagger: 0.2, ease: 'power2.out', delay: 0.2 }
+			);
+		}
 	}
 
 	if ( slides.length <= 1 ) return;
 
-	// ── Multi-slide setup ─────────────────────────────────────────────
-	// CSS already sets .hhl__slide { opacity:0 } and .hhl__slide--first { opacity:1 }
-	// so there's no flash before JS runs. GSAP takes over from here.
+	// ── Multi-slide crossfade ─────────────────────────────────────────
+	// Images and content panels fade simultaneously (position 0 in timeline).
 	let current     = 0;
 	let isAnimating = false;
 
@@ -28,15 +34,22 @@ document.querySelectorAll( '.hhl' ).forEach( ( hero ) => {
 		if ( isAnimating || next === current ) return;
 		isAnimating = true;
 
-		const outSlide = slides[ current ];
-		const inSlide  = slides[ next ];
-		current        = next;
+		const prev = current;
+		current    = next;
 
-		gsap.timeline( {
-			onComplete: () => { isAnimating = false; },
-		} )
-			.to( outSlide, { opacity: 0, duration: 1, ease: 'power2.inOut' }, 0 )
-			.to( inSlide,  { opacity: 1, duration: 1, ease: 'power2.inOut' }, 0 );
+		const tl = gsap.timeline( { onComplete: () => { isAnimating = false; } } );
+
+		// Images crossfade
+		tl.to( slides[ prev ], { opacity: 0, duration: 1, ease: 'power2.inOut' }, 0 );
+		tl.to( slides[ next ], { opacity: 1, duration: 1, ease: 'power2.inOut' }, 0 );
+
+		// Content panels crossfade — also restore pointer-events
+		if ( panels[ prev ] ) {
+			tl.to( panels[ prev ], { opacity: 0, duration: 1, ease: 'power2.inOut', pointerEvents: 'none' }, 0 );
+		}
+		if ( panels[ next ] ) {
+			tl.to( panels[ next ], { opacity: 1, duration: 1, ease: 'power2.inOut', pointerEvents: 'auto' }, 0 );
+		}
 	}
 
 	setInterval( () => {
