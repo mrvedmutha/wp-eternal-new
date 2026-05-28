@@ -1,0 +1,31 @@
+{
+  "name": "wp-rig/perks-strip",
+  "apiVersion": 2,
+  "title": "Perks Strip",
+  "category": "widgets",
+  "icon": "star-filled",
+  "description": "Four-item trust/benefit strip with uploadable icons, title, and description per item.",
+  "textdomain": "wp-rig",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style.css",
+  "editorStyle": "file:./build/editor.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "item1IconUrl": { "type": "string", "default": "" },
+    "item1Title":   { "type": "string", "default": "FREE SHIPPING" },
+    "item1Desc":    { "type": "string", "default": "Free shipping on orders above 2500 INR" },
+    "item2IconUrl": { "type": "string", "default": "" },
+    "item2Title":   { "type": "string", "default": "GIFTS WITH PURCHASE" },
+    "item2Desc":    { "type": "string", "default": "Complimentary samples with qualifying purchases" },
+    "item3IconUrl": { "type": "string", "default": "" },
+    "item3Title":   { "type": "string", "default": "FLEXIBLE DELIVERY" },
+    "item3Desc":    { "type": "string", "default": "Shop confidently with flexible payment options" },
+    "item4IconUrl": { "type": "string", "default": "" },
+    "item4Title":   { "type": "string", "default": "ONLINE CONSULTATION" },
+    "item4Desc":    { "type": "string", "default": "Book a one-on-one consultation with a Beauty Advisor" }
+  },
+  "supports": {
+    "align": ["full", "wide"],
+    "html": false
+  }
+}
