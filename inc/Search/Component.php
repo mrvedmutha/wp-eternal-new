@@ -299,19 +299,21 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			? (string) get_post_meta( $image_id, '_wp_attachment_image_alt', true )
 			: $product->get_name();
 
-		// First value of pa_size attribute, if set.
-		$size_raw   = $product->get_attribute( 'pa_size' );
-		$size_badge = $size_raw ? explode( ',', $size_raw )[0] : '';
+		// Build size badge from buy-box meta (same source as shop cards).
+		$pid        = $product->get_id();
+		$amount     = (string) get_post_meta( $pid, 'product_buy_box_amount', true );
+		$unit       = (string) get_post_meta( $pid, 'product_buy_box_unit', true );
+		$size_badge = strtoupper( trim( $amount . $unit ) );
 
 		return array(
-			'id'                => $product->get_id(),
+			'id'                => $pid,
 			'name'              => $product->get_name(),
-			'name_fr'           => (string) get_post_meta( $product->get_id(), '_product_name_fr', true ),
+			'name_fr'           => (string) get_post_meta( $pid, '_product_name_fr', true ),
 			'permalink'         => $product->get_permalink(),
 			'price_html'        => $product->get_price_html(),
 			'image_url'         => $image_url ? $image_url : '',
 			'image_alt'         => $image_alt,
-			'size_badge'        => trim( $size_badge ),
+			'size_badge'        => $size_badge,
 			'short_description' => $product->get_short_description(),
 		);
 	}
