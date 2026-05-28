@@ -27,6 +27,32 @@
 	--search-megamenu-dur: 0.35s;
 	--search-megamenu-pad-h: var(--space-10, 40px);
 	--search-megamenu-card-w: 115px;
+	--search-megamenu-overlay-bg: rgba(2, 31, 29, 0.28);
+}
+
+/* ── Page overlay / backdrop ────────────────────────────────── */
+
+body::after {
+	content: "";
+	position: fixed;
+	inset: 0;
+	z-index: calc(var(--search-megamenu-z) - 1);
+	background: var(--search-megamenu-overlay-bg);
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition:
+		opacity var(--search-megamenu-dur) ease,
+		visibility 0s linear var(--search-megamenu-dur);
+}
+
+body.search-megamenu-open::after {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+	transition:
+		opacity var(--search-megamenu-dur) ease,
+		visibility 0s linear 0s;
 }
 
 /* ── Root element: closed state ─────────────────────────────── */
@@ -87,15 +113,15 @@ body.search-megamenu-open.has-transparent-header #masthead {
 /* Force dark text on transparent-header pages when search is open */
 body.search-megamenu-open.has-transparent-header #masthead .header-nav__link,
 body.search-megamenu-open.has-transparent-header
-	#masthead
-	.header-nav__link-text,
+#masthead
+.header-nav__link-text,
 body.search-megamenu-open.has-transparent-header #masthead .header-utility__btn,
 body.search-megamenu-open.has-transparent-header
-	#masthead
-	.header-utility__label,
+#masthead
+.header-utility__label,
 body.search-megamenu-open.has-transparent-header
-	#masthead
-	.header-utility__link,
+#masthead
+.header-utility__link,
 body.search-megamenu-open.has-transparent-header #masthead svg {
 	color: var(--header-nav-color, #394342) !important;
 }
@@ -404,9 +430,11 @@ body.search-megamenu-open.has-transparent-header #masthead .custom-logo {
 }
 
 @keyframes search-skeleton-shimmer {
+
 	0% {
 		background-position: 200% 0;
 	}
+
 	100% {
 		background-position: -200% 0;
 	}
@@ -424,16 +452,15 @@ body.search-megamenu-open.has-transparent-header #masthead .custom-logo {
 --------------------------------------------------------------*/
 
 @media (max-width: 1024px) {
+
 	.search-megamenu {
-		max-height: calc(
-			100dvh - var(--header-height, var(--nav-height, 80px))
-		);
+		max-height:
+ calc(100dvh - var(--header-height, var(--nav-height, 80px)));
 	}
 
 	.search-megamenu.is-open {
-		max-height: calc(
-			100dvh - var(--header-height, var(--nav-height, 80px))
-		);
+		max-height:
+ calc(100dvh - var(--header-height, var(--nav-height, 80px)));
 		overflow-y: auto;
 	}
 
@@ -462,6 +489,8 @@ body.search-megamenu-open.has-transparent-header #masthead .custom-logo {
 --------------------------------------------------------------*/
 
 @media (prefers-reduced-motion: reduce) {
+
+	body::after,
 	.search-megamenu {
 		transition:
 			opacity 0.2s ease,
