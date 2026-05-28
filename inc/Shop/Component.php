@@ -334,12 +334,13 @@ class Component implements Component_Interface {
 				echo '<div class="shop-grid__row shop-grid__row--2up">';
 			}
 
+			$layout = $is_pair ? 'half' : 'full';
 			foreach ( $pair as $product_post ) {
 				$product = wc_get_product( $product_post->ID );
 				if ( ! $product ) {
 					continue;
 				}
-				$this->render_product_card( $product );
+				$this->render_product_card( $product, $layout );
 			}
 
 			if ( $is_pair ) {
@@ -363,8 +364,11 @@ class Component implements Component_Interface {
 	 * Renders a single product card — mirrors product-grid.php card markup.
 	 *
 	 * @param \WC_Product $product The WooCommerce product.
+	 * @param string      $layout  'half' or 'full'.
 	 */
-	private function render_product_card( $product ): void {
+	private function render_product_card( $product, string $layout = 'half' ): void {
+		$is_full   = 'full' === $layout;
+		$css_class = $is_full ? 'shop-grid__item--full' : 'shop-grid__item--half';
 		$pid       = $product->get_id();
 		$permalink = get_permalink( $pid );
 		$name      = $product->get_name();
@@ -412,7 +416,7 @@ class Component implements Component_Interface {
 		}
 		$pills = array_unique( $pills );
 		?>
-		<div class="shop-grid__item shop-grid__item--half">
+		<div class="shop-grid__item <?php echo esc_attr( $css_class ); ?>">
 			<div class="shop-product__img-zone">
 				<a class="shop-product__img-link"
 					href="<?php echo esc_url( $permalink ); ?>"
@@ -420,12 +424,12 @@ class Component implements Component_Interface {
 				<img class="shop-product__img"
 					src="<?php echo esc_url( $main_url ); ?>"
 					alt="<?php echo esc_attr( $main_alt ? $main_alt : $name ); ?>"
-					width="316" height="423"
+					<?php echo $is_full ? 'width="664" height="616"' : 'width="316" height="423"'; ?>
 					loading="lazy" />
 				<?php if ( $hover_url ) : ?>
 				<img class="shop-product__img shop-product__img--hover"
 					src="<?php echo esc_url( $hover_url ); ?>"
-					alt="" width="316" height="423"
+					alt="" <?php echo $is_full ? 'width="664" height="616"' : 'width="316" height="423"'; ?>
 					loading="lazy" aria-hidden="true" />
 				<?php endif; ?>
 				<div class="shop-product__atb" data-shop-atb>
