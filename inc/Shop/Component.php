@@ -7,6 +7,9 @@
 
 namespace WP_Rig\WP_Rig\Shop;
 
+use WP_REST_Request;
+use WP_REST_Response;
+use WP_Query;
 use WP_Rig\WP_Rig\Component_Interface;
 use function add_action;
 use function add_filter;
@@ -21,6 +24,22 @@ use function get_template_part;
 use function get_terms;
 use function get_term_meta;
 use function get_option;
+use function register_rest_route;
+use function rest_url;
+use function absint;
+use function get_permalink;
+use function get_post_meta;
+use function wp_get_attachment_image_src;
+use function wc_placeholder_img_src;
+use function wc_get_product;
+use function wc_get_product_terms;
+use function wp_strip_all_tags;
+use function ob_start;
+use function ob_get_clean;
+use function esc_url;
+use function esc_attr;
+use function esc_html;
+use function wp_rig;
 
 /**
  * Class for Shop component.
@@ -36,10 +55,15 @@ class Component implements Component_Interface {
 		return 'shop';
 	}
 
+	const REST_NAMESPACE    = 'eternal/v1';
+	const PRODUCTS_PER_PAGE = 6;
+
 	/**
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize(): void {
+		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
+
 		// Only apply to shop page.
 		add_action( 'template_redirect', array( $this, 'remove_woocommerce_defaults' ) );
 
@@ -228,9 +252,218 @@ class Component implements Component_Interface {
 	 */
 	private function get_shop_data(): array {
 		return array(
-			'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
-			'shopUrl'       => get_permalink( wc_get_page_id( 'shop' ) ),
+			'ajaxUrl'          => admin_url( 'admin-ajax.php' ),
+			'shopUrl'          => get_permalink( wc_get_page_id( 'shop' ) ),
+			'productsEndpoint' => rest_url( self::REST_NAMESPACE . '/shop-products' ),
 		);
+	}
+
+	/**
+	 * Registers the REST API endpoint for load-more pagination.
+	 */
+	public function register_rest_routes(): void {
+		register_rest_route(
+			self::REST_NAMESPACE,
+			'/shop-products',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'handle_load_more' ),
+				'permission_callback' => '__return_true',
+				'args'                => array(
+					'page' => array(
+						'required'          => false,
+						'type'              => 'integer',
+						'default'           => 2,
+						'sanitize_callback' => 'absint',
+					),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Handles AJAX load-more requests for the shop grid.
+	 *
+	 * @param WP_REST_Request $request The REST request.
+	 * @return WP_REST_Response
+	 */
+	public function handle_load_more( WP_REST_Request $request ): WP_REST_Response {
+		$page = max( 2, absint( $request->get_param( 'page' ) ) );
+
+		$query = new WP_Query(
+			array(
+				'post_type'      => 'product',
+				'post_status'    => 'publish',
+				'posts_per_page' => self::PRODUCTS_PER_PAGE,
+				'paged'          => $page,
+				'orderby'        => 'menu_order',
+				'order'          => 'ASC',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+				'tax_query'      => array(
+					array(
+						'taxonomy' => 'product_visibility',
+						'field'    => 'name',
+						'terms'    => array( 'exclude-from-catalog' ),
+						'operator' => 'NOT IN',
+					),
+				),
+			)
+		);
+
+		if ( ! $query->have_posts() ) {
+			return new WP_REST_Response(
+				array(
+					'html'      => '',
+					'has_more'  => false,
+					'next_page' => null,
+				),
+				200
+			);
+		}
+
+		ob_start();
+		$posts    = $query->posts;
+		$count    = count( $posts );
+		$has_more = $page < $query->max_num_pages;
+
+		for ( $i = 0; $i < $count; $i += 2 ) {
+			$pair    = array_slice( $posts, $i, 2 );
+			$is_pair = count( $pair ) === 2;
+
+			if ( $is_pair ) {
+				echo '<div class="shop-grid__row shop-grid__row--2up">';
+			}
+
+			foreach ( $pair as $product_post ) {
+				$product = wc_get_product( $product_post->ID );
+				if ( ! $product ) {
+					continue;
+				}
+				$this->render_product_card( $product );
+			}
+
+			if ( $is_pair ) {
+				echo '</div>';
+			}
+		}
+
+		$html = ob_get_clean();
+
+		return new WP_REST_Response(
+			array(
+				'html'      => $html,
+				'has_more'  => $has_more,
+				'next_page' => $has_more ? $page + 1 : null,
+			),
+			200
+		);
+	}
+
+	/**
+	 * Renders a single product card — mirrors product-grid.php card markup.
+	 *
+	 * @param \WC_Product $product The WooCommerce product.
+	 */
+	private function render_product_card( $product ): void {
+		$pid       = $product->get_id();
+		$permalink = get_permalink( $pid );
+		$name      = $product->get_name();
+
+		// Images.
+		$main_img_id = $product->get_image_id();
+		$main_src    = $main_img_id ? wp_get_attachment_image_src( $main_img_id, 'shop-card' ) : null;
+		if ( ! $main_src && $main_img_id ) {
+			$main_src = wp_get_attachment_image_src( $main_img_id, 'full' );
+		}
+		$main_url = $main_src ? $main_src[0] : wc_placeholder_img_src( 'woocommerce_single' );
+		$main_alt = $main_img_id ? (string) get_post_meta( $main_img_id, '_wp_attachment_image_alt', true ) : $name;
+
+		$gallery_ids = $product->get_gallery_image_ids();
+		$hover_url   = '';
+		if ( ! empty( $gallery_ids ) ) {
+			$hover_src = wp_get_attachment_image_src( $gallery_ids[0], 'shop-card' );
+			if ( ! $hover_src ) {
+				$hover_src = wp_get_attachment_image_src( $gallery_ids[0], 'full' );
+			}
+			$hover_url = $hover_src ? $hover_src[0] : '';
+		}
+
+		// Meta.
+		$meta        = wp_rig()->get_product_meta( $pid );
+		$french_text = $meta['french_text'] ?? '';
+		$tagline     = $meta['caption'] ?? '';
+		if ( ! $tagline ) {
+			$tagline = wp_strip_all_tags( $product->get_short_description() );
+		}
+		$size_label = strtoupper( trim( ( $meta['buy_box_amount'] ?? '' ) . ( $meta['buy_box_unit'] ?? '' ) ) );
+
+		$pills = array();
+		if ( $size_label ) {
+			$pills[] = $size_label;
+		}
+		foreach ( $product->get_attributes() as $attribute ) {
+			if ( $attribute->is_taxonomy() && ! $attribute->get_variation() ) {
+				$terms = wc_get_product_terms( $pid, $attribute->get_name(), array( 'fields' => 'names' ) );
+				foreach ( $terms as $term_name ) {
+					$pills[] = strtoupper( $term_name );
+				}
+			}
+		}
+		$pills = array_unique( $pills );
+		?>
+		<div class="shop-grid__item shop-grid__item--half">
+			<div class="shop-product__img-zone">
+				<a class="shop-product__img-link"
+					href="<?php echo esc_url( $permalink ); ?>"
+					aria-label="<?php echo esc_attr( $name ); ?>"></a>
+				<img class="shop-product__img"
+					src="<?php echo esc_url( $main_url ); ?>"
+					alt="<?php echo esc_attr( $main_alt ? $main_alt : $name ); ?>"
+					width="316" height="423"
+					loading="lazy" />
+				<?php if ( $hover_url ) : ?>
+				<img class="shop-product__img shop-product__img--hover"
+					src="<?php echo esc_url( $hover_url ); ?>"
+					alt="" width="316" height="423"
+					loading="lazy" aria-hidden="true" />
+				<?php endif; ?>
+				<div class="shop-product__atb" data-shop-atb>
+					<a class="shop-product__atb-link"
+						href="<?php echo esc_url( $product->add_to_cart_url() ); ?>"
+						data-product-id="<?php echo esc_attr( $pid ); ?>"
+						data-product-type="<?php echo esc_attr( $product->get_type() ); ?>">
+						ADD TO BAG
+					</a>
+				</div>
+			</div>
+			<div class="shop-product__info">
+				<?php if ( ! empty( $pills ) ) : ?>
+				<div class="shop-product__pills">
+					<?php foreach ( $pills as $pill ) : ?>
+					<span class="shop-product__pill"><?php echo esc_html( $pill ); ?></span>
+					<?php endforeach; ?>
+				</div>
+				<?php endif; ?>
+				<div class="shop-product__names">
+					<a class="shop-product__name-link" href="<?php echo esc_url( $permalink ); ?>">
+						<p class="shop-product__name"><?php echo esc_html( strtoupper( $name ) ); ?></p>
+						<?php if ( $french_text ) : ?>
+						<p class="shop-product__name-fr"><?php echo esc_html( strtoupper( $french_text ) ); ?></p>
+						<?php endif; ?>
+					</a>
+				</div>
+				<?php if ( $tagline ) : ?>
+				<p class="shop-product__tagline"><?php echo esc_html( $tagline ); ?></p>
+				<?php endif; ?>
+				<div class="shop-product__price">
+					<?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $product->get_price_html();
+					?>
+				</div>
+			</div>
+		</div>
+		<?php
 	}
 
 	/**

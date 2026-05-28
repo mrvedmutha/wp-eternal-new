@@ -53,7 +53,7 @@ $has_products   = $wp_query->have_posts();
 		<div class="shop-grid__content" data-node-id="694-1798">
 			<?php if ( $has_products ) : ?>
 				<?php
-				// Fixed pattern: 2-up, single, single, 2-up.
+				// Fixed pattern for first 6: 2-up, single, single, 2-up.
 				$pattern          = array( 'half', 'half', 'full', 'full', 'half', 'half' );
 				$display_products = array_slice( $products, 0, 6 );
 
@@ -206,9 +206,9 @@ $has_products   = $wp_query->have_posts();
 
 				endforeach;
 
-				if ( count( $products ) > 6 ) :
+				if ( $wp_query->found_posts > 6 ) :
 					?>
-					<!-- Show "Load More" button for additional products -->
+					<!-- Load More: AJAX fetches page 2+ from eternal/v1/shop-products -->
 					<div class="shop-grid__load-more">
 						<a href="#" class="shop-grid__load-more-link" data-page="2">
 							Load More Products

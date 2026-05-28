@@ -26,6 +26,11 @@ interface FAQItem {
 declare global {
 	interface Window {
 		eternalShopFAQ?: FAQItem[];
+		eternalShop?: {
+			ajaxUrl: string;
+			shopUrl: string;
+			productsEndpoint: string;
+		};
 	}
 }
 
@@ -276,75 +281,61 @@ function initSortDrawer(): void {
 // ============================================================================
 
 /**
- * Initialize Load More button functionality
+ * Initialize Load More button functionality.
+ * Fetches the next page from the eternal/v1/shop-products REST endpoint
+ * and appends rendered HTML into the grid.
  */
 function initLoadMore(): void {
 	const loadMoreBtn = document.querySelector<HTMLAnchorElement>('.shop-grid__load-more-link');
 	if (!loadMoreBtn) return;
 
-	loadMoreBtn.addEventListener('click', (e) => {
+	loadMoreBtn.addEventListener('click', async (e) => {
 		e.preventDefault();
 
-		const currentPage = parseInt(loadMoreBtn.dataset.page || '1');
-		const nextPage = currentPage + 1;
+		const endpoint = window.eternalShop?.productsEndpoint;
+		if (!endpoint) return;
 
-		// Build URL for next page
-		const url = new URL(window.location.href);
-		url.searchParams.set('paged', nextPage.toString());
+		const page = parseInt(loadMoreBtn.dataset.page || '2', 10);
+		const loadMoreContainer = loadMoreBtn.closest<HTMLElement>('.shop-grid__load-more');
+		const gridContent = document.querySelector<HTMLElement>('.shop-grid__content');
+		if (!gridContent) return;
 
-		// Show loading state
 		loadMoreBtn.textContent = 'Loading...';
 		loadMoreBtn.style.pointerEvents = 'none';
 
-		fetch(url.toString())
-			.then(response => response.text())
-			.then(html => {
-				const parser = new DOMParser();
-				const doc = parser.parseFromString(html, 'text/html');
+		try {
+			const url = new URL(endpoint);
+			url.searchParams.set('page', page.toString());
 
-				// Get new products from the response
-				const newProducts = doc.querySelectorAll<HTMLElement>('.shop-grid__item');
+			const res = await fetch(url.toString());
+			if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-				if (newProducts.length > 0) {
-					const gridContent = document.querySelector<HTMLElement>('.shop-grid__content');
-					if (!gridContent) return;
+			const data = await res.json() as { html: string; has_more: boolean; next_page: number | null };
 
-					// Remove load more button temporarily
-					loadMoreBtn.closest('.shop-grid__load-more')?.remove();
-
-					// Add new products
-					newProducts.forEach(product => {
-						gridContent.appendChild(product);
-					});
-
-					// Reinitialize hover effects for new products
-					initProductGrid();
-
-					// Reinitialize ATB handlers for new products
-					initATBClickHandlers();
-
-					// Update page number for next load
-					const newLoadMoreBtn = document.querySelector<HTMLAnchorElement>('.shop-grid__load-more-link');
-					if (newLoadMoreBtn) {
-						newLoadMoreBtn.dataset.page = nextPage.toString();
-						initLoadMore(); // Reattach event listener
-					} else {
-						// No more products to load
-						const loadMoreContainer = document.querySelector('.shop-grid__load-more');
-						if (loadMoreContainer) {
-							loadMoreContainer.remove();
-						}
-					}
-				} else {
-					// No more products
-					loadMoreBtn.style.display = 'none';
+			if (data.html) {
+				// Insert new product rows before the load-more container
+				const temp = document.createElement('div');
+				temp.innerHTML = data.html;
+				while (temp.firstChild) {
+					gridContent.insertBefore(temp.firstChild, loadMoreContainer ?? null);
 				}
-			})
-			.catch(error => {
-				console.error('Failed to load more products:', error);
+
+				// Re-run hover effects on the newly inserted cards
+				initProductGrid();
+			}
+
+			if (data.has_more && data.next_page) {
+				loadMoreBtn.dataset.page = data.next_page.toString();
 				loadMoreBtn.textContent = 'Load More Products';
 				loadMoreBtn.style.pointerEvents = '';
-			});
+			} else {
+				loadMoreContainer?.remove();
+			}
+		} catch (err) {
+			console.error('Load more failed:', err);
+			loadMoreBtn.textContent = 'Load More Products';
+			loadMoreBtn.style.pointerEvents = '';
+		}
 	});
 }
 
