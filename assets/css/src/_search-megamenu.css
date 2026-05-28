@@ -32,7 +32,7 @@
 
 /* ── Page overlay / backdrop ────────────────────────────────── */
 
-body::after {
+html::after {
 	content: "";
 	position: fixed;
 	inset: 0;
@@ -46,7 +46,7 @@ body::after {
 		visibility 0s linear var(--search-megamenu-dur);
 }
 
-body.search-megamenu-open::after {
+html:has(body.search-megamenu-open)::after {
 	opacity: 1;
 	visibility: visible;
 	pointer-events: auto;
@@ -454,13 +454,11 @@ body.search-megamenu-open.has-transparent-header #masthead .custom-logo {
 @media (max-width: 1024px) {
 
 	.search-megamenu {
-		max-height:
- calc(100dvh - var(--header-height, var(--nav-height, 80px)));
+		max-height: calc(100dvh - var(--header-height, var(--nav-height, 80px)));
 	}
 
 	.search-megamenu.is-open {
-		max-height:
- calc(100dvh - var(--header-height, var(--nav-height, 80px)));
+		max-height: calc(100dvh - var(--header-height, var(--nav-height, 80px)));
 		overflow-y: auto;
 	}
 
@@ -490,7 +488,7 @@ body.search-megamenu-open.has-transparent-header #masthead .custom-logo {
 
 @media (prefers-reduced-motion: reduce) {
 
-	body::after,
+	html::after,
 	.search-megamenu {
 		transition:
 			opacity 0.2s ease,
