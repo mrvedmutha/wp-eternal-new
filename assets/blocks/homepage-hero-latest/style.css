@@ -77,16 +77,15 @@
 /* ── Content overlay ──────────────────────────────────────── */
 
 .hhl__content {
-	position:       sticky;
-	top:            calc(var(--nav-height, 80px) + 120px);
-	margin-left:    var(--hhl-pad-left);
-	padding-bottom: var(--hhl-pad-bottom);
-	display:        flex;
+	position:    absolute;
+	left:        var(--hhl-pad-left);
+	bottom:      var(--hhl-pad-bottom);
+	display:     flex;
 	flex-direction: column;
-	gap:            48px;
-	align-items:    flex-start;
-	width:          fit-content;
-	z-index:        1;
+	gap:         48px;
+	align-items: flex-start;
+	width:       fit-content;
+	z-index:     1;
 }
 
 /* ── Text group ───────────────────────────────────────────── */
@@ -161,15 +160,12 @@
 	}
 
 	.hhl__content {
-		position:       absolute;
-		top:            calc(var(--nav-height, 80px) + 40px);
-		left:           20px;
-		right:          20px;
-		bottom:         auto;
-		margin-left:    0;
-		padding-bottom: 0;
-		width:          auto;
-		gap:            32px;
+		top:    calc(var(--nav-height, 80px) + 40px);
+		left:   20px;
+		right:  20px;
+		bottom: auto;
+		width:  auto;
+		gap:    32px;
 	}
 
 	.hhl__subtext {
