@@ -27,7 +27,7 @@
 	--search-megamenu-dur: 0.35s;
 	--search-megamenu-pad-h: var(--space-10, 40px);
 	--search-megamenu-card-w: 115px;
-	--search-megamenu-overlay-bg: rgba(2, 31, 29, 0.28);
+	--search-megamenu-overlay-bg: rgba(2, 31, 29, 0.45);
 }
 
 /* ── Page overlay / backdrop (injected by search-megamenu.js) ── */
@@ -35,7 +35,7 @@
 .search-megamenu-backdrop {
 	position: fixed;
 	inset: 0;
-	z-index: calc(var(--search-megamenu-z) - 1);
+	z-index: 99;
 	background: var(--search-megamenu-overlay-bg);
 	opacity: 0;
 	visibility: hidden;
