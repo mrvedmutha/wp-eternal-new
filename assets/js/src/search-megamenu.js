@@ -24,6 +24,14 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	const emptyMsg    = document.getElementById( 'search-megamenu-empty' );
 	const triggers    = document.querySelectorAll( '.header-search-trigger' );
 
+	// ── Backdrop overlay ─────────────────────────────────────────────
+	// Injected as a real DOM element to avoid html::after stacking quirks in Chrome.
+
+	const backdrop = document.createElement( 'div' );
+	backdrop.className = 'search-megamenu-backdrop';
+	document.body.appendChild( backdrop );
+	backdrop.addEventListener( 'click', () => closeMegamenu() );
+
 	const { endpoint, nonce, viewMoreBase } = window.eternalSearch || {};
 
 	// ── State ─────────────────────────────────────────────────────
@@ -238,6 +246,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		requestAnimationFrame( () => {
 			requestAnimationFrame( () => {
 				megamenu.classList.add( 'is-open' );
+				backdrop.classList.add( 'is-open' );
 				megamenu.setAttribute( 'aria-hidden', 'false' );
 				triggers.forEach( btn => btn.setAttribute( 'aria-expanded', 'true' ) );
 				input.focus();
@@ -247,6 +256,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
 	function closeMegamenu() {
 		megamenu.classList.remove( 'is-open' );
+		backdrop.classList.remove( 'is-open' );
 		megamenu.setAttribute( 'aria-hidden', 'true' );
 		triggers.forEach( btn => btn.setAttribute( 'aria-expanded', 'false' ) );
 		document.body.classList.remove( 'search-megamenu-open' );

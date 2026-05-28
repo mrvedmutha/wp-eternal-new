@@ -30,10 +30,9 @@
 	--search-megamenu-overlay-bg: rgba(2, 31, 29, 0.28);
 }
 
-/* ── Page overlay / backdrop ────────────────────────────────── */
+/* ── Page overlay / backdrop (injected by search-megamenu.js) ── */
 
-html::after {
-	content: "";
+.search-megamenu-backdrop {
 	position: fixed;
 	inset: 0;
 	z-index: calc(var(--search-megamenu-z) - 1);
@@ -46,7 +45,7 @@ html::after {
 		visibility 0s linear var(--search-megamenu-dur);
 }
 
-html:has(body.search-megamenu-open)::after {
+.search-megamenu-backdrop.is-open {
 	opacity: 1;
 	visibility: visible;
 	pointer-events: auto;
@@ -488,7 +487,7 @@ body.search-megamenu-open.has-transparent-header #masthead .custom-logo {
 
 @media (prefers-reduced-motion: reduce) {
 
-	html::after,
+	.search-megamenu-backdrop,
 	.search-megamenu {
 		transition:
 			opacity 0.2s ease,
