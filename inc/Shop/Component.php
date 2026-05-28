@@ -39,7 +39,7 @@ use function ob_get_clean;
 use function esc_url;
 use function esc_attr;
 use function esc_html;
-use function wp_rig;
+use function sanitize_text_field;
 
 /**
  * Class for Shop component.
@@ -388,14 +388,15 @@ class Component implements Component_Interface {
 			$hover_url = $hover_src ? $hover_src[0] : '';
 		}
 
-		// Meta.
-		$meta        = wp_rig()->get_product_meta( $pid );
-		$french_text = $meta['french_text'] ?? '';
-		$tagline     = $meta['caption'] ?? '';
+		// Meta — read directly to avoid wp_rig() dependency in REST context.
+		$french_text = sanitize_text_field( (string) get_post_meta( $pid, 'product_french_text', true ) );
+		$tagline     = sanitize_text_field( (string) get_post_meta( $pid, 'product_caption', true ) );
 		if ( ! $tagline ) {
 			$tagline = wp_strip_all_tags( $product->get_short_description() );
 		}
-		$size_label = strtoupper( trim( ( $meta['buy_box_amount'] ?? '' ) . ( $meta['buy_box_unit'] ?? '' ) ) );
+		$amount     = sanitize_text_field( (string) get_post_meta( $pid, 'product_buy_box_amount', true ) );
+		$unit       = sanitize_text_field( (string) get_post_meta( $pid, 'product_buy_box_unit', true ) );
+		$size_label = strtoupper( trim( $amount . $unit ) );
 
 		$pills = array();
 		if ( $size_label ) {
