@@ -1,0 +1,185 @@
+/*--------------------------------------------------------------
+# Homepage Hero Latest
+# Full-viewport hero with GSAP crossfade between slides.
+# Figma reference: node 1068:2627
+--------------------------------------------------------------*/
+
+:root {
+	--hhl-text:        #fff;
+	--hhl-cta-bg:      #fff;
+	--hhl-cta-text:    #021f1d;
+	--hhl-pad-left:    52px;
+	--hhl-pad-bottom:  120px;
+
+	--hhl-heading-family:  'Cormorant Garamond', serif;
+	--hhl-heading-weight:  300;
+	--hhl-heading-size:    52px;
+	--hhl-heading-lh:      58px;
+	--hhl-heading-ls:      -1px;
+
+	--hhl-body-family:     'Maison Neue', 'DM Sans', sans-serif;
+	--hhl-body-weight:     400;
+	--hhl-body-size:       13px;
+	--hhl-body-lh:         20px;
+	--hhl-body-ls:         0.13px;
+
+	--hhl-cta-family:      'DM Sans', sans-serif;
+	--hhl-cta-weight:      500;
+	--hhl-cta-size:        11px;
+	--hhl-cta-ls:          1.98px;
+}
+
+/* ── Section ──────────────────────────────────────────────── */
+
+.hhl {
+	position: relative;
+	width:    100%;
+	height:   100vh;
+}
+
+/* ── Slides container ─────────────────────────────────────── */
+
+.hhl__slides {
+	position: absolute;
+	inset:    0;
+}
+
+/* ── Individual slide ─────────────────────────────────────── */
+
+.hhl__slide {
+	position: absolute;
+	inset:    0;
+	opacity:  0; /* GSAP crossfades; provides no-JS fallback too */
+}
+
+.hhl__slide--first {
+	opacity: 1;
+}
+
+/* ── Background picture / image ───────────────────────────── */
+
+.hhl__bg {
+	display:  block;
+	position: absolute;
+	inset:    0;
+}
+
+.hhl__bg img {
+	position:        absolute;
+	inset:           0;
+	width:           100%;
+	height:          100%;
+	max-width:       none;
+	object-fit:      cover;
+	object-position: center;
+}
+
+/* ── Content overlay ──────────────────────────────────────── */
+
+.hhl__content {
+	position:       sticky;
+	top:            calc(var(--nav-height, 80px) + 120px);
+	margin-left:    var(--hhl-pad-left);
+	padding-bottom: var(--hhl-pad-bottom);
+	display:        flex;
+	flex-direction: column;
+	gap:            48px;
+	align-items:    flex-start;
+	width:          fit-content;
+	z-index:        1;
+}
+
+/* ── Text group ───────────────────────────────────────────── */
+
+.hhl__text {
+	display:        flex;
+	flex-direction: column;
+	gap:            24px;
+	color:          var(--hhl-text);
+}
+
+.hhl__heading {
+	font-family:    var(--hhl-heading-family);
+	font-weight:    var(--hhl-heading-weight);
+	font-size:      var(--hhl-heading-size);
+	line-height:    var(--hhl-heading-lh);
+	letter-spacing: var(--hhl-heading-ls);
+	color:          var(--hhl-text);
+	margin:         0;
+	max-width:      480px;
+}
+
+/* Entrance initial state — GSAP animates these in on first slide only */
+.hhl__slide--first .hhl__heading,
+.hhl__slide--first .hhl__subtext,
+.hhl__slide--first .hhl__cta {
+	opacity: 0;
+}
+
+.hhl__subtext {
+	font-family:    var(--hhl-body-family);
+	font-weight:    var(--hhl-body-weight);
+	font-size:      var(--hhl-body-size);
+	line-height:    var(--hhl-body-lh);
+	letter-spacing: var(--hhl-body-ls);
+	color:          var(--hhl-text);
+	margin:         0;
+	max-width:      302px;
+}
+
+/* ── CTA — solid white box (Figma node 1068:2633) ─────────── */
+
+.hhl__cta {
+	display:         inline-block;
+	background:      var(--hhl-cta-bg);
+	padding:         12px;
+	text-decoration: none;
+	cursor:          pointer;
+}
+
+.hhl__cta-label {
+	display:        block;
+	font-family:    var(--hhl-cta-family);
+	font-weight:    var(--hhl-cta-weight);
+	font-size:      var(--hhl-cta-size);
+	letter-spacing: var(--hhl-cta-ls);
+	color:          var(--hhl-cta-text);
+	text-transform: uppercase;
+	line-height:    normal;
+}
+
+/* ── Mobile / Tablet (≤ 1024px) ───────────────────────────── */
+
+@media (max-width: 1024px) {
+
+	.hhl {
+		height: 100svh;
+	}
+
+	.hhl__bg img {
+		object-position: center top;
+	}
+
+	.hhl__content {
+		position:       absolute;
+		top:            calc(var(--nav-height, 80px) + 40px);
+		left:           20px;
+		right:          20px;
+		bottom:         auto;
+		margin-left:    0;
+		padding-bottom: 0;
+		width:          auto;
+		gap:            32px;
+	}
+
+	.hhl__subtext {
+		display: none;
+	}
+
+	.hhl__heading {
+		font-size:      clamp(36px, 9.74vw, 44px);
+		line-height:    1.2;
+		letter-spacing: -1.5px;
+		max-width:      none;
+	}
+}

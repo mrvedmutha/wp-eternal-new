@@ -1,0 +1,42 @@
+{
+  "name": "wp-rig/homepage-hero-latest",
+  "apiVersion": 2,
+  "title": "Homepage Hero Latest",
+  "category": "widgets",
+  "icon": "slides",
+  "description": "Full-viewport hero with GSAP simultaneous crossfade between slides. Each slide has desktop + mobile background image, heading, subtext, and CTA.",
+  "textdomain": "wp-rig",
+  "render": "file:./render.php",
+  "editorScript": "file:./build/index.js",
+  "viewScript": "file:./build/view.js",
+  "style": "file:./style.css",
+  "editorStyle": "file:./editor.css",
+  "supports": {
+    "html": false,
+    "align": [ "full" ]
+  },
+  "attributes": {
+    "slides": {
+      "type": "array",
+      "default": [
+        {
+          "heading": "The Pinnacle of Longevity Supplements",
+          "subtext": "Advanced nutraceutical formulations developed to support wellbeing from within.",
+          "ctaLabel": "SHOP NOW",
+          "ctaUrl": "/shop",
+          "desktopImageId": 0,
+          "desktopImageUrl": "",
+          "mobileImageId": 0,
+          "mobileImageUrl": ""
+        }
+      ],
+      "items": {
+        "type": "object"
+      }
+    },
+    "slideInterval": {
+      "type": "integer",
+      "default": 5000
+    }
+  }
+}
