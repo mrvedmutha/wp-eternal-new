@@ -163,7 +163,7 @@
 	line-height:    normal;
 }
 
-/* ── Mobile / Tablet (≤ 1024px) ───────────────────────────── */
+/* ── Tablet (≤ 1024px) — visual adjustments only ─────────── */
 
 @media (max-width: 1024px) {
 
@@ -197,5 +197,14 @@
 		line-height:    1.2;
 		letter-spacing: -1.5px;
 		max-width:      none;
+	}
+}
+
+/* ── Mobile (≤ 768px) — drop sticky, pin content to top ──── */
+
+@media (max-width: 768px) {
+
+	.hhl__content {
+		position: absolute;
 	}
 }
