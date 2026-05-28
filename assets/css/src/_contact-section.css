@@ -1,0 +1,91 @@
+/**
+ * Contact Section Block — two-column layout wrapper
+ *
+ * Figma node 694:5186: flex, justify-between, pt-204, pb-40, px-40
+ * Left col (form): 585px | Right col (info): 392px
+ *
+ * @package wp_rig
+ */
+
+/* ── Section wrapper ─────────────────────────────────────────── */
+
+.contact-section-wrapper {
+	width: 100%;
+}
+
+.contact-section {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: flex-start;
+	padding: 120px 40px 40px;
+	gap: 40px;
+	position: relative;
+	max-width: 1440px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* ── Columns ─────────────────────────────────────────────────── */
+
+.contact-section__form-col {
+	flex: 0 0 585px;
+	min-width: 0;
+}
+
+.contact-section__info-col {
+	flex: 0 0 392px;
+	min-width: 0;
+	padding-top: 32px;
+	position: sticky;
+	top: calc(var(--nav-height, 80px) + 32px);
+	align-self: flex-start;
+}
+
+/* Remove padding from inner blocks since section handles it */
+.contact-section__form-col .contact-form,
+.contact-section__info-col .contact-info {
+	width: 100%;
+}
+
+.contact-section__form-col .wpcf7-form,
+.contact-section__form-col .contact-form__form {
+	padding: 32px 24px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+
+	.contact-section {
+		padding: 80px 32px 40px;
+	}
+
+	.contact-section__form-col {
+		flex: 1 1 55%;
+	}
+
+	.contact-section__info-col {
+		flex: 1 1 38%;
+	}
+}
+
+@media (max-width: 768px) {
+
+	.contact-section {
+		flex-direction: column;
+		padding: 60px 24px 40px;
+		gap: 48px;
+	}
+
+	.contact-section__form-col,
+	.contact-section__info-col {
+		flex: none;
+		width: 100%;
+		padding-top: 0;
+	}
+
+	.contact-section__info-col {
+		position: static;
+	}
+}

@@ -1,0 +1,32 @@
+{
+  "name": "wp-rig/contact-section",
+  "apiVersion": 2,
+  "title": "Contact Section",
+  "category": "widgets",
+  "icon": "email-alt",
+  "description": "Two-column contact section: form on the left, info panel on the right.",
+  "textdomain": "wp-rig",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style.css",
+  "editorStyle": "file:./build/editor.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "formId": { "type": "integer", "default": 0 },
+    "termsUrl": { "type": "string", "default": "/terms-conditions/" },
+    "privacyUrl": { "type": "string", "default": "/privacy-policy/" },
+    "heading": { "type": "string", "default": "Contact Us" },
+    "body": { "type": "string", "default": "Have a question, need support, or just want to chat about our products? Our team is ready to assist you. Reach out and we'll get back to you as soon as possible." },
+    "email": { "type": "string", "default": "customerservice@eternallabs.health" },
+    "emailHref": { "type": "string", "default": "mailto:customerservice@eternallabs.health" },
+    "hours": { "type": "string", "default": "Mon - Fri, 9:30am - 5:30pm (GMT & EST)" },
+    "chatLabel": { "type": "string", "default": "CHAT WITH US" },
+    "chatUrl": { "type": "string", "default": "#" },
+    "chatIconUrl": { "type": "string", "default": "" },
+    "appointmentLabel": { "type": "string", "default": "BOOK APPOINTMENT" },
+    "appointmentUrl": { "type": "string", "default": "#" }
+  },
+  "supports": {
+    "align": ["full", "wide"],
+    "html": false
+  }
+}

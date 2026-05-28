@@ -1,0 +1,31 @@
+{
+  "name": "wp-rig/contact-form",
+  "apiVersion": 2,
+  "title": "Contact Form",
+  "category": "widgets",
+  "icon": "email-alt",
+  "description": "Contact Form 7 powered form styled to match Eternal Labs Figma design.",
+  "textdomain": "wp-rig",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style.css",
+  "editorStyle": "file:./build/editor.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "formId": {
+      "type": "integer",
+      "default": 0
+    },
+    "termsUrl": {
+      "type": "string",
+      "default": "/terms-conditions/"
+    },
+    "privacyUrl": {
+      "type": "string",
+      "default": "/privacy-policy/"
+    }
+  },
+  "supports": {
+    "align": ["full", "wide"],
+    "html": false
+  }
+}
