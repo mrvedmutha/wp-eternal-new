@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $attributes        = is_array( $attributes ?? null ) ? $attributes : array();
-$form_id           = (int) ( $attributes['formId'] ?? 0 );
+$form_id           = trim( (string) ( $attributes['formId'] ?? '' ) );
 $terms_url         = esc_url( $attributes['termsUrl'] ?? '/terms-conditions/' );
 $privacy_url       = esc_url( $attributes['privacyUrl'] ?? '/privacy-policy/' );
 $heading           = $attributes['heading'] ?? 'Contact Us';
@@ -29,7 +29,16 @@ $chat_icon_url     = esc_url( $attributes['chatIconUrl'] ?? '' );
 $appointment_label = $attributes['appointmentLabel'] ?? 'BOOK APPOINTMENT';
 $appointment_url   = esc_url( $attributes['appointmentUrl'] ?? '#' );
 
-$use_cf7 = $form_id > 0 && function_exists( 'wpcf7_contact_form' );
+$use_cf7 = '' !== $form_id && function_exists( 'wpcf7_contact_form' );
+
+// Build the shortcode string: accept a full shortcode or a bare ID (numeric or hash).
+if ( $use_cf7 ) {
+	if ( str_starts_with( $form_id, '[' ) ) {
+		$cf7_shortcode = $form_id;
+	} else {
+		$cf7_shortcode = '[contact-form-7 id="' . esc_attr( $form_id ) . '"]';
+	}
+}
 
 $wrapper_attrs = get_block_wrapper_attributes( array( 'class' => 'contact-section-wrapper' ) );
 
@@ -45,7 +54,7 @@ $wrapper_attrs = get_block_wrapper_attributes( array( 'class' => 'contact-sectio
 
 					<?php
 					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					echo do_shortcode( '[contact-form-7 id="' . $form_id . '"]' );
+					echo do_shortcode( $cf7_shortcode );
 					?>
 
 				<?php else : ?>

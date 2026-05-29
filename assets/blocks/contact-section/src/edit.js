@@ -7,7 +7,7 @@ const { Fragment } = wp.element;
 export default function Edit( props ) {
 	const { name, attributes = {}, setAttributes } = props || {};
 	const {
-		formId = 0,
+		formId = '',
 		termsUrl = '/terms-conditions/',
 		privacyUrl = '/privacy-policy/',
 		heading = 'Contact Us',
@@ -32,15 +32,14 @@ export default function Edit( props ) {
 				<PanelBody title={ __( 'Contact Form (CF7)', 'wp-rig' ) } initialOpen={ true }>
 					{ ! formId && (
 						<Notice status="warning" isDismissible={ false }>
-							{ __( 'No CF7 Form ID set. A styled placeholder form is shown.', 'wp-rig' ) }
+							{ __( 'No CF7 shortcode set. A styled placeholder form is shown.', 'wp-rig' ) }
 						</Notice>
 					) }
 					<TextControl
-						label={ __( 'CF7 Form ID', 'wp-rig' ) }
-						value={ formId || '' }
-						type="number"
-						onChange={ ( v ) => setAttributes( { formId: parseInt( v, 10 ) || 0 } ) }
-						help={ __( 'Contact → Contact Forms in WP Admin → open form → ID is in the URL.', 'wp-rig' ) }
+						label={ __( 'CF7 Shortcode or Form ID', 'wp-rig' ) }
+						value={ formId }
+						onChange={ ( v ) => setAttributes( { formId: v } ) }
+						help={ __( 'Paste the full shortcode, e.g. [contact-form-7 id="9d4f5c7" title="Contact form 1"], or just the ID (numeric or hash).', 'wp-rig' ) }
 					/>
 					<TextControl
 						label={ __( 'Terms & Conditions URL', 'wp-rig' ) }

@@ -11,7 +11,7 @@
   "editorStyle": "file:./build/editor.css",
   "render": "file:./render.php",
   "attributes": {
-    "formId": { "type": "integer", "default": 0 },
+    "formId": { "type": "string", "default": "" },
     "termsUrl": { "type": "string", "default": "/terms-conditions/" },
     "privacyUrl": { "type": "string", "default": "/privacy-policy/" },
     "heading": { "type": "string", "default": "Contact Us" },

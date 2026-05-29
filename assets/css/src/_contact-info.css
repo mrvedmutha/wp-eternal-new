@@ -108,11 +108,10 @@
 	letter-spacing: 1.6px;
 	font-weight: 500;
 	text-transform: uppercase;
-	transition: opacity 0.2s ease;
+	transition: background-color 0.2s ease, opacity 0.2s ease;
 }
 
 .contact-info__btn:hover {
-	opacity: 0.8;
 	text-decoration: none;
 }
 
@@ -120,6 +119,11 @@
 	background-color: var(--ci-primary);
 	color: #fff;
 	border: none;
+}
+
+.contact-info__btn--filled:hover {
+	background-color: #0a3835;
+	color: #fff;
 }
 
 .contact-info__btn--outlined {
