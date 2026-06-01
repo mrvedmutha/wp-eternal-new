@@ -54,6 +54,14 @@ class Component implements Component_Interface {
 			return;
 		}
 
+		// Never redirect POST requests — WooCommerce must receive the form data intact.
+		// A 301 on a POST converts it to GET and strips the body, breaking nonce verification.
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$request_method = strtoupper( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ?? 'GET' ) ) );
+		if ( 'POST' === $request_method ) {
+			return;
+		}
+
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$request_uri = wp_unslash( $_SERVER['REQUEST_URI'] ?? '' );
 		$request_uri = sanitize_text_field( $request_uri );
