@@ -79,6 +79,8 @@ $wrapper_attrs = get_block_wrapper_attributes( array( 'class' => 'lost-password-
 					// Add WooCommerce nonce.
 					wp_nonce_field( 'wc_reset_password', 'woocommerce-reset-password-nonce' );
 					?>
+					<!-- Required by WooCommerce process_lost_password() to trigger Stage 2 -->
+					<input type="hidden" name="wc_reset_password" value="1">
 					<input type="hidden" name="reset_key" value="<?php echo esc_attr( $reset_key ); ?>">
 					<input type="hidden" name="reset_login" value="<?php echo esc_attr( $reset_user_login ); ?>">
 					<?php

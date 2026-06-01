@@ -70,16 +70,14 @@
 		const form = event.target;
 		const submitButton = form.querySelector( '#login-submit' );
 		const formData = new FormData( form );
+		const currentPath = window.location.pathname;
 
 		// Disable submit button.
 		submitButton.disabled = true;
 		submitButton.classList.add( 'login-form__submit--loading' );
 
 		try {
-			// Post to WooCommerce login endpoint
-			const loginUrl = window.location.href; // Current page URL
-
-			const response = await fetch( loginUrl, {
+			const response = await fetch( window.location.href, {
 				method: 'POST',
 				body: formData,
 				headers: {
@@ -88,30 +86,36 @@
 				credentials: 'same-origin',
 			} );
 
-			// Check if response is HTML (WooCommerce redirect on success)
-			const contentType = response.headers.get( 'content-type' );
-			if ( contentType && contentType.includes( 'text/html' ) ) {
-				// Login was successful, redirect to my-account
+			const text = await response.text();
+
+			// WooCommerce redirects away from the login page on success.
+			// If the final URL path is different from the login page, the user is now authenticated.
+			if ( response.redirected && new URL( response.url ).pathname !== currentPath ) {
 				displayMessage( 'Login successful! Redirecting...', 'success' );
-				const redirectUrl = form.querySelector( 'input[name="redirect"]' )?.value || '/my-account/';
 				setTimeout( () => {
-					window.location.href = redirectUrl;
-				}, 1000 );
+					window.location.href = response.url;
+				}, 800 );
 				return;
 			}
 
-			// Try to parse JSON response
-			const data = await response.json();
+			// Parse WooCommerce error notices from the response HTML.
+			const parser = new DOMParser();
+			const doc = parser.parseFromString( text, 'text/html' );
 
-			if ( data.success ) {
-				displayMessage( 'Login successful! Redirecting...', 'success' );
-				setTimeout( () => {
-					const redirectUrl = form.querySelector( 'input[name="redirect"]' )?.value || '/my-account/';
-					window.location.href = redirectUrl;
-				}, 1000 );
-			} else {
-				displayMessage( data.message || 'Login failed. Please try again.', 'error' );
+			const errorItem = doc.querySelector( '.woocommerce-error li' );
+			if ( errorItem ) {
+				displayMessage( errorItem.textContent.trim(), 'error' );
+				return;
 			}
+
+			const errorBlock = doc.querySelector( '.woocommerce-error' );
+			if ( errorBlock ) {
+				displayMessage( errorBlock.textContent.trim(), 'error' );
+				return;
+			}
+
+			displayMessage( 'Login failed. Please check your credentials.', 'error' );
+
 		} catch ( error ) {
 			displayMessage( 'An error occurred. Please try again.', 'error' );
 		} finally {

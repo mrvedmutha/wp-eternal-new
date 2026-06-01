@@ -120,6 +120,9 @@ $wrapper_attrs = get_block_wrapper_attributes( array( 'class' => 'login-form-wra
 			}
 			?>
 
+			<!-- Required by WooCommerce process_login() to trigger authentication -->
+			<input type="hidden" name="login" value="1">
+
 			<!-- Submit Button -->
 			<button type="submit" class="login-form__submit" id="login-submit">
 				SIGN IN
