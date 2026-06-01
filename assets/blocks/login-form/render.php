@@ -46,12 +46,13 @@ $wrapper_attrs = get_block_wrapper_attributes( array( 'class' => 'login-form-wra
 
 ?>
 <div <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
-	<div class="login-form" data-block-id="<?php echo esc_attr( $block->block_type->name ?? 'wp-rig/login-form' ); ?>">
 
-		<!-- Title Section -->
-		<div class="login-form__title">
-			<p class="login-form__title-main">MY ETERNAL ACCOUNT</p>
-		</div>
+	<!-- Title Section -->
+	<div class="login-form__title">
+		<p class="login-form__title-main">MY ETERNAL ACCOUNT</p>
+	</div>
+
+	<div class="login-form" data-block-id="<?php echo esc_attr( $block->block_type->name ?? 'wp-rig/login-form' ); ?>">
 
 		<!-- Form -->
 		<form id="wc-custom-login-form" class="login-form__form" method="post" novalidate>

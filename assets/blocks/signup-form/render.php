@@ -54,13 +54,14 @@ $my_account_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_perma
 
 ?>
 <div <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
-	<div class="signup-form" data-block-id="<?php echo esc_attr( $block->block_type->name ?? 'wp-rig/signup-form' ); ?>">
 
-		<!-- Title Section -->
-		<div class="signup-form__title">
-			<p class="signup-form__title-main">CREATE YOUR ETERNAL ACCOUNT</p>
-			<p class="signup-form__title-sub">JOIN THE RITUAL</p>
-		</div>
+	<!-- Title Section -->
+	<div class="signup-form__title">
+		<p class="signup-form__title-main">CREATE YOUR ETERNAL ACCOUNT</p>
+		<p class="signup-form__title-sub">JOIN THE RITUAL</p>
+	</div>
+
+	<div class="signup-form" data-block-id="<?php echo esc_attr( $block->block_type->name ?? 'wp-rig/signup-form' ); ?>">
 
 		<!-- Form -->
 		<form id="wc-custom-signup-form" class="signup-form__form" method="post" novalidate>

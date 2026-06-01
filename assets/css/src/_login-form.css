@@ -16,7 +16,7 @@
 	--login-border-radius: 2px;
 	--login-input-padding-y: 14px;
 	--login-input-padding-x: 16px;
-	--login-form-max-width: 360px;
+	--login-form-max-width: 424px;
 	--login-font-heading: "Cormorant Garamond", serif;
 	--login-font-body: "Maison Neue", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, sans-serif;
 }
@@ -50,6 +50,7 @@ body.my-account-page .widget-area {
 .woocommerce-login-form-wrapper,
 .login-form-wrapper {
 	display: flex !important;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	padding: 80px 60px !important;
@@ -76,6 +77,7 @@ body.my-account-page .widget-area {
 	align-items: center;
 	width: 100%;
 	text-align: center;
+	padding-bottom: 24px;
 }
 
 .login-form__title-main {

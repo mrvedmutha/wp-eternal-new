@@ -15,7 +15,7 @@
 	--signup-input-padding-y: 14px;
 	--signup-input-padding-x: 16px;
 	--signup-title-max-width: 524px;
-	--signup-form-max-width: 360px;
+	--signup-form-max-width: 424px;
 	--signup-font-heading: "Cormorant Garamond", serif;
 	--signup-font-body: "Maison Neue", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, sans-serif;
 }
@@ -55,6 +55,7 @@ body.page-id-270 .signup-page-container {
 /* Block wrapper - ensure proper padding and centering */
 .signup-form-wrapper {
 	display: flex !important;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	padding: 80px 60px !important;
@@ -79,7 +80,6 @@ body.page-id-270 .signup-page-container {
 	padding-bottom: 24px;
 	text-align: center;
 	width: 100%;
-	max-width: var(--signup-title-max-width);
 }
 
 .signup-form__title-main {

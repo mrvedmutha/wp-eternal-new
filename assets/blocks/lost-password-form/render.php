@@ -14,7 +14,7 @@
  * @package wp_rig
  */
 
-// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce handles nonce verification for password reset forms.
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- WooCommerce handles nonce verification for password reset forms.
 declare( strict_types=1 );
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -41,8 +41,7 @@ $block = ( isset( $block ) && $block instanceof WP_Block ) ? $block : null;
 // Determine which stage of the lost password flow we're in.
 // Stage 1: Request reset link (default).
 // Stage 2: Reset password (when user clicks link in email).
-// phpcs:ignore WordPress.Security.NonceVerification.Missing
-$is_reset_stage = isset( $_GET['show-reset-form'] ) && isset( $_GET['key'] ) && isset( $_GET['login'] );
+$is_reset_stage = isset( $_GET['show-reset-form'] ) && isset( $_GET['key'] ) && isset( $_GET['login'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 // Build URLs.
 $login_url = home_url( '/login/' );
@@ -52,21 +51,30 @@ $wrapper_attrs = get_block_wrapper_attributes( array( 'class' => 'lost-password-
 
 ?>
 <div <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+
+	<!-- Title Section -->
+	<?php if ( $is_reset_stage ) : ?>
+		<div class="lost-password-form__title">
+			<p class="lost-password-form__title-main">SET NEW PASSWORD</p>
+		</div>
+	<?php else : ?>
+		<div class="lost-password-form__title">
+			<p class="lost-password-form__title-main">FORGOT YOUR PASSWORD?</p>
+			<p class="lost-password-form__title-sub">ACCOUNT RECOVERY</p>
+		</div>
+	<?php endif; ?>
+
 	<div class="lost-password-form" data-block-id="<?php echo esc_attr( $block->block_type->name ?? 'wp-rig/lost-password-form' ); ?>">
 
 		<?php if ( $is_reset_stage ) : ?>
 			<!-- STAGE 2: Reset Password Form -->
-			<div class="lost-password-form__title">
-				<p class="lost-password-form__title-main">SET NEW PASSWORD</p>
-			</div>
-
 			<form id="wc-custom-reset-password-form" class="lost-password-form__form" method="post" novalidate>
 				<?php
 				// WooCommerce reset password form fields.
 				if ( function_exists( 'wc_get_page_permalink' ) ) {
 					// Get the reset key and login from URL.
-					$reset_key        = sanitize_text_field( wp_unslash( $_GET['key'] ?? '' ) );
-					$reset_user_login = sanitize_text_field( wp_unslash( $_GET['login'] ?? '' ) );
+					$reset_key        = sanitize_text_field( wp_unslash( $_GET['key'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+					$reset_user_login = sanitize_text_field( wp_unslash( $_GET['login'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 					// Add WooCommerce nonce.
 					wp_nonce_field( 'wc_reset_password', 'woocommerce-reset-password-nonce' );
@@ -134,11 +142,6 @@ $wrapper_attrs = get_block_wrapper_attributes( array( 'class' => 'lost-password-
 
 		<?php else : ?>
 			<!-- STAGE 1: Request Reset Link Form -->
-			<div class="lost-password-form__title">
-				<p class="lost-password-form__title-main">FORGOT YOUR PASSWORD?</p>
-				<p class="lost-password-form__title-sub">ACCOUNT RECOVERY</p>
-			</div>
-
 			<form id="wc-custom-lost-password-form" class="lost-password-form__form" method="post" novalidate>
 				<?php
 				// WooCommerce security fields.
