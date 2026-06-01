@@ -76,94 +76,41 @@
 		submitButton.classList.add( 'lost-password-form__submit--loading' );
 
 		try {
-			// Post to current page (WooCommerce handles the form processing)
-			const response = await fetch( window.location.href, {
+			// WooCommerce process_lost_password() only fires on the WooCommerce endpoint,
+			// not on a custom page URL. Post there so the handler actually runs.
+			const response = await fetch( '/my-account/lost-password/', {
 				method: 'POST',
 				body: formData,
-				headers: {
-					'X-Requested-With': 'XMLHttpRequest',
-				},
 				credentials: 'same-origin',
 			} );
 
-			// Get response text for parsing
-			const text = await response.text();
+			// A redirect means WooCommerce processed the submission (success or user-not-found).
+			// WooCommerce always redirects after processing for privacy — it never reveals
+			// whether the email exists.
+			if ( response.redirected ) {
+				displayMessage( 'lost-password-messages', 'If an account with that email exists, a password reset link has been sent. Please check your inbox and spam folder.', 'success' );
+				return;
+			}
 
-			// Parse HTML response
+			// Non-redirect means something went wrong before WooCommerce could process it.
+			// Parse the HTML for any error notices.
+			const text = await response.text();
 			const parser = new DOMParser();
 			const doc = parser.parseFromString( text, 'text/html' );
 
-			// Check for WooCommerce errors first
-			const errorNotice = doc.querySelector( '.woocommerce-error, .woocommerce-error li' );
-			if ( errorNotice ) {
-				const errorMessage = errorNotice.textContent.trim();
-				// Filter out the "discreet" message - only show real errors
-				if ( ! errorMessage.includes( 'If an email address' ) && ! errorMessage.includes( 'check your email' ) ) {
-					displayMessage( 'lost-password-messages', errorMessage, 'error' );
-					return;
-				}
-			}
-
-			// Check for PHP fatal errors or WordPress errors
-			const phpErrors = doc.querySelector( '.php-error, .fatal-error, .wp-die-message' );
-			if ( phpErrors ) {
-				displayMessage( 'lost-password-messages', 'A system error occurred. Please contact site support.', 'error' );
-				console.error( 'PHP Error:', phpErrors.textContent );
+			const errorItem = doc.querySelector( '.woocommerce-error li' );
+			if ( errorItem ) {
+				displayMessage( 'lost-password-messages', errorItem.textContent.trim(), 'error' );
 				return;
 			}
 
-			// Check for success messages
-			const successNotice = doc.querySelector( '.woocommerce-message, .woocommerce-info' );
-			if ( successNotice ) {
-				const successMessage = successNotice.textContent.trim();
-				displayMessage( 'lost-password-messages', successMessage, 'success' );
+			const errorBlock = doc.querySelector( '.woocommerce-error' );
+			if ( errorBlock ) {
+				displayMessage( 'lost-password-messages', errorBlock.textContent.trim(), 'error' );
 				return;
 			}
 
-			// Check response status for server errors
-			if ( ! response.ok ) {
-				if ( response.status >= 500 ) {
-					displayMessage( 'lost-password-messages', 'Server error occurred. Please try again later or contact support.', 'error' );
-				} else if ( response.status === 404 ) {
-					displayMessage( 'lost-password-messages', 'Page not found. Please contact support.', 'error' );
-				} else {
-					displayMessage( 'lost-password-messages', `Error: ${response.status} - ${response.statusText}`, 'error' );
-				}
-				return;
-			}
-
-			// If redirected, check the redirect URL for errors
-			if ( response.redirected ) {
-				// Try to fetch the redirected page to check for errors
-				try {
-					const redirectResponse = await fetch( response.url );
-					const redirectText = await redirectResponse.text();
-					const redirectDoc = parser.parseFromString( redirectText, 'text/html' );
-					const redirectError = redirectDoc.querySelector( '.woocommerce-error, .woocommerce-error li' );
-
-					if ( redirectError && ! redirectError.textContent.includes( 'If an email address' ) ) {
-						displayMessage( 'lost-password-messages', redirectError.textContent.trim(), 'error' );
-						return;
-					}
-				} catch ( e ) {
-					// If we can't check the redirect, assume success
-				}
-
-				displayMessage( 'lost-password-messages', 'Password reset email sent. Please check your inbox.', 'success' );
-				return;
-			}
-
-			// Default: check if WooCommerce processed the form
-			// Look for any form elements that indicate WooCommerce handled it
-			const hasWooCommerceNotices = doc.querySelector( '.woocommerce-error, .woocommerce-message, .woocommerce-info' );
-
-			if ( hasWooCommerceNotices ) {
-				// Already handled above, but this is a fallback
-				displayMessage( 'lost-password-messages', 'If an account exists with that email, a password reset link has been sent.', 'success' );
-			} else {
-				// No notices from WooCommerce - might be a processing issue
-				displayMessage( 'lost-password-messages', 'Password reset email sent. Please check your inbox.', 'success' );
-			}
+			displayMessage( 'lost-password-messages', 'Something went wrong. Please try again.', 'error' );
 
 		} catch ( error ) {
 			console.error( 'Lost password error:', error );

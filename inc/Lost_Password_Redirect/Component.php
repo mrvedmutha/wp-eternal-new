@@ -60,7 +60,10 @@ class Component implements Component_Interface {
 
 		// Check if we're on /my-account/lost-password/.
 		if ( strpos( $request_uri, '/my-account/lost-password/' ) !== false || strpos( $request_uri, '/my-account/lost-password' ) !== false ) {
-			$new_url = home_url( '/lost-password/' );
+			// Preserve query string (e.g. ?reset-link-sent=true from WooCommerce).
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$query_string = sanitize_text_field( wp_unslash( $_SERVER['QUERY_STRING'] ?? '' ) );
+			$new_url      = home_url( '/lost-password/' . ( $query_string ? '?' . $query_string : '' ) );
 			wp_safe_redirect( $new_url, 301 ); // Permanent redirect for SEO.
 			exit;
 		}
