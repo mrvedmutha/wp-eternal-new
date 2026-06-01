@@ -40,8 +40,36 @@ $block = ( isset( $block ) && $block instanceof WP_Block ) ? $block : null;
 
 // Determine which stage of the lost password flow we're in.
 // Stage 1: Request reset link (default).
-// Stage 2: Reset password (when user clicks link in email).
-$is_reset_stage = isset( $_GET['show-reset-form'] ) && isset( $_GET['key'] ) && isset( $_GET['login'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+// Stage 2: Set new password (after clicking the email link).
+//
+// WooCommerce stores the reset key in a cookie (wp-resetpass-{COOKIEHASH}) after validating
+// the email link, then redirects here with ?show-reset-form=true. The key/login are NOT in
+// the URL — they must be read from the cookie.
+$is_reset_stage   = false;
+$reset_key        = '';
+$reset_user_login = '';
+
+if ( ! empty( $_GET['show-reset-form'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$rp_cookie = 'wp-resetpass-' . COOKIEHASH;
+	if ( isset( $_COOKIE[ $rp_cookie ] ) ) {
+		$rp_cookie_val = sanitize_text_field( wp_unslash( $_COOKIE[ $rp_cookie ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		if ( 0 < strpos( $rp_cookie_val, ':' ) ) {
+			list( $rp_id, $rp_key ) = explode( ':', $rp_cookie_val, 2 );
+			$rp_user                = get_userdata( absint( $rp_id ) );
+			if ( $rp_user ) {
+				$reset_user_login = $rp_user->user_login;
+				$reset_key        = $rp_key;
+				// Verify the key is still valid before showing the form.
+				if ( class_exists( 'WC_Shortcode_My_Account' ) ) {
+					$reset_user_obj = WC_Shortcode_My_Account::check_password_reset_key( $reset_key, $reset_user_login );
+					$is_reset_stage = is_object( $reset_user_obj );
+				} else {
+					$is_reset_stage = true;
+				}
+			}
+		}
+	}
+}
 
 // Build URLs.
 $login_url = home_url( '/login/' );
@@ -71,15 +99,11 @@ $wrapper_attrs = get_block_wrapper_attributes( array( 'class' => 'lost-password-
 			<form id="wc-custom-reset-password-form" class="lost-password-form__form" method="post" novalidate>
 				<?php
 				// WooCommerce reset password form fields.
+				// $reset_key and $reset_user_login are populated from the cookie above.
 				if ( function_exists( 'wc_get_page_permalink' ) ) {
-					// Get the reset key and login from URL.
-					$reset_key        = sanitize_text_field( wp_unslash( $_GET['key'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-					$reset_user_login = sanitize_text_field( wp_unslash( $_GET['login'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-
 					// Add WooCommerce nonce.
-					wp_nonce_field( 'wc_reset_password', 'woocommerce-reset-password-nonce' );
+					wp_nonce_field( 'reset_password', 'woocommerce-reset-password-nonce' );
 					?>
-					<!-- Required by WooCommerce process_lost_password() to trigger Stage 2 -->
 					<input type="hidden" name="wc_reset_password" value="1">
 					<input type="hidden" name="reset_key" value="<?php echo esc_attr( $reset_key ); ?>">
 					<input type="hidden" name="reset_login" value="<?php echo esc_attr( $reset_user_login ); ?>">
@@ -148,7 +172,11 @@ $wrapper_attrs = get_block_wrapper_attributes( array( 'class' => 'lost-password-
 				<?php
 				// WooCommerce security fields.
 				if ( function_exists( 'wc_get_page_permalink' ) ) {
-					wp_nonce_field( 'woocommerce-lost-password', 'woocommerce-lost-password-nonce' );
+					wp_nonce_field( 'lost_password', 'woocommerce-lost-password-nonce' );
+					?>
+					<!-- Required by WooCommerce process_lost_password() to trigger the handler -->
+					<input type="hidden" name="wc_reset_password" value="1">
+					<?php
 				}
 				?>
 

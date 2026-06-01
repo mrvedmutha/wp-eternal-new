@@ -68,7 +68,18 @@ class Component implements Component_Interface {
 
 		// Check if we're on /my-account/lost-password/.
 		if ( strpos( $request_uri, '/my-account/lost-password/' ) !== false || strpos( $request_uri, '/my-account/lost-password' ) !== false ) {
-			// Preserve query string (e.g. ?reset-link-sent=true from WooCommerce).
+			// When WooCommerce redirects to ?show-reset-form=true it has already stored the reset
+			// key in a cookie scoped to /my-account/lost-password/. Re-set that cookie with path '/'
+			// so our custom /lost-password/ page can read it after the 301.
+			$rp_cookie = 'wp-resetpass-' . COOKIEHASH;
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( ! empty( $_GET['show-reset-form'] ) && isset( $_COOKIE[ $rp_cookie ] ) ) {
+				$rp_cookie_val = sanitize_text_field( wp_unslash( $_COOKIE[ $rp_cookie ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.cookies_setcookie
+				setcookie( $rp_cookie, $rp_cookie_val, 0, '/', COOKIE_DOMAIN, is_ssl(), true );
+			}
+
+			// Preserve query string (e.g. ?show-reset-form=true, ?reset-link-sent=true).
 			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			$query_string = sanitize_text_field( wp_unslash( $_SERVER['QUERY_STRING'] ?? '' ) );
 			$new_url      = home_url( '/lost-password/' . ( $query_string ? '?' . $query_string : '' ) );
