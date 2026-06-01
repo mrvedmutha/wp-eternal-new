@@ -7,7 +7,8 @@
 #
 # Typography tokens (Maison Neue, single variant):
 #   --footer-heading-size:  17px  (newsletter heading)
-#   --footer-eyebrow-size:  11px  (SIGN UP, column headings — 2px letter-spacing)
+#   --footer-eyebrow-size:  11px  (SIGN UP, column headings — 2px
+#                                   letter-spacing)
 #   --footer-base-size:     15px  (input placeholder)
 #   --footer-small-size:    13px  (nav links, bottom bar)
 #
@@ -20,15 +21,15 @@
 :root {
 	--footer-heading-size: 17px;
 	--footer-eyebrow-size: 11px;
-	--footer-base-size:    15px;
-	--footer-small-size:   13px;
-	--footer-white:        #fff;
-	--footer-muted:        #b6b6b6;
-	--footer-black:        #000;
-	--footer-lh-heading:   30px;
-	--footer-lh-eyebrow:   14px;
-	--footer-lh-base:      23px;
-	--footer-lh-small:     20px;
+	--footer-base-size: 15px;
+	--footer-small-size: 13px;
+	--footer-white: #fff;
+	--footer-muted: #b6b6b6;
+	--footer-black: #000;
+	--footer-lh-heading: 30px;
+	--footer-lh-eyebrow: 14px;
+	--footer-lh-base: 23px;
+	--footer-lh-small: 20px;
 }
 
 /*--------------------------------------------------------------
@@ -37,7 +38,7 @@
 .site-footer {
 	margin: 0;
 	padding: 0;
-	font-family: var(--font-body, 'Maison Neue', sans-serif);
+	font-family: var(--font-body, "Maison Neue", sans-serif);
 	font-stretch: normal;
 }
 
@@ -64,6 +65,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+
 	/* No own background — inherits outer wrapper's atmospheric bg */
 }
 
@@ -122,7 +124,7 @@
 	background: transparent;
 	border: none;
 	outline: none;
-	font-family: var(--font-body, 'Maison Neue', sans-serif);
+	font-family: var(--font-body, "Maison Neue", sans-serif);
 	font-size: var(--footer-base-size);
 	line-height: var(--footer-lh-base);
 	letter-spacing: 0.15px;
@@ -148,7 +150,7 @@
 }
 
 .footer-newsletter__submit-text {
-	font-family: var(--font-body, 'Maison Neue', sans-serif);
+	font-family: var(--font-body, "Maison Neue", sans-serif);
 	font-size: var(--footer-eyebrow-size);
 	line-height: var(--footer-lh-eyebrow);
 	font-weight: 400;
@@ -166,7 +168,7 @@
 
 /* Message below field wrap */
 .footer-newsletter__message {
-	font-family: var(--font-body, 'Maison Neue', sans-serif);
+	font-family: var(--font-body, "Maison Neue", sans-serif);
 	font-size: var(--footer-eyebrow-size);
 	line-height: var(--footer-lh-eyebrow);
 	font-weight: 400;
@@ -220,6 +222,7 @@
 	display: block;
 	width: 100%;
 	height: auto;
+
 	/* Convert dark brand logo to white for the black footer background */
 	filter: brightness(0) invert(1);
 }
@@ -274,7 +277,7 @@
 }
 
 .footer-nav__list a {
-	font-family: var(--font-body, 'Maison Neue', sans-serif);
+	font-family: var(--font-body, "Maison Neue", sans-serif);
 	font-size: var(--footer-small-size);
 	line-height: var(--footer-lh-small);
 	letter-spacing: 0.13px;
@@ -286,7 +289,7 @@
 
 /* Legal menu — lower specificity, must come before nav list :not(:hover) */
 .footer-bar__legal-list a::after {
-	content: '';
+	content: "";
 	position: absolute;
 	bottom: -1px;
 	left: 0;
@@ -300,7 +303,7 @@
 
 /* Underline animation — same pattern as header */
 .footer-nav__list a::after {
-	content: '';
+	content: "";
 	position: absolute;
 	bottom: -1px;
 	left: 0;
@@ -370,7 +373,7 @@
 }
 
 .footer-bar__legal-list a {
-	font-family: var(--font-body, 'Maison Neue', sans-serif);
+	font-family: var(--font-body, "Maison Neue", sans-serif);
 	font-size: var(--footer-small-size);
 	line-height: var(--footer-lh-small);
 	letter-spacing: 0.13px;
@@ -388,7 +391,7 @@
 	align-items: center;
 	gap: 4px;
 	padding: 0 10px;
-	font-family: var(--font-body, 'Maison Neue', sans-serif);
+	font-family: var(--font-body, "Maison Neue", sans-serif);
 	font-size: var(--footer-small-size);
 	line-height: 16px;
 	letter-spacing: 0.13px;
@@ -418,16 +421,22 @@
 
 /* WINGS credit */
 .footer-bar__wings-credit {
-	font-family: var(--font-body, 'Maison Neue', sans-serif);
+	font-family: var(--font-body, "Maison Neue", sans-serif);
 	font-size: var(--footer-small-size);
 	line-height: var(--footer-lh-small);
 	letter-spacing: 0.13px;
-	color: var(--footer-muted);
+	color: var(--footer-white);
 	text-decoration: none;
 	white-space: nowrap;
 	display: inline-flex;
 	align-items: center;
 	gap: 4px;
+}
+
+.footer-bar__wings-credit:hover,
+.footer-bar__wings-credit:visited {
+	color: var(--footer-white);
+	text-decoration: none;
 }
 
 .footer-bar__wings-link {
@@ -437,13 +446,13 @@
 
 /* Underline animation on "WINGS" — same pattern as header */
 .footer-bar__wings-link::after {
-	content: '';
+	content: "";
 	position: absolute;
 	bottom: -1px;
 	left: 0;
 	right: 0;
 	height: 1px;
-	background-color: var(--footer-muted);
+	background-color: var(--footer-white);
 	transform: scaleX(0);
 	transform-origin: left;
 	transition: transform 0.3s ease;
@@ -468,6 +477,7 @@
 }
 
 @media (--bp-tablet) {
+
 	.footer-outer {
 		display: none;
 	}
@@ -478,7 +488,7 @@
 		gap: 20px;
 		padding: 40px 20px;
 		background-color: #000c0b;
-		font-family: var(--font-body, 'Maison Neue', sans-serif);
+		font-family: var(--font-body, "Maison Neue", sans-serif);
 		color: var(--footer-white);
 	}
 }
@@ -528,7 +538,7 @@
 	background: transparent;
 	border: none;
 	outline: none;
-	font-family: var(--font-body, 'Maison Neue', sans-serif);
+	font-family: var(--font-body, "Maison Neue", sans-serif);
 	font-size: var(--footer-small-size);
 	line-height: var(--footer-lh-small);
 	letter-spacing: 0.13px;
@@ -554,7 +564,7 @@
 }
 
 .footer-mobile__submit-text {
-	font-family: var(--font-body, 'Maison Neue', sans-serif);
+	font-family: var(--font-body, "Maison Neue", sans-serif);
 	font-size: var(--footer-eyebrow-size);
 	line-height: var(--footer-lh-eyebrow);
 	font-weight: 500;
@@ -610,7 +620,7 @@
 	background: none;
 	border: none;
 	cursor: pointer;
-	font-family: var(--font-body, 'Maison Neue', sans-serif);
+	font-family: var(--font-body, "Maison Neue", sans-serif);
 	font-size: var(--footer-small-size);
 	line-height: var(--footer-lh-small);
 	font-weight: 400;
@@ -650,7 +660,7 @@
 }
 
 .footer-mobile__menu-list a {
-	font-family: var(--font-body, 'Maison Neue', sans-serif);
+	font-family: var(--font-body, "Maison Neue", sans-serif);
 	font-size: var(--footer-small-size);
 	line-height: var(--footer-lh-small);
 	font-weight: 400;
@@ -711,7 +721,7 @@
 }
 
 .footer-mobile__legal-list a {
-	font-family: var(--font-body, 'Maison Neue', sans-serif);
+	font-family: var(--font-body, "Maison Neue", sans-serif);
 	font-size: var(--footer-small-size);
 	line-height: var(--footer-lh-small);
 	font-weight: 400;
@@ -731,11 +741,17 @@
 }
 
 .footer-mobile__wings {
-	font-family: var(--font-body, 'Maison Neue', sans-serif);
+	font-family: var(--font-body, "Maison Neue", sans-serif);
 	font-size: var(--footer-small-size);
 	line-height: var(--footer-lh-small);
 	font-weight: 400;
 	letter-spacing: 0.13px;
-	color: var(--footer-muted);
+	color: var(--footer-white);
+	text-decoration: none;
+}
+
+.footer-mobile__wings:hover,
+.footer-mobile__wings:visited {
+	color: var(--footer-white);
 	text-decoration: none;
 }
