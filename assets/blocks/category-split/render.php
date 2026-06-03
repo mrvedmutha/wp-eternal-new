@@ -49,7 +49,9 @@ if ( $p2_image_id ) {
 	}
 }
 
-$wrapper_attrs = wp_rig()->block_wrapper_attributes( array( 'category-split' ), $attributes );
+$text_color_raw = sanitize_hex_color( $attributes['textColor'] ?? '#ffffff' );
+$text_color     = $text_color_raw ? $text_color_raw : '#ffffff';
+$wrapper_attrs  = wp_rig()->block_wrapper_attributes( array( 'category-split' ), $attributes );
 
 // Closure avoids fatal "Cannot redeclare" when render.php is included
 // multiple times on the same page (e.g. block + ServerSideRender preview).
@@ -89,7 +91,7 @@ $render_panel = static function ( string $image_url, string $name, string $subti
 };
 
 ?>
-<section <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+<section <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> style="--cs-text-color: <?php echo esc_attr( $text_color ); ?>">
 	<?php $render_panel( $p1_image_url, $p1_name, $p1_subtitle, $p1_discover ); ?>
 	<?php $render_panel( $p2_image_url, $p2_name, $p2_subtitle, $p2_discover ); ?>
 </section>

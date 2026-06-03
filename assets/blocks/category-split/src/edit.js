@@ -1,5 +1,5 @@
 import { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
-import { PanelBody, TextControl, Button } from '@wordpress/components';
+import { PanelBody, TextControl, Button, ColorPicker } from '@wordpress/components';
 import ServerSideRender from '@wordpress/server-side-render';
 
 function PanelControls( { label, imageId, imageUrl, name, subtitle, discoverUrl, onImageSelect, onImageRemove, onNameChange, onSubtitleChange, onUrlChange } ) {
@@ -68,6 +68,7 @@ export default function Edit( { name, attributes, setAttributes } ) {
 		panel2Name,
 		panel2Subtitle,
 		panel2DiscoverUrl,
+		textColor,
 	} = attributes;
 
 	return (
@@ -86,6 +87,14 @@ export default function Edit( { name, attributes, setAttributes } ) {
 					onSubtitleChange={ ( val ) => setAttributes( { panel1Subtitle: val } ) }
 					onUrlChange={ ( val ) => setAttributes( { panel1DiscoverUrl: val } ) }
 				/>
+				<PanelBody title="Text Color" initialOpen={ false }>
+					<ColorPicker
+						color={ textColor }
+						onChange={ ( val ) => setAttributes( { textColor: val } ) }
+						enableAlpha={ false }
+					/>
+				</PanelBody>
+
 				<PanelControls
 					label="Panel 2"
 					imageId={ panel2ImageId }
