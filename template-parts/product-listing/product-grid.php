@@ -48,9 +48,9 @@ $has_products   = $wp_query->have_posts();
 		<div class="plp-grid__content" data-node-id="694-1798">
 			<?php if ( $has_products ) : ?>
 				<?php
-				// Fixed pattern: 2-up, single, single, 2-up.
-				$pattern          = array( 'half', 'half', 'full', 'full', 'half', 'half' );
+				// 2-up grid: all cards are half-width, 2 per row.
 				$display_products = array_slice( $products, 0, 6 );
+				$total_display    = count( $display_products );
 
 				foreach ( $display_products as $index => $product_post ) :
 					$product = wc_get_product( $product_post->ID );
@@ -59,14 +59,10 @@ $has_products   = $wp_query->have_posts();
 						continue;
 					}
 
-					$layout        = $pattern[ $index ] ?? 'half';
-					$is_full       = 'full' === $layout;
-					$css_class     = $is_full ? 'plp-grid__item--full' : 'plp-grid__item--half';
-					$is_2up_row    = ( $index < 2 || $index >= 4 );
 					$is_even_index = ( 0 === $index % 2 );
 
-					// Open row div at start of each 2-up pair.
-					if ( $is_2up_row && $is_even_index ) :
+					// Open row at the start of each pair.
+					if ( $is_even_index ) :
 						?>
 					<div class="plp-grid__row plp-grid__row--2up">
 						<?php
@@ -79,17 +75,47 @@ $has_products   = $wp_query->have_posts();
 					$price_html = $product->get_price_html();
 					$atc_url    = $product->add_to_cart_url();
 
-					// Product images.
+					// Product images — use srcset for Retina sharpness.
+					$img_size    = 'woocommerce_single';
+					$img_sizes   = '(max-width: 700px) 50vw, (max-width: 1024px) 33vw, 316px';
 					$main_img_id = $product->get_image_id();
-					$main_src    = $main_img_id ? wp_get_attachment_image_src( $main_img_id, 'woocommerce_single' ) : null;
-					$main_url    = $main_src ? $main_src[0] : wc_placeholder_img_src( 'woocommerce_single' );
 					$main_alt    = $main_img_id ? (string) get_post_meta( $main_img_id, '_wp_attachment_image_alt', true ) : $name;
 
-					$gallery_ids = $product->get_gallery_image_ids();
-					$hover_url   = '';
+					if ( $main_img_id ) {
+						$main_img_html = wp_get_attachment_image(
+							$main_img_id,
+							$img_size,
+							false,
+							array(
+								'class'   => 'plp-product__img',
+								'alt'     => $main_alt ? $main_alt : $name,
+								'loading' => 0 === $index ? 'eager' : 'lazy',
+								'sizes'   => $img_sizes,
+							)
+						);
+					} else {
+						$main_img_html = sprintf(
+							'<img class="plp-product__img" src="%s" alt="%s" loading="lazy" />',
+							esc_url( wc_placeholder_img_src() ),
+							esc_attr( $name )
+						);
+					}
+
+					$gallery_ids    = $product->get_gallery_image_ids();
+					$hover_img_html = '';
 					if ( ! empty( $gallery_ids ) ) {
-						$hover_src = wp_get_attachment_image_src( $gallery_ids[0], 'woocommerce_single' );
-						$hover_url = $hover_src ? $hover_src[0] : '';
+						$hover_img_html = wp_get_attachment_image(
+							$gallery_ids[0],
+							$img_size,
+							false,
+							array(
+								'class'       => 'plp-product__img plp-product__img--hover',
+								'alt'         => '',
+								'loading'     => 'lazy',
+								'aria-hidden' => 'true',
+								'sizes'       => $img_sizes,
+							)
+						);
 					}
 
 					// Product metadata.
@@ -120,25 +146,19 @@ $has_products   = $wp_query->have_posts();
 					$pills = array_unique( $pills );
 					?>
 
-					<div class="plp-grid__item <?php echo esc_attr( $css_class ); ?>">
+					<div class="plp-grid__item plp-grid__item--half">
 						<!-- Image zone -->
 						<div class="plp-product__img-zone">
 							<a class="plp-product__img-link"
 								href="<?php echo esc_url( $permalink ); ?>"
 								aria-label="<?php echo esc_attr( $name ); ?>"></a>
 
-							<img class="plp-product__img"
-								src="<?php echo esc_url( $main_url ); ?>"
-								alt="<?php echo esc_attr( $main_alt ? $main_alt : $name ); ?>"
-								<?php echo $is_full ? 'width="664" height="616"' : 'width="316" height="423"'; ?>
-								loading="lazy" />
+							<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_get_attachment_image is trusted. ?>
+							<?php echo $main_img_html; ?>
 
-							<?php if ( $hover_url ) : ?>
-							<img class="plp-product__img plp-product__img--hover"
-								src="<?php echo esc_url( $hover_url ); ?>"
-								alt=""
-								<?php echo $is_full ? 'width="664" height="616"' : 'width="316" height="423"'; ?>
-								loading="lazy" aria-hidden="true" />
+							<?php if ( $hover_img_html ) : ?>
+								<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_get_attachment_image is trusted. ?>
+								<?php echo $hover_img_html; ?>
 							<?php endif; ?>
 
 							<!-- ADD TO BAG bar -->
@@ -185,8 +205,9 @@ $has_products   = $wp_query->have_posts();
 					</div><!-- .plp-grid__item -->
 
 					<?php
-					// Close row div after the second item in each 2-up pair.
-					if ( $is_2up_row && ! $is_even_index ) :
+					// Close row after each pair, or after the last card when count is odd.
+					$is_last = ( $index === $total_display - 1 );
+					if ( ! $is_even_index || $is_last ) :
 						?>
 				</div><!-- .plp-grid__row -->
 						<?php

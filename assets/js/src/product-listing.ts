@@ -415,6 +415,22 @@ function initATBClickHandlers(): void {
 }
 
 // ============================================================================
+// CARD CLICK — whole card navigates to PDP, ATB excluded
+// ============================================================================
+
+function initCardClick(): void {
+	document.querySelectorAll<HTMLElement>('.plp-grid__item').forEach(card => {
+		const link = card.querySelector<HTMLAnchorElement>('.plp-product__img-link');
+		if (!link) return;
+
+		card.addEventListener('click', (e) => {
+			if ((e.target as HTMLElement).closest('[data-plp-atb]')) return;
+			window.location.href = link.href;
+		});
+	});
+}
+
+// ============================================================================
 // FILTER SYSTEM
 // ============================================================================
 
@@ -887,6 +903,7 @@ function initPLP(): void {
 	initMobileFilterSidebar(filterManager);
 	initProductGrid();
 	initATBClickHandlers();
+	initCardClick();
 }
 
 // Initialize on DOM ready
