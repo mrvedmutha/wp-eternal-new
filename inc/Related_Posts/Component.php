@@ -2,8 +2,9 @@
 /**
  * WP_Rig\WP_Rig\Related_Posts\Component class
  *
- * Handles the AJAX endpoint for the related-posts block and enqueues
- * the related-posts.js + single-toc.js scripts on single post pages.
+ * Handles the AJAX endpoint for the related-posts block. The frontend JS is
+ * loaded automatically by WordPress via the block's viewScript declaration —
+ * no manual enqueue needed.
  *
  * @package wp_rig
  */
@@ -15,8 +16,6 @@ use WP_Query;
 use function add_action;
 use function is_single;
 use function wp_enqueue_script;
-use function wp_localize_script;
-use function wp_create_nonce;
 use function wp_send_json_success;
 use function wp_send_json_error;
 use function check_ajax_referer;
@@ -62,17 +61,18 @@ class Component implements Component_Interface {
 	}
 
 	/**
-	 * Enqueues the TOC and related-posts JS on single post pages.
+	 * Enqueues the TOC script on single post pages.
+	 * The related-posts view script is handled by block.json viewScript.
 	 */
 	public function enqueue_assets(): void {
 		if ( ! is_single() ) {
 			return;
 		}
 
-		$js_dir = get_theme_file_path( 'assets/js' );
-
+		$js_dir   = get_theme_file_path( 'assets/js' );
 		$toc_src  = get_theme_file_uri( 'assets/js/single-toc.min.js' );
 		$toc_path = $js_dir . '/single-toc.min.js';
+
 		if ( file_exists( $toc_path ) ) {
 			wp_enqueue_script(
 				'wp-rig-single-toc',
@@ -82,32 +82,16 @@ class Component implements Component_Interface {
 				true
 			);
 		}
-
-		$rp_src  = get_theme_file_uri( 'assets/js/related-posts.min.js' );
-		$rp_path = $js_dir . '/related-posts.min.js';
-		if ( file_exists( $rp_path ) ) {
-			wp_enqueue_script(
-				'wp-rig-related-posts',
-				$rp_src,
-				array(),
-				(string) filemtime( $rp_path ),
-				true
-			);
-			wp_localize_script(
-				'wp-rig-related-posts',
-				'wpRigRelatedPosts',
-				array(
-					'ajaxUrl' => esc_url( admin_url( 'admin-ajax.php' ) ),
-					'nonce'   => wp_create_nonce( 'wp_rig_related_posts' ),
-				)
-			);
-		}
 	}
 
 	/**
-	 * AJAX handler — returns 3 random posts from the same categories.
+	 * AJAX handler — returns posts based on mode.
 	 *
-	 * Expected POST params: nonce, post_id, term_ids (comma-separated), count.
+	 * Mode "related" returns posts from the same categories, falling back to
+	 * latest if fewer results than requested. Mode "latest" returns the most
+	 * recent published posts ordered by date.
+	 *
+	 * Expected POST params: nonce, post_id, term_ids (comma-separated), count, mode.
 	 */
 	public function ajax_get_related_posts(): void {
 		check_ajax_referer( 'wp_rig_related_posts', 'nonce' );
@@ -116,29 +100,77 @@ class Component implements Component_Interface {
 		$raw_ids    = sanitize_text_field( wp_unslash( $_POST['term_ids'] ?? '' ) );
 		$count      = absint( wp_unslash( $_POST['count'] ?? 3 ) );
 		$count      = max( 1, min( 6, $count ) );
+		$mode       = sanitize_text_field( wp_unslash( $_POST['mode'] ?? 'latest' ) );
 
 		$term_ids = array_filter(
 			array_map( 'absint', explode( ',', $raw_ids ) )
 		);
 
-		$query_args = array(
-			'post_type'           => 'post',
-			'post_status'         => 'publish',
-			'posts_per_page'      => $count,
-			'orderby'             => 'rand',
-			'ignore_sticky_posts' => true,
-		);
-
-		if ( $current_id ) {
-			$query_args['post__not_in'] = array( $current_id );
-		}
-
-		if ( ! empty( $term_ids ) ) {
-			$query_args['category__in'] = array_values( $term_ids );
-		}
-
-		$query = new WP_Query( $query_args );
 		$posts = array();
+
+		if ( 'related' === $mode && ! empty( $term_ids ) ) {
+			$posts = $this->query_posts(
+				array(
+					'post_status'         => 'publish',
+					'posts_per_page'      => $count,
+					'orderby'             => 'rand',
+					'ignore_sticky_posts' => true,
+					'post__not_in'        => $current_id ? array( $current_id ) : array(),
+					'category__in'        => array_values( $term_ids ),
+				)
+			);
+
+			// Fill remaining slots with latest posts if not enough category matches.
+			if ( count( $posts ) < $count ) {
+				$remaining   = $count - count( $posts );
+				$exclude_ids = array_merge(
+					$current_id ? array( $current_id ) : array(),
+					array_column( $posts, 'id' )
+				);
+
+				$latest = $this->query_posts(
+					array(
+						'post_status'         => 'publish',
+						'posts_per_page'      => $remaining,
+						'orderby'             => 'date',
+						'order'               => 'DESC',
+						'ignore_sticky_posts' => true,
+						'post__not_in'        => $exclude_ids,
+					)
+				);
+
+				$posts = array_merge( $posts, $latest );
+			}
+		} else {
+			// Latest mode: homepage, pages, archives, etc.
+			$exclude = $current_id ? array( $current_id ) : array();
+
+			$posts = $this->query_posts(
+				array(
+					'post_status'         => 'publish',
+					'posts_per_page'      => $count,
+					'orderby'             => 'date',
+					'order'               => 'DESC',
+					'ignore_sticky_posts' => true,
+					'post__not_in'        => $exclude,
+				)
+			);
+		}
+
+		wp_send_json_success( array( 'posts' => $posts ) );
+	}
+
+	/**
+	 * Runs a WP_Query and maps posts to the response shape.
+	 *
+	 * @param array<string,mixed> $args WP_Query args (post_type and post_status defaults applied).
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function query_posts( array $args ): array {
+		$args['post_type'] = 'post';
+
+		$query  = new WP_Query( $args );
+		$result = array();
 
 		if ( $query->have_posts() ) {
 			while ( $query->have_posts() ) {
@@ -159,7 +191,7 @@ class Component implements Component_Interface {
 				$categories  = get_the_category();
 				$primary_cat = ! empty( $categories ) ? $categories[0]->name : '';
 
-				$posts[] = array(
+				$result[] = array(
 					'id'       => (int) get_the_ID(),
 					'title'    => get_the_title(),
 					'url'      => get_the_permalink(),
@@ -172,6 +204,6 @@ class Component implements Component_Interface {
 			wp_reset_postdata();
 		}
 
-		wp_send_json_success( array( 'posts' => $posts ) );
+		return $result;
 	}
 }

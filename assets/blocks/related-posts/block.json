@@ -7,6 +7,7 @@
   "description": "Auto-queries 3 random posts from the same categories. Displays a skeleton loading state while posts load via AJAX.",
   "textdomain": "wp-rig",
   "editorScript": "file:./build/index.js",
+  "viewScript": "file:./build/view.js",
   "style": "file:./style.css",
   "editorStyle": "file:./build/editor.css",
   "render": "file:./render.php",
@@ -18,6 +19,14 @@
     "postsCount": {
       "type": "number",
       "default": 3
+    },
+    "discoverUrl": {
+      "type": "string",
+      "default": "/blogs"
+    },
+    "headingText": {
+      "type": "string",
+      "default": "Related Topics"
     }
   }
 }
