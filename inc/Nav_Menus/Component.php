@@ -101,7 +101,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	private function preload_svg_assets() {
 		// Load dropdown symbol SVG.
-		$dropdown_svg = wp_rig()->get_theme_asset( 'dropdown-symbol.svg', 'svg', true ) ?? '';
+		$dropdown_svg = wp_rig()->get_theme_asset( 'chevron-down.svg', 'svg', true ) ?? '';
 
 		/**
 		 * Filters the dropdown icon SVG markup used in navigation menus.
@@ -228,7 +228,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		// Add the dropdown for items that have children.
 		if ( ! empty( $item->classes ) && in_array( 'menu-item-has-children', $item->classes, true ) ) {
-			return $item_output . '<button class="dropdown-toggle" aria-expanded="false" aria-label="' . esc_html__( 'Expand child menu', 'wp-rig' ) . '">' . $this->dropdown_symbol_svg . '</button>';
+			return str_replace( '</a>', $this->dropdown_symbol_svg . '</a>', $item_output );
 		}
 
 		return $item_output;

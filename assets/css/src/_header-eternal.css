@@ -171,6 +171,19 @@
 	transform-origin: left;
 }
 
+/* Submenu chevron — inline inside the nav link */
+.header-nav__list a .nav-chevron {
+	width: 11px;
+	height: 7px;
+	flex-shrink: 0;
+	transition: transform 0.2s ease;
+}
+
+.header-nav__list li:hover > a .nav-chevron,
+.header-nav__list li:focus-within > a .nav-chevron {
+	transform: rotate(180deg);
+}
+
 /* Sub-menu dropdown */
 .header-nav__list .sub-menu {
 	position: absolute;
