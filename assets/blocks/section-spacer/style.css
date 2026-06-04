@@ -1,0 +1,17 @@
+.section-spacer {
+	display: block;
+	width: 100%;
+	height: var( --sp-d, 80px );
+}
+
+@media ( max-width: 1024px ) {
+	.section-spacer {
+		height: var( --sp-t, 60px );
+	}
+}
+
+@media ( max-width: 768px ) {
+	.section-spacer {
+		height: var( --sp-m, 40px );
+	}
+}

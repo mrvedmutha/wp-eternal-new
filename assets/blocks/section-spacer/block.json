@@ -1,0 +1,31 @@
+{
+  "name": "wp-rig/section-spacer",
+  "apiVersion": 2,
+  "title": "Section Spacer",
+  "category": "layout",
+  "icon": "arrows-up-alt2",
+  "description": "Full-width vertical spacer between page sections. Set height per breakpoint.",
+  "textdomain": "wp-rig",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style.css",
+  "editorStyle": "file:./build/editor.css",
+  "render": "file:./render.php",
+  "supports": {
+    "html": false,
+    "align": [ "full", "wide" ]
+  },
+  "attributes": {
+    "spacingDesktop": {
+      "type": "integer",
+      "default": 80
+    },
+    "spacingTablet": {
+      "type": "integer",
+      "default": 60
+    },
+    "spacingMobile": {
+      "type": "integer",
+      "default": 40
+    }
+  }
+}
