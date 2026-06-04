@@ -190,6 +190,7 @@ body.woocommerce-cart .site-main {
 	display: flex;
 	align-items: center;
 	gap: 8px;
+	width: auto;
 }
 
 .wc-block-components-quantity-selector__input {
