@@ -2,7 +2,7 @@
  * PDP Feature Advance — frontend styles.
  *
  * Layout:
- *   .pfa-block         — full-width, 896px tall. GSAP pins this element.
+ *   .pfa-block         — full-width, 100vh tall on desktop. GSAP pins this element.
  *                        pinSpacing:true adds a spacer so footer stays below.
  *   .pfa-block__inner  — max-width 1440px, centred, full height.
  *   .pfa-block__left   — flex-1, pl-40px, pt-40px. Contains 440px content.
@@ -13,11 +13,11 @@
  *   .is-collapsed — title faded, body hidden, divider hidden
  */
 
-/* ── Section — full-width, 896px, GSAP pins this ────────────────────── */
+/* ── Section — full-width, 100vh, GSAP pins this ────────────────────── */
 /* No overflow:hidden — that breaks position:sticky on children.         */
 .pfa-block {
 	width: 100%;
-	height: 896px;
+	height: 100vh;
 	background: var( --color-background, #f9f9f7 );
 }
 
@@ -30,13 +30,13 @@
 	height: 100%;
 }
 
-/* ── Left — flex-1, content at top-left ─────────────────────────────── */
+/* ── Left — flex-1, content vertically centred ───────────────────────── */
 .pfa-block__left {
 	flex: 1 0 0;
 	min-width: 0;
 	padding: 40px 40px 40px 40px;
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 }
 
 /* ── Left content — 440px wide (Figma) ──────────────────────────────── */
@@ -146,7 +146,7 @@
 	flex: 0 0 719px;
 	width: 719px;
 	background: #eceeeb;
-	height: 896px;    /* explicit height — section has no overflow:hidden */
+	height: 100vh;    /* explicit height — section has no overflow:hidden */
 	overflow: hidden; /* clips image within the column */
 }
 
