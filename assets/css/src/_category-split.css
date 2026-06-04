@@ -244,11 +244,11 @@
 		height: auto;
 	}
 
-	/* Text below image — dark colour on light background */
+	/* Text below image — always black on mobile regardless of the color picker */
 	.category-split__content {
 		position: static;
 		padding: var(--space-6) var(--space-5);
-		color: var(--cs-text-color, var(--color-text));
+		color: #000;
 	}
 
 	.category-split__name {
