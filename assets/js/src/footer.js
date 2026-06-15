@@ -1,10 +1,13 @@
 /**
- * Footer — mobile accordion + newsletter form.
+ * Footer — mobile accordion, newsletter form, currency drop-up.
  *
  * Responsibilities:
  *  1. Mobile nav accordion: one-open-at-a-time, chevron rotation, max-height animation.
  *  2. Newsletter form async submission for all .js-newsletter-form elements.
+ *  3. Footer currency drop-up toggle.
  */
+
+import gsap from 'gsap';
 
 document.addEventListener( 'DOMContentLoaded', () => {
 
@@ -88,5 +91,68 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			}
 		} );
 	} );
+
+	// ── Currency drop-up ──────────────────────────────────────────────────────
+	const currencyTrigger = document.querySelector( '.footer-bar__currency-trigger' );
+	const currencyDropup  = document.querySelector( '.footer-bar__currency-dropup' );
+
+	if ( currencyTrigger && currencyDropup ) {
+		const openDropup = () => {
+			currencyDropup.removeAttribute( 'hidden' );
+			currencyTrigger.setAttribute( 'aria-expanded', 'true' );
+			gsap.fromTo(
+				currencyDropup,
+				{ opacity: 0, y: 6 },
+				{ opacity: 1, y: 0, duration: 0.2, ease: 'power1.out' }
+			);
+		};
+
+		const closeDropup = () => {
+			gsap.to( currencyDropup, {
+				opacity: 0,
+				y: 6,
+				duration: 0.15,
+				ease: 'power1.in',
+				onComplete() {
+					currencyDropup.setAttribute( 'hidden', '' );
+				},
+			} );
+			currencyTrigger.setAttribute( 'aria-expanded', 'false' );
+		};
+
+		// Desktop: open/close on hover.
+		const isDesktop = () => window.innerWidth > 1024;
+		let hoverCloseTimer;
+
+		currencyTrigger.closest( '.footer-bar__currency' ).addEventListener( 'mouseenter', () => {
+			if ( ! isDesktop() ) return;
+			clearTimeout( hoverCloseTimer );
+			openDropup();
+		} );
+
+		currencyTrigger.closest( '.footer-bar__currency' ).addEventListener( 'mouseleave', () => {
+			if ( ! isDesktop() ) return;
+			hoverCloseTimer = setTimeout( closeDropup, 100 );
+		} );
+
+		// Click still works on all screen sizes (mobile tap + desktop toggle).
+		currencyTrigger.addEventListener( 'click', () => {
+			const isOpen = currencyTrigger.getAttribute( 'aria-expanded' ) === 'true';
+			isOpen ? closeDropup() : openDropup();
+		} );
+
+		document.addEventListener( 'click', ( e ) => {
+			if (
+				! currencyTrigger.contains( e.target ) &&
+				! currencyDropup.contains( e.target )
+			) {
+				closeDropup();
+			}
+		} );
+
+		document.addEventListener( 'keydown', ( e ) => {
+			if ( e.key === 'Escape' ) closeDropup();
+		} );
+	}
 
 } );

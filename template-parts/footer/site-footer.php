@@ -234,18 +234,45 @@ $newsletter_nonce    = wp_create_nonce( 'wp_rest' );
 
 			<?php if ( $currency_code ) : ?>
 			<div class="footer-bar__currency">
-				<span class="footer-bar__currency-label">
-					<?php echo esc_html( $currency_code ); ?>
-					<?php if ( $currency_symbol ) : ?>
-						/ <?php echo esc_html( $currency_symbol ); ?>
-					<?php endif; ?>
-				</span>
-				<svg class="footer-bar__globe" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false">
-					<circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"/>
-					<ellipse cx="10" cy="10" rx="3" ry="7.5" stroke="currentColor" stroke-width="1.5"/>
-					<path d="M2.5 10H17.5" stroke="currentColor" stroke-width="1.5"/>
-					<path d="M3.5 6.5H16.5M3.5 13.5H16.5" stroke="currentColor" stroke-width="1.25"/>
-				</svg>
+				<button
+					class="footer-bar__currency-trigger"
+					<?php /* translators: %s = currency code */ ?>
+					aria-label="<?php echo esc_attr( sprintf( __( 'Switch currency. Currently %s', 'wp-rig' ), $currency_code ) ); ?>"
+					aria-expanded="false"
+					type="button"
+				>
+					<span class="footer-bar__currency-label">
+						<?php echo esc_html( $currency_code ); ?>
+						<?php if ( $currency_symbol ) : ?>
+							/ <?php echo esc_html( $currency_symbol ); ?>
+						<?php endif; ?>
+					</span>
+					<svg class="footer-bar__globe" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false">
+						<circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"/>
+						<ellipse cx="10" cy="10" rx="3" ry="7.5" stroke="currentColor" stroke-width="1.5"/>
+						<path d="M2.5 10H17.5" stroke="currentColor" stroke-width="1.5"/>
+						<path d="M3.5 6.5H16.5M3.5 13.5H16.5" stroke="currentColor" stroke-width="1.25"/>
+					</svg>
+				</button>
+				<?php if ( class_exists( 'CMC_Currency_Manager' ) ) : ?>
+				<div class="footer-bar__currency-dropup" hidden>
+					<div class="footer-bar__currency-list">
+						<?php
+						$enabled = \CMC_Currency_Manager::get_enabled_currencies();
+						$active  = \CMC_Currency_Manager::get_active_currency();
+						foreach ( $enabled as $code ) :
+							$sym   = \CMC_Currency_Manager::get_currency_symbol( $code );
+							$label = $sym ? $code . ' / ' . $sym : $code;
+							?>
+						<a
+							href="<?php echo esc_url( add_query_arg( 'currency', $code ) ); ?>"
+							class="footer-bar__currency-option<?php echo $active === $code ? ' is-active' : ''; ?>"
+							<?php echo $active === $code ? 'aria-current="true"' : ''; ?>
+						><?php echo esc_html( $label ); ?></a>
+						<?php endforeach; ?>
+					</div>
+				</div>
+				<?php endif; ?>
 			</div>
 			<?php endif; ?>
 		</div>

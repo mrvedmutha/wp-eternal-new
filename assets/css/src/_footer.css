@@ -385,12 +385,21 @@
 }
 
 
-/* Currency display */
+/* Currency trigger */
 .footer-bar__currency {
+	position: relative;
+	padding: 0 10px;
+}
+
+.footer-bar__currency-trigger {
 	display: flex;
 	align-items: center;
 	gap: 4px;
-	padding: 0 10px;
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	outline: none;
 	font-family: var(--font-body, "Maison Neue", sans-serif);
 	font-size: var(--footer-small-size);
 	line-height: 16px;
@@ -399,9 +408,84 @@
 	white-space: nowrap;
 }
 
+.footer-bar__currency-label {
+	position: relative;
+	display: inline-block;
+}
+
+.footer-bar__currency-label::after {
+	content: "";
+	position: absolute;
+	bottom: -1px;
+	left: 0;
+	right: 0;
+	height: 1px;
+	background-color: var(--footer-white);
+	transform: scaleX(0);
+	transform-origin: right;
+	transition: transform 0.3s ease;
+}
+
+.footer-bar__currency-trigger:not(:hover) .footer-bar__currency-label::after {
+	transform-origin: right;
+}
+
+.footer-bar__currency-trigger:hover .footer-bar__currency-label::after {
+	transform: scaleX(1);
+	transform-origin: left;
+}
+
 .footer-bar__globe {
 	color: var(--footer-white);
 	flex-shrink: 0;
+}
+
+/* Drop-up panel */
+.footer-bar__currency-dropup {
+	position: absolute;
+	bottom: calc(100% + 8px);
+	left: 0;
+	min-width: 120px;
+	background-color: #111;
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	padding: 8px;
+	z-index: 200;
+}
+
+.footer-bar__currency-list {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.footer-bar__currency-option {
+	display: block;
+	padding: 6px 10px;
+	font-family: var(--font-body, "Maison Neue", sans-serif);
+	font-size: var(--footer-small-size);
+	letter-spacing: 0.13px;
+	text-transform: uppercase;
+	color: var(--footer-white);
+	text-decoration: none;
+	text-align: center;
+	transition: color 0.15s ease;
+}
+
+.footer-bar__currency-option:hover {
+	color: rgba(255, 255, 255, 0.5);
+}
+
+.footer-bar__currency-option.is-active {
+	font-weight: 500;
+	color: #fff;
+	text-decoration: underline;
+	text-decoration-color: #fff;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
+}
+
+.footer-bar__currency-option.is-active:hover {
+	color: #fff;
 }
 
 /* Payment icons */
