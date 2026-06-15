@@ -10,6 +10,7 @@ namespace WP_Rig\WP_Rig;
 use InvalidArgumentException;
 use WP_Rig\WP_Rig\Cart;
 use WP_Rig\WP_Rig\Error_404;
+use WP_Rig\WP_Rig\My_Account;
 use WP_Rig\WP_Rig\Related_Posts;
 
 /**
@@ -176,6 +177,7 @@ class Theme {
 			new Lost_Password_Redirect\Component(),
 			new Shop\Component(),
 			new Cart\Component(),
+			new My_Account\Component(),
 			new Error_404\Component(),
 			new Blog_Hero\Component(),
 			new Blog_Posts_Grid\Component(),

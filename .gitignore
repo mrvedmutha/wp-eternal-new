@@ -29,6 +29,8 @@
 !/inc/
 !/template-parts/
 !/page-templates/
+!/woocommerce/
+!/woocommerce/**
 !/config/
 !/wp-cli/
 /config/config.local.json
