@@ -10,6 +10,9 @@
  */
 
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin( ScrollTrigger );
 
 const hero = document.querySelector( '.homepage-hero' );
 
@@ -52,5 +55,23 @@ if ( hero ) {
 			wipeTl.set( line, { transformOrigin: 'left center' } );
 			wipeTl.to( line, { scaleX: 1, duration: 0.45, ease: 'power2.out' } );
 		} );
+	}
+
+	// ── Parallax on background image ─────────────────────────────
+	const bg = hero.querySelector( '.homepage-hero__bg' );
+	if ( bg && ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+		gsap.fromTo( bg,
+			{ yPercent: 0 },
+			{
+				yPercent: -16.67,
+				ease: 'none',
+				scrollTrigger: {
+					trigger: hero,
+					start:   'top bottom',
+					end:     'bottom top',
+					scrub:   1,
+				},
+			}
+		);
 	}
 }

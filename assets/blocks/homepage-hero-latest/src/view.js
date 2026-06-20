@@ -1,4 +1,7 @@
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin( ScrollTrigger );
 
 document.querySelectorAll( '.hhl' ).forEach( ( hero ) => {
 	const slides = Array.from( hero.querySelectorAll( '.hhl__slide' ) );
@@ -56,3 +59,24 @@ document.querySelectorAll( '.hhl' ).forEach( ( hero ) => {
 		goTo( ( current + 1 ) % slides.length );
 	}, interval );
 } );
+
+// ── Parallax on hero background images ───────────────────────────
+if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+	document.querySelectorAll( '.hhl__bg img' ).forEach( ( img ) => {
+		const slide = img.closest( '.hhl__slide' );
+		if ( ! slide ) return;
+		gsap.fromTo( img,
+			{ yPercent: 0 },
+			{
+				yPercent: -16.67,
+				ease: 'none',
+				scrollTrigger: {
+					trigger: slide.closest( '.hhl' ),
+					start:   'top bottom',
+					end:     'bottom top',
+					scrub:   1,
+				},
+			}
+		);
+	} );
+}

@@ -40,4 +40,23 @@ if ( section && ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matche
 			},
 		} );
 	}
+
+	// ── Parallax on editorial image ───────────────────────────────
+	const img  = section.querySelector( '.image-editorial__image' );
+	const wrap = section.querySelector( '.image-editorial__image-wrap' );
+	if ( img && wrap ) {
+		gsap.fromTo( img,
+			{ yPercent: 0 },
+			{
+				yPercent: -16.67,
+				ease: 'none',
+				scrollTrigger: {
+					trigger: wrap,
+					start:   'top bottom',
+					end:     'bottom top',
+					scrub:   1,
+				},
+			}
+		);
+	}
 }

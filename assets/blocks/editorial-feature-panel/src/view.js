@@ -1,13 +1,13 @@
 /**
- * Editorial Feature Panel — CTA line hover animation.
+ * Editorial Feature Panel — CTA line hover + parallax image animation.
  *
- * On mouseenter: wipe the line in from left to right.
- * On mouseleave: line stays in place (no reverse).
- *
- * Requires GSAP (bundled via esbuild).
+ * Requires GSAP + ScrollTrigger (bundled via esbuild).
  */
 
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin( ScrollTrigger );
 
 document.querySelectorAll( '.pdp-feature__cta' ).forEach( ( cta ) => {
 	const line = cta.querySelector( '.pdp-feature__cta-line' );
@@ -29,3 +29,24 @@ document.querySelectorAll( '.pdp-feature__cta' ).forEach( ( cta ) => {
 		tl.to( line, { scaleX: 1, duration: 0.45, ease: 'power2.out' } );
 	} );
 } );
+
+// ── Parallax on feature images ────────────────────────────────────
+if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+	document.querySelectorAll( '.pdp-feature__img' ).forEach( ( img ) => {
+		const container = img.closest( '.pdp-feature__image' );
+		if ( ! container ) return;
+		gsap.fromTo( img,
+			{ yPercent: 0 },
+			{
+				yPercent: -16.67,
+				ease: 'none',
+				scrollTrigger: {
+					trigger: container,
+					start:   'top bottom',
+					end:     'bottom top',
+					scrub:   1,
+				},
+			}
+		);
+	} );
+}

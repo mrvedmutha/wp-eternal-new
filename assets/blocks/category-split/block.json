@@ -7,6 +7,7 @@
   "description": "Two-panel product category showcase with full-bleed images and sticky text overlay.",
   "textdomain": "wp-rig",
   "editorScript": "file:./build/index.js",
+  "viewScript": "file:./build/view.js",
   "render": "file:./render.php",
   "supports": {
     "html": false,
