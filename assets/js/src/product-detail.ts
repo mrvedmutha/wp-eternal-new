@@ -1199,9 +1199,10 @@ function initFeatureParallax(): void {
 		if ( !img ) return;
 
 		gsap.fromTo( img,
-			{ objectPosition: "50% 0%" },
+			{ objectPosition: "50% 0%", scale: 1 },
 			{
 				objectPosition: "50% 100%",
+				scale: 1.1,
 				ease: "none",
 				scrollTrigger: {
 					trigger: container,

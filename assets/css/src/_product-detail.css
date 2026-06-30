@@ -1088,6 +1088,7 @@ body.pdp-modal-open .pdp-qty__select {
 	object-fit: cover;
 	object-position: 50% 0%;
 	display: block;
+	will-change: transform;
 }
 
 /* ─── Key Ingredients ────────────────────────────────────────────────────── */
