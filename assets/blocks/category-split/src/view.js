@@ -16,7 +16,7 @@ if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
 		gsap.fromTo( img,
 			{ yPercent: 0 },
 			{
-				yPercent: -40,
+				yPercent: -25,
 				ease: 'none',
 				scrollTrigger: {
 					trigger: panel,
