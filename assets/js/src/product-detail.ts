@@ -1201,7 +1201,7 @@ function initFeatureParallax(): void {
 		gsap.fromTo( img,
 			{ yPercent: 0 },
 			{
-				yPercent: -30,
+				yPercent: -15,
 				ease: "none",
 				scrollTrigger: {
 					trigger: container,
