@@ -33,6 +33,10 @@ declare const EternalPDP: {
 	}>;
 };
 
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin( ScrollTrigger );
+
 document.addEventListener("DOMContentLoaded", () => {
 	initGallery();
 	initGalleryCarousel();
@@ -43,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	initSubscriptionToggle();
 	initIngredientsSlider();
 	captureVideoThumbnails();
+	initFeatureParallax();
 });
 
 // ─── 1. Gallery thumbnail switching ─────────────────────────────────────────
@@ -1182,4 +1187,29 @@ function initIngredientsSlider(): void {
 
 	prevBtn?.addEventListener("click", () => goTo(current - 1));
 	nextBtn?.addEventListener("click", () => goTo(current + 1));
+}
+
+// ─── Parallax: .pdp-features ─────────────────────────────────────────────────
+
+function initFeatureParallax(): void {
+	if ( window.matchMedia( "(prefers-reduced-motion: reduce)" ).matches ) return;
+
+	document.querySelectorAll<HTMLElement>( ".pdp-feature__image" ).forEach( ( container ) => {
+		const img = container.querySelector<HTMLElement>( ".pdp-feature__img" );
+		if ( !img ) return;
+
+		gsap.fromTo( img,
+			{ yPercent: 0 },
+			{
+				yPercent: -30,
+				ease: "none",
+				scrollTrigger: {
+					trigger: container,
+					start: "top bottom",
+					end: "bottom top",
+					scrub: 1,
+				},
+			}
+		);
+	} );
 }
