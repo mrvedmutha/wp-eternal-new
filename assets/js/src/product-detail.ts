@@ -1195,13 +1195,13 @@ function initFeatureParallax(): void {
 	if ( window.matchMedia( "(prefers-reduced-motion: reduce)" ).matches ) return;
 
 	document.querySelectorAll<HTMLElement>( ".pdp-feature__image" ).forEach( ( container ) => {
-		const wrap = container.querySelector<HTMLElement>( ".pdp-feature__img-wrap" );
-		if ( !wrap ) return;
+		const img = container.querySelector<HTMLElement>( ".pdp-feature__img" );
+		if ( !img ) return;
 
-		gsap.fromTo( wrap,
-			{ yPercent: 0 },
+		gsap.fromTo( img,
+			{ objectPosition: "50% 0%" },
 			{
-				yPercent: -15,
+				objectPosition: "50% 100%",
 				ease: "none",
 				scrollTrigger: {
 					trigger: container,
