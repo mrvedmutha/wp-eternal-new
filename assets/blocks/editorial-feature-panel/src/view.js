@@ -36,10 +36,9 @@ if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
 		const container = img.closest( '.pdp-feature__image' );
 		if ( ! container ) return;
 		gsap.fromTo( img,
-			{ objectPosition: '50% 0%', scale: 1 },
+			{ objectPosition: '50% 0%' },
 			{
 				objectPosition: '50% 100%',
-				scale: 1.1,
 				ease: 'none',
 				scrollTrigger: {
 					trigger: container,
