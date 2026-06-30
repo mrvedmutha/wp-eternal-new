@@ -88,7 +88,9 @@ $body_html = $body ? wp_kses_post( wp_rig()->parse_markdown_light( $body ) ) : '
 
 	<?php if ( $img_tag ) : ?>
 		<div class="pdp-feature__image">
-			<?php echo $img_tag; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above ?>
+			<div class="pdp-feature__img-wrap">
+				<?php echo $img_tag; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above ?>
+			</div>
 		</div>
 	<?php endif; ?>
 
