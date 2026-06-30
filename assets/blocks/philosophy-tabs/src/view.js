@@ -15,6 +15,8 @@
  */
 
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+gsap.registerPlugin( ScrollTrigger );
 
 const block = document.querySelector( '[data-pt-block]' );
 
@@ -115,4 +117,25 @@ if ( block ) {
 	tabBtns.forEach( ( btn, i ) => {
 		btn.addEventListener( 'click', () => switchTab( i ) );
 	} );
+
+	if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+		const imageContainer = block.querySelector( '.philosophy-tabs__images' );
+		const imgEls = block.querySelectorAll( '.pt-image img' );
+
+		imgEls.forEach( ( img ) => {
+			gsap.fromTo( img,
+				{ yPercent: 0 },
+				{
+					yPercent: -30,
+					ease: 'none',
+					scrollTrigger: {
+						trigger: imageContainer,
+						start: 'top bottom',
+						end: 'bottom top',
+						scrub: 1,
+					},
+				}
+			);
+		} );
+	}
 }

@@ -54,6 +54,11 @@
 	object-fit: cover;
 }
 
+.pt-image img {
+	height: 150%;
+	will-change: transform;
+}
+
 .pt-image__placeholder {
 	background: #d4d4d4;
 }
