@@ -815,6 +815,16 @@ function initAccordion(): void {
 	const accordion = document.querySelector<HTMLElement>("[data-accordion]");
 	if (!accordion) return;
 
+	// Remove [hidden] from closed bodies and collapse them via height:0
+	// so we can animate instead of toggling display:none.
+	accordion.querySelectorAll<HTMLElement>("[data-accordion-body]").forEach((body) => {
+		if (body.hidden) {
+			body.style.height = "0";
+			body.style.opacity = "0";
+			body.hidden = false;
+		}
+	});
+
 	const headers = accordion.querySelectorAll<HTMLButtonElement>(
 		"[data-accordion-header]",
 	);
@@ -824,19 +834,31 @@ function initAccordion(): void {
 			const isOpen = header.getAttribute("aria-expanded") === "true";
 			const bodyId = header.getAttribute("aria-controls");
 			const body = bodyId ? document.getElementById(bodyId) : null;
-			const icon = header.querySelector<HTMLElement>(
-				".pdp-accordion__icon",
-			);
+			const icon = header.querySelector<HTMLElement>(".pdp-accordion__icon");
 
 			if (!body) return;
 
 			const willOpen = !isOpen;
-
 			header.setAttribute("aria-expanded", String(willOpen));
-			body.hidden = !willOpen;
+			if (icon) icon.textContent = willOpen ? "−" : "+";
 
-			if (icon) {
-				icon.textContent = willOpen ? "−" : "+";
+			if (willOpen) {
+				const targetH = body.scrollHeight;
+				body.style.transition = "height 0.4s ease, opacity 0.35s ease";
+				body.style.height = targetH + "px";
+				body.style.opacity = "1";
+				const onEnd = (e: TransitionEvent): void => {
+					if (e.propertyName !== "height") return;
+					body.removeEventListener("transitionend", onEnd);
+					body.style.height = "auto";
+				};
+				body.addEventListener("transitionend", onEnd);
+			} else {
+				body.style.height = body.scrollHeight + "px";
+				void body.offsetHeight; // force reflow before animating to 0
+				body.style.transition = "height 0.35s ease, opacity 0.3s ease";
+				body.style.height = "0";
+				body.style.opacity = "0";
 			}
 		});
 	});
