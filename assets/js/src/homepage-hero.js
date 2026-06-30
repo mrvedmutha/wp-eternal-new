@@ -63,7 +63,7 @@ if ( hero ) {
 		gsap.fromTo( bg,
 			{ yPercent: 0 },
 			{
-				yPercent: -16.67,
+				yPercent: -40,
 				ease: 'none',
 				scrollTrigger: {
 					trigger: hero,
