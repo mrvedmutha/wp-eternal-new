@@ -145,6 +145,7 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+	gap: var(--space-2); /* min 8px between title and date once body no longer stretches to thumb height (tablet/mobile) */
 	height: 100%;
 }
 
@@ -256,26 +257,33 @@
 	margin-top: auto;
 }
 
-/* ── Tablet ────────────────────────────────────────────────── */
+/* ── Tablet: 3 across in a row, each card image-on-top ────── */
 
-@media (--bp-tablet) {
+@media screen and (max-width: 1024px) {
 	.related-posts__header {
 		padding: var(--space-16) var(--space-6);
 	}
 
 	.related-posts__grid {
-		flex-direction: column;
+		flex-direction: row;
 		padding: 0 var(--space-6) var(--space-10);
 		gap: var(--space-6);
 	}
 
+	/* Card: image on top, content below (was thumb-left / body-right) */
 	.related-posts__card {
-		width: 100%;
+		flex-direction: column;
+		flex: 1;
 	}
 
 	.related-posts__thumb {
-		width: 160px;
-		height: 220px;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 200 / 276;
+	}
+
+	.related-posts__body {
+		width: 100%;
 	}
 
 	.related-posts__heading {
@@ -284,20 +292,37 @@
 	}
 }
 
-/* ── Mobile ────────────────────────────────────────────────── */
+/* ── Mobile: 2-up slider — 2 cards visible, next one peeks/scrolls in ── */
 
-@media (--bp-mobile-md) {
+@media screen and (max-width: 768px) {
 	.related-posts__header {
 		padding: var(--space-12) var(--space-5);
 	}
 
 	.related-posts__grid {
+		flex-direction: row;
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		scroll-snap-type: x proximity;
+		scroll-padding-left: var(--space-5);
+		gap: var(--space-4);
 		padding: 0 var(--space-5) var(--space-8);
+		scrollbar-width: none;
+	}
+
+	.related-posts__grid::-webkit-scrollbar {
+		display: none;
+	}
+
+	.related-posts__card {
+		flex: 0 0 calc(50% - var(--space-4) / 2);
+		scroll-snap-align: start;
 	}
 
 	.related-posts__thumb {
-		width: 120px;
-		height: 160px;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 200 / 276;
 	}
 
 	.related-posts__heading {
