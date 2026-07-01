@@ -146,6 +146,30 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		} );
 	}
 
+	// ── 3c. Sidebar currency accordion ───────────────────────────────────────
+	const sidebarCurrency = document.querySelector( '.site-sidebar__currency' );
+
+	if ( sidebarCurrency ) {
+		const currencyTriggerEl = sidebarCurrency.querySelector( '.site-sidebar__currency-trigger' );
+		const currencyList      = sidebarCurrency.querySelector( '.site-sidebar__currency-list' );
+
+		if ( currencyTriggerEl && currencyList ) {
+			currencyTriggerEl.addEventListener( 'click', () => {
+				const isOpen = sidebarCurrency.classList.contains( 'is-open' );
+
+				if ( isOpen ) {
+					sidebarCurrency.classList.remove( 'is-open' );
+					currencyList.style.maxHeight = '0';
+					currencyTriggerEl.setAttribute( 'aria-expanded', 'false' );
+				} else {
+					sidebarCurrency.classList.add( 'is-open' );
+					currencyList.style.maxHeight = currencyList.scrollHeight + 'px';
+					currencyTriggerEl.setAttribute( 'aria-expanded', 'true' );
+				}
+			} );
+		}
+	}
+
 	// ── 4. Currency dropdown toggle ──────────────────────────────────────────
 	const currencyTrigger = header.querySelector( '.header-currency__trigger' );
 	const currencyDropdown = header.querySelector( '.header-currency__dropdown' );

@@ -390,6 +390,37 @@ $newsletter_nonce    = wp_create_nonce( 'wp_rest' );
 				</div>
 			</div>
 		<?php endforeach; ?>
+
+		<?php if ( $currency_code ) : ?>
+		<div class="footer-mobile__acc-item">
+			<button
+				class="footer-mobile__acc-trigger"
+				type="button"
+				aria-expanded="false"
+			>
+				<span><?php esc_html_e( 'Select Currency:', 'wp-rig' ); ?> <?php echo esc_html( $currency_code ); ?><?php echo $currency_symbol ? ' / ' . esc_html( $currency_symbol ) : ''; ?></span>
+				<svg class="footer-mobile__acc-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+					<path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+			</button>
+			<div class="footer-mobile__acc-body">
+				<div class="footer-mobile__currency-list">
+					<?php
+					$mobile_currency_enabled = \CMC_Currency_Manager::get_enabled_currencies();
+					foreach ( $mobile_currency_enabled as $code ) :
+						$sym   = \CMC_Currency_Manager::get_currency_symbol( $code );
+						$label = $sym ? $code . ' / ' . $sym : $code;
+						?>
+					<a
+						href="<?php echo esc_url( add_query_arg( 'currency', $code ) ); ?>"
+						class="footer-mobile__currency-option<?php echo $currency_code === $code ? ' is-active' : ''; ?>"
+						<?php echo $currency_code === $code ? 'aria-current="true"' : ''; ?>
+					><?php echo esc_html( $label ); ?></a>
+					<?php endforeach; ?>
+				</div>
+			</div>
+		</div>
+		<?php endif; ?>
 	</nav>
 
 	<?php /* ── Bottom ── */ ?>

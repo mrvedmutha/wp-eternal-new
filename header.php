@@ -112,4 +112,50 @@ namespace WP_Rig\WP_Rig;
 			);
 			?>
 		</nav>
+
+		<?php
+		// Currency switcher — same CMC plugin source as the desktop header and footer.
+		$sidebar_currency_code   = '';
+		$sidebar_currency_symbol = '';
+		if ( class_exists( 'CMC_Currency_Manager' ) ) {
+			$sidebar_currency_code   = \CMC_Currency_Manager::get_active_currency();
+			$sidebar_currency_symbol = \CMC_Currency_Manager::get_currency_symbol( $sidebar_currency_code );
+		}
+		?>
+		<?php if ( $sidebar_currency_code ) : ?>
+		<div class="site-sidebar__currency">
+			<button
+				class="site-sidebar__currency-trigger"
+				id="site-sidebar-currency-trigger"
+				type="button"
+				aria-expanded="false"
+				aria-controls="site-sidebar-currency-list"
+			>
+				<span class="site-sidebar__currency-label"><?php esc_html_e( 'Select Currency:', 'wp-rig' ); ?></span>
+				<span class="site-sidebar__currency-value">
+					<?php echo esc_html( $sidebar_currency_code ); ?>
+					<?php if ( $sidebar_currency_symbol ) : ?>
+						/ <?php echo esc_html( $sidebar_currency_symbol ); ?>
+					<?php endif; ?>
+					<svg class="site-sidebar__currency-chevron nav-chevron" width="11" height="7" viewBox="0 0 11 7" fill="none" aria-hidden="true" focusable="false">
+						<path d="M9.53027 0.530273L5.03027 5.03027L0.530273 0.530273" stroke="currentColor" stroke-width="1.5"/>
+					</svg>
+				</span>
+			</button>
+			<div class="site-sidebar__currency-list" id="site-sidebar-currency-list">
+				<?php
+				$sidebar_currency_enabled = \CMC_Currency_Manager::get_enabled_currencies();
+				foreach ( $sidebar_currency_enabled as $code ) :
+					$symbol = \CMC_Currency_Manager::get_currency_symbol( $code );
+					$label  = $symbol ? $code . ' / ' . $symbol : $code;
+					?>
+				<a
+					href="<?php echo esc_url( add_query_arg( 'currency', $code ) ); ?>"
+					class="site-sidebar__currency-option<?php echo $sidebar_currency_code === $code ? ' is-active' : ''; ?>"
+					<?php echo $sidebar_currency_code === $code ? 'aria-current="true"' : ''; ?>
+				><?php echo esc_html( $label ); ?></a>
+				<?php endforeach; ?>
+			</div>
+		</div>
+		<?php endif; ?>
 	</aside>

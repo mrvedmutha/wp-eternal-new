@@ -753,6 +753,33 @@
 	text-decoration: none;
 }
 
+/* Currency accordion item reuses .footer-mobile__acc-*, own option list */
+.footer-mobile__currency-list {
+	list-style: none;
+	margin: 0;
+	padding: 0 0 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.footer-mobile__currency-option {
+	display: block;
+	font-family: var(--font-body, "Maison Neue", sans-serif);
+	font-size: var(--footer-small-size);
+	line-height: var(--footer-lh-small);
+	font-weight: 400;
+	letter-spacing: 0.13px;
+	text-transform: uppercase;
+	color: var(--footer-muted);
+	text-decoration: none;
+}
+
+.footer-mobile__currency-option:hover,
+.footer-mobile__currency-option.is-active {
+	color: var(--footer-white);
+}
+
 /*--------------------------------------------------------------
 # Mobile Footer — Bottom (logo + legal + copyright)
 --------------------------------------------------------------*/
