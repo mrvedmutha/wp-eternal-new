@@ -113,6 +113,39 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		} );
 	}
 
+	// ── 3b. Sidebar submenu accordion ────────────────────────────────────────
+	// Parent items with children toggle their sub-menu instead of navigating —
+	// the sub-menu's own injected first link (see Nav_Menus\Component) covers
+	// visiting the parent's own URL.
+	const sidebarMenu = document.getElementById( 'sidebar-menu' );
+
+	if ( sidebarMenu ) {
+		sidebarMenu.querySelectorAll( ':scope > li.menu-item-has-children' ).forEach( ( item ) => {
+			const trigger = item.querySelector( ':scope > a' );
+			const subMenu = item.querySelector( ':scope > .sub-menu' );
+
+			if ( ! trigger || ! subMenu ) return;
+
+			trigger.setAttribute( 'aria-expanded', 'false' );
+
+			trigger.addEventListener( 'click', ( e ) => {
+				e.preventDefault();
+
+				const isOpen = item.classList.contains( 'is-open' );
+
+				if ( isOpen ) {
+					item.classList.remove( 'is-open' );
+					subMenu.style.maxHeight = '0';
+					trigger.setAttribute( 'aria-expanded', 'false' );
+				} else {
+					item.classList.add( 'is-open' );
+					subMenu.style.maxHeight = subMenu.scrollHeight + 'px';
+					trigger.setAttribute( 'aria-expanded', 'true' );
+				}
+			} );
+		} );
+	}
+
 	// ── 4. Currency dropdown toggle ──────────────────────────────────────────
 	const currencyTrigger = header.querySelector( '.header-currency__trigger' );
 	const currencyDropdown = header.querySelector( '.header-currency__dropdown' );
