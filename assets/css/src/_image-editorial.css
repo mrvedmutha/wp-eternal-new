@@ -73,7 +73,7 @@
 	font-size: 40px;
 	line-height: 48px;
 	letter-spacing: -2px;
-	color: var(--color-white);
+	color: var(--image-editorial-text-color, var(--color-white));
 	margin: 0;
 }
 
@@ -91,7 +91,7 @@
 	font-size: 15px;
 	line-height: 23px;
 	letter-spacing: 0.15px;
-	color: var(--color-white);
+	color: var(--image-editorial-text-color, var(--color-white));
 	margin: 0;
 }
 

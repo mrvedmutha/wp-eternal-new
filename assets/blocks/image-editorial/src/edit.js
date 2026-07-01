@@ -1,10 +1,10 @@
 import { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
-import { PanelBody, TextareaControl, Button } from '@wordpress/components';
+import { PanelBody, TextareaControl, Button, ColorPicker } from '@wordpress/components';
 import ServerSideRender from '@wordpress/server-side-render';
 
 export default function Edit( { name, attributes, setAttributes } ) {
 	const blockProps = useBlockProps();
-	const { imageId, imageUrl, headlineText, bodyParagraph1, bodyParagraph2, bodyParagraph3 } = attributes;
+	const { imageId, imageUrl, headlineText, bodyParagraph1, bodyParagraph2, bodyParagraph3, textColor } = attributes;
 
 	return (
 		<>
@@ -79,6 +79,14 @@ export default function Edit( { name, attributes, setAttributes } ) {
 						value={ bodyParagraph3 }
 						onChange={ ( val ) => setAttributes( { bodyParagraph3: val } ) }
 						rows={ 3 }
+					/>
+				</PanelBody>
+
+				<PanelBody title="Text Color" initialOpen={ false }>
+					<ColorPicker
+						color={ textColor }
+						onChange={ ( val ) => setAttributes( { textColor: val } ) }
+						enableAlpha={ false }
 					/>
 				</PanelBody>
 			</InspectorControls>

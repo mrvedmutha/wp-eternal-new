@@ -41,6 +41,10 @@
     "bodyParagraph3": {
       "type": "string",
       "default": "Modern formulation science allows these traditions to be structured with greater precision, stability and absorption efficiency."
+    },
+    "textColor": {
+      "type": "string",
+      "default": "#ffffff"
     }
   }
 }

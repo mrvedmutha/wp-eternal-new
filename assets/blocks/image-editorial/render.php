@@ -28,6 +28,9 @@ $body_p1   = $attributes['bodyParagraph1'] ?? '';
 $body_p2   = $attributes['bodyParagraph2'] ?? '';
 $body_p3   = $attributes['bodyParagraph3'] ?? '';
 
+$text_color_raw = sanitize_hex_color( $attributes['textColor'] ?? '#ffffff' );
+$text_color     = $text_color_raw ? $text_color_raw : '#ffffff';
+
 // Prefer resolved WP attachment URL so media library moves don't break the image.
 if ( $image_id ) {
 	$resolved = wp_get_attachment_image_url( $image_id, 'full' );
@@ -38,7 +41,7 @@ if ( $image_id ) {
 
 $wrapper_attrs = wp_rig()->block_wrapper_attributes( array( 'image-editorial' ), $attributes );
 ?>
-<section <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+<section <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> style="--image-editorial-text-color: <?php echo esc_attr( $text_color ); ?>">
 
 	<?php if ( $image_url ) : ?>
 	<figure class="image-editorial__image-wrap" aria-hidden="true">
