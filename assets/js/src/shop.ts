@@ -13,6 +13,10 @@
 
 import { gsap } from 'gsap';
 
+// Product card hover — simple fade, no zoom/slide.
+const HOVER_IN_DURATION = 0.1;  // near-instant reveal on mouse enter
+const HOVER_OUT_DURATION = 0.3; // smooth fade out on mouse leave
+
 // ============================================================================
 // TYPES
 // ============================================================================
@@ -152,21 +156,15 @@ function initProductGrid(): void {
 			const hoverImg = zone.querySelector('.shop-product__img--hover');
 			const atbBar = zone.querySelector('.shop-product__atb');
 
-			// Set initial states
+			// Set initial states (simple fade — no zoom/slide)
 			if (hoverImg) {
-				gsap.set(hoverImg, {
-					opacity: 0,
-					scale: 1.3,
-					transformOrigin: 'center 20%'
-				});
+				gsap.set(hoverImg, { opacity: 0 });
 			}
 
 			if (atbBar) {
-				gsap.set(atbBar, {
-					opacity: 0,
-					yPercent: 100,
-					y: 16
-				});
+				// yPercent keeps the bar clipped below the zone's overflow:hidden
+				// boundary (and out of the click area) while hidden.
+				gsap.set(atbBar, { opacity: 0, yPercent: 100 });
 			}
 
 			if (!hoverImg && !atbBar) return;
@@ -175,18 +173,16 @@ function initProductGrid(): void {
 				if (hoverImg) {
 					gsap.to(hoverImg, {
 						opacity: 1,
-						scale: 1.15,
-						duration: 0.5,
-						ease: 'power2.out'
+						duration: HOVER_IN_DURATION,
+						ease: 'power1.out'
 					});
 				}
 				if (atbBar) {
 					gsap.to(atbBar, {
 						opacity: 1,
 						yPercent: 0,
-						y: -8,
-						duration: 0.38,
-						ease: 'power2.out'
+						duration: HOVER_IN_DURATION,
+						ease: 'power1.out'
 					});
 				}
 			});
@@ -195,18 +191,16 @@ function initProductGrid(): void {
 				if (hoverImg) {
 					gsap.to(hoverImg, {
 						opacity: 0,
-						scale: 1.3,
-						duration: 0.35,
-						ease: 'power2.in'
+						duration: HOVER_OUT_DURATION,
+						ease: 'power1.in'
 					});
 				}
 				if (atbBar) {
 					gsap.to(atbBar, {
 						opacity: 0,
 						yPercent: 100,
-						y: 16,
-						duration: 0.3,
-						ease: 'power2.in'
+						duration: HOVER_OUT_DURATION,
+						ease: 'power1.in'
 					});
 				}
 			});

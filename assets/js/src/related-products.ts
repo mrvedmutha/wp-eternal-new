@@ -4,7 +4,7 @@
  * Desktop:
  *   - Pages of 3 cards, dot navigation
  *   - Auto-advance every 6 s with pause-on-hover
- *   - GSAP hover: second gallery image fades in with zoom-out + ADD TO BAG slides up
+ *   - GSAP hover: second gallery image + ADD TO BAG fade in fast, fade out smooth (no zoom/slide)
  *
  * Mobile (future spec): 2-per-swipe, handled in responsive pass.
  */
@@ -206,7 +206,10 @@ function initRelatedProducts(section: HTMLElement): void {
 	startAuto();
 }
 
-// ─── Card hover (image zoom-out + ATB slide-up) ──────────────────────────────
+// ─── Card hover (simple fade — no zoom/slide) ────────────────────────────────
+
+const HOVER_IN_DURATION  = 0.1;  // near-instant reveal on mouse enter
+const HOVER_OUT_DURATION = 0.3;  // smooth fade out on mouse leave
 
 function initCardHover(imgZone: HTMLElement): void {
 	const hoverImg = imgZone.querySelector<HTMLElement>('.related-products__img--hover');
@@ -214,10 +217,12 @@ function initCardHover(imgZone: HTMLElement): void {
 
 	// Set initial states for GSAP-controlled props.
 	if (hoverImg) {
-		gsap.set(hoverImg, { opacity: 0, scale: 1.3, transformOrigin: 'center 20%' });
+		gsap.set(hoverImg, { opacity: 0 });
 	}
 	if (atbBar) {
-		gsap.set(atbBar, { yPercent: 100, y: 16 });
+		// yPercent keeps the bar clipped below the img-zone's overflow:hidden
+		// boundary (and out of the click area) while hidden — not a "slide" effect.
+		gsap.set(atbBar, { opacity: 0, yPercent: 100 });
 	}
 
 	// Bail early if there's nothing animated (e.g. no hover image, no ATB).
@@ -227,17 +232,16 @@ function initCardHover(imgZone: HTMLElement): void {
 		if (hoverImg) {
 			gsap.to(hoverImg, {
 				opacity: 1,
-				scale: 1,
-				duration: 0.5,
-				ease: 'power2.out',
+				duration: HOVER_IN_DURATION,
+				ease: 'power1.out',
 			});
 		}
 		if (atbBar) {
 			gsap.to(atbBar, {
+				opacity: 1,
 				yPercent: 0,
-				y: -8,
-				duration: 0.38,
-				ease: 'power2.out',
+				duration: HOVER_IN_DURATION,
+				ease: 'power1.out',
 			});
 		}
 	});
@@ -246,17 +250,16 @@ function initCardHover(imgZone: HTMLElement): void {
 		if (hoverImg) {
 			gsap.to(hoverImg, {
 				opacity: 0,
-				scale: 1.3,
-				duration: 0.35,
-				ease: 'power2.in',
+				duration: HOVER_OUT_DURATION,
+				ease: 'power1.in',
 			});
 		}
 		if (atbBar) {
 			gsap.to(atbBar, {
+				opacity: 0,
 				yPercent: 100,
-				y: 16,
-				duration: 0.3,
-				ease: 'power2.in',
+				duration: HOVER_OUT_DURATION,
+				ease: 'power1.in',
 			});
 		}
 	});

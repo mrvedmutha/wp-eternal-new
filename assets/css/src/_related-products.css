@@ -123,9 +123,7 @@
 /* Hover image sits on top of main; initial state driven by GSAP */
 .related-products__img--hover {
 	z-index: 1;
-	opacity: 0; /* hidden by default; GSAP animates on desktop hover */
-
-	/* scale is set/animated by GSAP – no CSS transition needed */
+	opacity: 0; /* hidden by default; GSAP fades in/out on desktop hover */
 }
 
 /* ─── ADD TO BAG bar ─────────────────────────────────────────────────────── */
@@ -143,8 +141,9 @@
 	justify-content: center;
 	transition: background 0.25s ease;
 
-	/* yPercent: 100, y: 16 set by GSAP on init
-	 * hidden below img-zone (overflow:hidden) */
+	/* yPercent: 100 set by GSAP on init — keeps it clipped below the
+	 * img-zone's overflow:hidden boundary (and out of the click area)
+	 * while hidden; fades in/out alongside opacity, no slide motion */
 }
 
 .related-products__atb.is-adding {
