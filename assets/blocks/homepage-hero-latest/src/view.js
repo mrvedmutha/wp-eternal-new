@@ -63,7 +63,7 @@ document.querySelectorAll( '.hhl' ).forEach( ( hero ) => {
 // ── Parallax on hero background images ───────────────────────────
 // object-position pan (not translateY) so the image never moves
 // outside its container — see pdp-feature / editorial-feature-panel.
-if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches && window.matchMedia( '(min-width: 1025px)' ).matches ) {
 	document.querySelectorAll( '.hhl__bg img' ).forEach( ( img ) => {
 		const slide = img.closest( '.hhl__slide' );
 		if ( ! slide ) return;

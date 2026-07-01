@@ -9,7 +9,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin( ScrollTrigger );
 
-if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches && window.matchMedia( '(min-width: 1025px)' ).matches ) {
 	document.querySelectorAll( '.category-split__image' ).forEach( ( img ) => {
 		const panel = img.closest( '.category-split__panel' );
 		if ( ! panel ) return;

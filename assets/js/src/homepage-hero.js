@@ -61,7 +61,7 @@ if ( hero ) {
 	// object-position pan (not translateY) so the image never moves
 	// outside its container — see pdp-feature / editorial-feature-panel.
 	const bg = hero.querySelector( '.homepage-hero__bg' );
-	if ( bg && ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+	if ( bg && ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches && window.matchMedia( '(min-width: 1025px)' ).matches ) {
 		gsap.fromTo( bg,
 			{ objectPosition: '50% 0%' },
 			{

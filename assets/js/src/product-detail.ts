@@ -1193,6 +1193,7 @@ function initIngredientsSlider(): void {
 
 function initFeatureParallax(): void {
 	if ( window.matchMedia( "(prefers-reduced-motion: reduce)" ).matches ) return;
+	if ( ! window.matchMedia( "(min-width: 1025px)" ).matches ) return;
 
 	document.querySelectorAll<HTMLElement>( ".pdp-feature__image" ).forEach( ( container ) => {
 		const img = container.querySelector<HTMLElement>( ".pdp-feature__img" );

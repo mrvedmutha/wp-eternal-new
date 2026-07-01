@@ -41,10 +41,10 @@ if ( section && ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matche
 		} );
 	}
 
-	// ── Parallax on editorial image ───────────────────────────────
+	// ── Parallax on editorial image (desktop only) ────────────────
 	const img  = section.querySelector( '.image-editorial__image' );
 	const wrap = section.querySelector( '.image-editorial__image-wrap' );
-	if ( img && wrap ) {
+	if ( img && wrap && window.matchMedia( '(min-width: 1025px)' ).matches ) {
 		gsap.fromTo( img,
 			{ yPercent: 0 },
 			{

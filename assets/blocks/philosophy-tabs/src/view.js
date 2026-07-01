@@ -118,7 +118,7 @@ if ( block ) {
 		btn.addEventListener( 'click', () => switchTab( i ) );
 	} );
 
-	if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+	if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches && window.matchMedia( '(min-width: 1025px)' ).matches ) {
 		const imageContainer = block.querySelector( '.philosophy-tabs__images' );
 		const imgEls = block.querySelectorAll( '.pt-image img' );
 

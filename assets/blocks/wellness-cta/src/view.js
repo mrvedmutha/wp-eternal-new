@@ -29,7 +29,7 @@ document.querySelectorAll( '.wellness-cta__cta' ).forEach( ( cta ) => {
 } );
 
 // ── Parallax on wellness image ────────────────────────────────────
-if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches && window.matchMedia( '(min-width: 1025px)' ).matches ) {
 	document.querySelectorAll( '.wellness-cta__img' ).forEach( ( img ) => {
 		const container = img.closest( '.wellness-cta__image-bg' );
 		if ( ! container ) return;

@@ -31,7 +31,7 @@ document.querySelectorAll( '.pdp-feature__cta' ).forEach( ( cta ) => {
 } );
 
 // ── Parallax on feature images ────────────────────────────────────
-if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches && window.matchMedia( '(min-width: 1025px)' ).matches ) {
 	document.querySelectorAll( '.pdp-feature__img' ).forEach( ( img ) => {
 		const container = img.closest( '.pdp-feature__image' );
 		if ( ! container ) return;

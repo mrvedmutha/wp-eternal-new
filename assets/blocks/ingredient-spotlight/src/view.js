@@ -9,7 +9,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin( ScrollTrigger );
 
-if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+if ( ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches && window.matchMedia( '(min-width: 1025px)' ).matches ) {
 	document.querySelectorAll( '.ingredient-spotlight__image' ).forEach( ( img ) => {
 		const container = img.closest( '.ingredient-spotlight__image-wrap' );
 		if ( ! container ) return;
