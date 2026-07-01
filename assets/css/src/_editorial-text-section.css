@@ -55,7 +55,7 @@
 .editorial-text-section__body {
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
+	gap: 48px; /* one full line-height — Figma renders this as a blank line, not a small gap */
 }
 
 .editorial-text-section__body-p {
@@ -109,9 +109,9 @@
 	}
 }
 
-/* ── Small / XS mobile (≤ 450px) ─────────────────────────── */
+/* ── Mobile (≤ 768px) ─────────────────────────────────────── */
 
-@media (--bp-mobile-sm) {
+@media (--bp-mobile-md) {
 
 	.editorial-text-section__body-p {
 		font-size: 24px;
