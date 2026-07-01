@@ -171,6 +171,11 @@
 	transform-origin: left;
 }
 
+/* Top-level items with a dropdown don't get the underline either */
+.header-nav__list li.menu-item-has-children > a::after {
+	display: none;
+}
+
 /* Submenu chevron — inline inside the nav link */
 .header-nav__list a .nav-chevron {
 	width: 11px;
