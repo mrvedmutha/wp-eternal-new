@@ -58,12 +58,14 @@ if ( hero ) {
 	}
 
 	// ── Parallax on background image ─────────────────────────────
+	// object-position pan (not translateY) so the image never moves
+	// outside its container — see pdp-feature / editorial-feature-panel.
 	const bg = hero.querySelector( '.homepage-hero__bg' );
 	if ( bg && ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
 		gsap.fromTo( bg,
-			{ yPercent: 0 },
+			{ objectPosition: '50% 0%' },
 			{
-				yPercent: -30,
+				objectPosition: '50% 100%',
 				ease: 'none',
 				scrollTrigger: {
 					trigger: hero,
