@@ -64,9 +64,12 @@ class Component implements Component_Interface {
 
 	/**
 	 * Registers the blog card thumbnail image size.
+	 *
+	 * Registered at 2x the largest CSS display size (200×276) so the crop
+	 * stays crisp on retina/high-DPI screens instead of being upscaled.
 	 */
 	public function register_image_size(): void {
-		add_image_size( 'blog-card-thumb', 200, 276, true );
+		add_image_size( 'blog-card-thumb', 400, 552, true );
 	}
 
 	/**
