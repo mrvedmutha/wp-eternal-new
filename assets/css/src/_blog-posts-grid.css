@@ -347,11 +347,3 @@
 	}
 }
 
-/* ── Responsive — Mobile small (< 480px) ─────────────────── */
-
-@media (max-width: 479px) {
-
-	.blog-posts-grid__cards {
-		grid-template-columns: 1fr;
-	}
-}
