@@ -176,7 +176,7 @@ body.tax-product_cat .plp-faq {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	padding: 10px 0;
+	padding: 10px 10px 10px 0;
 	/* stylelint-disable-next-line no-descending-specificity */
 }
 
@@ -282,7 +282,7 @@ body.tax-product_cat .plp-faq {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	padding: 10px 0;
+	padding: 10px 10px 10px 0;
 	font-family: "Maison Neue", sans-serif;
 	font-weight: 400;
 	font-size: 13px;
@@ -300,7 +300,16 @@ body.tax-product_cat .plp-faq {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	padding: 10px 0;
+	padding: 10px 10px 10px 0;
+}
+
+/* Container that holds the dynamically-rendered filter UI. Its children
+   (clear-all, sort, dividers, groups) are spaced with a flat 20px gap to
+   match the Figma frame — do not use per-child margins here. */
+#plp-filters-container {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
 }
 
 .plp-filters__clear-btn {
@@ -453,8 +462,6 @@ body.tax-product_cat .plp-faq {
 .plp-filters__sort {
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
-	margin-bottom: 12px;
 	position: relative;
 }
 
@@ -544,7 +551,6 @@ body.tax-product_cat .plp-faq {
 .plp-filters__group-options {
 	display: none;
 	flex-direction: column;
-	gap: 6px;
 }
 
 .plp-filters__group-options.is-open {
@@ -1128,6 +1134,10 @@ body.tax-product_cat .plp-faq {
 	left: 0;
 	width: 100vw;
 	height: 100vh;
+
+	/* dvh tracks the actual visible viewport on mobile browsers (address
+	   bar, toolbars) — 100vh alone can overshoot it and clip the drawer. */
+	height: 100dvh;
 	background: rgba(0, 0, 0, 0.5);
 	z-index: 9999;
 	opacity: 0;
@@ -1150,18 +1160,71 @@ body.tax-product_cat .plp-faq {
 	width: 100%;
 	max-width: 400px;
 	height: 100vh;
+	height: 100dvh; /* see .plp-filters-overlay */
 	background: #fff;
 	z-index: 10000;
 	transform: translateX(100%);
 	transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 	display: flex;
 	flex-direction: column;
-	padding: 40px 20px;
-	overflow-y: auto;
+	padding: 40px 20px 0;
+	overflow: hidden;
 }
 
 .plp-filters-overlay.is-active .plp-filters-drawer {
 	transform: translateX(0);
+}
+
+/* Scrollable filter list, leaving the Apply Now bar pinned at the bottom. */
+.plp-filters-drawer__content {
+	flex: 1;
+	overflow-y: auto;
+	padding-bottom: 20px;
+}
+
+.plp-filters-drawer__actions {
+	flex-shrink: 0;
+	padding: 20px 0;
+	border-top: 0.5px solid #000;
+}
+
+.plp-filters-drawer__apply-btn {
+	width: 100%;
+	height: 46px;
+	background: #021f1d;
+	color: #fff;
+	border: none;
+	font-family: "Maison Neue", sans-serif;
+	font-weight: 500;
+	font-size: 13px;
+	letter-spacing: 1.6px;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: background 0.2s ease;
+}
+
+.plp-filters-drawer__apply-btn:hover {
+	background: #033335;
+}
+
+/* The drawer is a mobile/tablet-only UI — force it closed above that
+   breakpoint so resizing/rotating out of mobile doesn't leave it stuck open. */
+@media (min-width: 1025px) {
+
+	.plp-filters-overlay {
+		display: none !important;
+	}
+}
+
+/* Full-screen drawer on phones. The fixed 400px side-panel width is wider
+   than some phones' own viewport (e.g. Nothing Phone 1 at ~412px CSS px),
+   which left a sliver of the page visible instead of a true full-screen
+   drawer. Tablet (769–1024px) keeps the 400px side panel. */
+@media (max-width: 768px) {
+
+	.plp-filters-drawer {
+		max-width: 100%;
+	}
 }
 
 .plp-filters-drawer__close {
@@ -1248,6 +1311,14 @@ body.tax-product_cat .plp-faq {
 		flex: 1;
 		min-width: 0;
 		overflow: hidden;
+	}
+
+	/* Truncate to one line instead of wrapping — a 2-line tagline pushes
+	   the price down on that card only, misaligning it against neighbors. */
+	.plp-product__tagline {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 }
 

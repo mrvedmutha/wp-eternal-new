@@ -142,19 +142,25 @@ function initMobileFilterSidebar(filterManager?: FilterManager | null): void {
 				});
 			});
 
-			// Re-attach checkbox change listeners
+			// Re-attach checkbox change listeners.
+			// The mobile drawer defers filtering until "Apply Now" is
+			// clicked, so this only syncs selection state and visual
+			// feedback — it must not trigger the main checkbox's change
+			// event, which would reload the page immediately.
 			drawerContent.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach(checkbox => {
 				checkbox.addEventListener('change', () => {
-					// Sync with main filter container
+					checkbox.closest('.plp-filters__option')?.classList.toggle('is-selected', checkbox.checked);
+
 					const mainContainer = document.querySelector<HTMLElement>('#plp-filters-container');
 					if (mainContainer) {
 						const mainCheckbox = mainContainer.querySelector<HTMLInputElement>(`input[value="${checkbox.value}"]`);
 						if (mainCheckbox) {
 							mainCheckbox.checked = checkbox.checked;
-							// Trigger the change event on the main checkbox
-							mainCheckbox.dispatchEvent(new Event('change'));
+							mainCheckbox.closest('.plp-filters__option')?.classList.toggle('is-selected', checkbox.checked);
 						}
 					}
+
+					filterManager?.syncSelection(checkbox.value, checkbox.checked);
 				});
 			});
 
@@ -212,6 +218,11 @@ function initMobileFilterSidebar(filterManager?: FilterManager | null): void {
 			<button class="plp-filters-drawer__close" aria-label="Close filters">&times;</button>
 			<h2 class="plp-filters-drawer__title">Filters</h2>
 			<div class="plp-filters-drawer__content"></div>
+			<div class="plp-filters-drawer__actions">
+				<button type="button" class="plp-filters-drawer__apply-btn" data-action="apply-mobile">
+					Apply Now
+				</button>
+			</div>
 		`;
 
 		overlay.appendChild(drawer);
@@ -228,6 +239,13 @@ function initMobileFilterSidebar(filterManager?: FilterManager | null): void {
 		// Setup event listeners
 		const newCloseBtn = drawer.querySelector('.plp-filters-drawer__close');
 		const newFilterToggle = document.querySelector('.plp-grid__filter-toggle');
+		const applyBtn = drawer.querySelector('[data-action="apply-mobile"]');
+
+		if (applyBtn) {
+			applyBtn.addEventListener('click', () => {
+				filterManager?.applyFilters();
+			});
+		}
 
 		if (newFilterToggle) {
 			newFilterToggle.addEventListener('click', () => {
@@ -731,7 +749,7 @@ class FilterManager {
 					<div class="plp-filters__group-title" data-group-toggle>
 						${group.group_name.toUpperCase()}
 					</div>
-					<div class="plp-filters__group-options ${index === 0 ? 'is-open' : ''}">
+					<div class="plp-filters__group-options is-open">
 						${group.options.map(option => this.renderOption(option)).join('')}
 					</div>
 				</div>
@@ -823,12 +841,36 @@ class FilterManager {
 	private handleCheckboxChange(checkbox: HTMLInputElement): void {
 		const slug = checkbox.value;
 
+		checkbox.closest('.plp-filters__option')?.classList.toggle('is-selected', checkbox.checked);
+
 		if (checkbox.checked) {
 			this.selectedFilters.add(slug);
 		} else {
 			this.selectedFilters.delete(slug);
 		}
 
+		this.updateURL();
+	}
+
+	/**
+	 * Sync a filter's selected state without navigating. Used by the mobile
+	 * drawer, which defers filtering until "Apply Now" is clicked.
+	 *
+	 * @param {string}  slug    Filter option slug.
+	 * @param {boolean} checked Whether the option is now checked.
+	 */
+	public syncSelection(slug: string, checked: boolean): void {
+		if (checked) {
+			this.selectedFilters.add(slug);
+		} else {
+			this.selectedFilters.delete(slug);
+		}
+	}
+
+	/**
+	 * Commit the currently selected filters (mobile "Apply Now" button).
+	 */
+	public applyFilters(): void {
 		this.updateURL();
 	}
 

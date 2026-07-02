@@ -958,6 +958,14 @@ body.woocommerce-shop .shop-faq {
 		overflow: hidden;
 	}
 
+	/* Truncate to one line instead of wrapping — a 2-line tagline pushes
+	   the price down on that card only, misaligning it against neighbors. */
+	.shop-product__tagline {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
 	/* FAQ switches to column layout at 1024px */
 	.shop-faq {
 		padding-left: 40px;
