@@ -1,0 +1,35 @@
+{
+  "name": "wp-rig/hero-image-parallax",
+  "apiVersion": 2,
+  "title": "Hero Image Parallax",
+  "category": "widgets",
+  "icon": "cover-image",
+  "description": "Fixed-height (668px) full-width hero image with GSAP scroll parallax — no heading/text.",
+  "textdomain": "wp-rig",
+  "render": "file:./render.php",
+  "editorScript": "file:./build/index.js",
+  "viewScript": "file:./build/view.js",
+  "editorStyle": "file:./build/editor.css",
+  "supports": {
+    "html": false,
+    "align": [ "full" ]
+  },
+  "attributes": {
+    "heroImageId": {
+      "type": "integer",
+      "default": 0
+    },
+    "heroImageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "heroMobileImageId": {
+      "type": "integer",
+      "default": 0
+    },
+    "heroMobileImageUrl": {
+      "type": "string",
+      "default": ""
+    }
+  }
+}

@@ -1,0 +1,44 @@
+/*--------------------------------------------------------------
+# Hero Image Parallax Section
+#
+# Figma reference: node 694:4511
+# Fixed 668px full-width image hero, no text — GSAP scroll parallax
+# via transform (scaled image inside an overflow:hidden wrapper),
+# guaranteeing visible movement regardless of source image aspect ratio.
+--------------------------------------------------------------*/
+
+.hero-image-parallax {
+	position: relative;
+	width: 100%;
+	height: 668px;
+	overflow: hidden;
+}
+
+.hero-image-parallax__bg {
+	position: absolute;
+	left: 0;
+	top: -15%;
+	width: 100%;
+	height: 130%;
+	max-width: none; /* override global img { max-width: 100% } */
+	object-fit: cover;
+	object-position: 50% 50%;
+	will-change: transform;
+}
+
+/* ── Mobile / Tablet (≤ 1024px) — static, natural aspect, no parallax ── */
+
+@media (--bp-tablet) {
+
+	.hero-image-parallax {
+		height: auto;
+	}
+
+	.hero-image-parallax__bg {
+		position: relative;
+		left: auto;
+		top: auto;
+		width: 100%;
+		height: auto;
+	}
+}
