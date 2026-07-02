@@ -150,8 +150,12 @@ $total_pages   = count( $product_pages );
 						}
 
 						$buy_amount = $meta['buy_box_amount'] ?? '';
-						$buy_unit   = $meta['buy_box_unit'] ?? '';
-						$size_label = trim( $buy_amount . $buy_unit );
+						$buy_unit   = trim( $meta['buy_box_unit'] ?? '' );
+						// Short unit abbreviations (ML, G, KG, OZ…) sit flush against the
+						// number; multi-word/descriptive units ("Vegan Capsules") need a
+						// space between them.
+						$unit_sep   = ( $buy_unit && ! preg_match( '/^[a-zA-Z]{1,3}$/', $buy_unit ) ) ? ' ' : '';
+						$size_label = trim( $buy_amount . $unit_sep . $buy_unit );
 
 						// Variant pills: size label + non-variation product attributes.
 						$pills = array();

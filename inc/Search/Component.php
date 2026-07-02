@@ -300,10 +300,13 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			: $product->get_name();
 
 		// Build size badge from buy-box meta (same source as shop cards).
-		$pid        = $product->get_id();
-		$amount     = (string) get_post_meta( $pid, 'product_buy_box_amount', true );
-		$unit       = (string) get_post_meta( $pid, 'product_buy_box_unit', true );
-		$size_badge = strtoupper( trim( $amount . $unit ) );
+		$pid    = $product->get_id();
+		$amount = (string) get_post_meta( $pid, 'product_buy_box_amount', true );
+		$unit   = trim( (string) get_post_meta( $pid, 'product_buy_box_unit', true ) );
+		// Short unit abbreviations (ML, G, KG, OZ…) sit flush against the number;
+		// multi-word/descriptive units ("Vegan Capsules") need a space between them.
+		$unit_sep   = ( $unit && ! preg_match( '/^[a-zA-Z]{1,3}$/', $unit ) ) ? ' ' : '';
+		$size_badge = strtoupper( trim( $amount . $unit_sep . $unit ) );
 
 		return array(
 			'id'                => $pid,
