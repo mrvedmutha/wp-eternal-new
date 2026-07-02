@@ -45,9 +45,10 @@ export default function Edit( { name, attributes, setAttributes } ) {
 					{ ( variant === 'heading-body' || variant === 'heading-body-left' ) && (
 						<TextareaControl
 							label="Body"
+							help="Leave a blank line between paragraphs to start a new one."
 							value={ bodyText }
 							onChange={ ( val ) => setAttributes( { bodyText: val } ) }
-							rows={ 4 }
+							rows={ 6 }
 						/>
 					) }
 				</PanelBody>

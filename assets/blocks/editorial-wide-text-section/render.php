@@ -31,6 +31,20 @@ $quote_text   = $attributes['quoteText'] ?? '';
 $body_text    = $attributes['bodyText'] ?? '';
 
 $wrapper_attrs = wp_rig()->block_wrapper_attributes( array( 'ewts', 'ewts--' . $variant ), $attributes );
+
+// Blank lines start a new paragraph (24px gap via .ewts__body p + p);
+// a single line break becomes a soft <br> within the same paragraph.
+$body_paragraphs = array();
+if ( $body_text ) {
+	$paragraphs = preg_split( '/[\r\n]{2,}/', trim( $body_text ) );
+	foreach ( $paragraphs as $paragraph ) {
+		$paragraph = trim( $paragraph );
+		if ( '' === $paragraph ) {
+			continue;
+		}
+		$body_paragraphs[] = nl2br( esc_html( $paragraph ), false );
+	}
+}
 ?>
 <section <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 	<div class="ewts__inner">
@@ -51,16 +65,20 @@ $wrapper_attrs = wp_rig()->block_wrapper_attributes( array( 'ewts', 'ewts--' . $
 			</h2>
 			<?php endif; ?>
 
-			<?php if ( 'heading-body' === $variant && $body_text ) : ?>
-			<p class="ewts__body">
-				<?php echo esc_html( $body_text ); ?>
-			</p>
+			<?php if ( 'heading-body' === $variant && $body_paragraphs ) : ?>
+			<div class="ewts__body">
+				<?php foreach ( $body_paragraphs as $paragraph ) : ?>
+				<p><?php echo $paragraph; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already escaped via esc_html() before nl2br(). ?></p>
+				<?php endforeach; ?>
+			</div>
 			<?php endif; ?>
 
-			<?php if ( 'heading-body-left' === $variant && $body_text ) : ?>
-			<p class="ewts__body ewts__body--left">
-				<?php echo esc_html( $body_text ); ?>
-			</p>
+			<?php if ( 'heading-body-left' === $variant && $body_paragraphs ) : ?>
+			<div class="ewts__body ewts__body--left">
+				<?php foreach ( $body_paragraphs as $paragraph ) : ?>
+				<p><?php echo $paragraph; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already escaped via esc_html() before nl2br(). ?></p>
+				<?php endforeach; ?>
+			</div>
 			<?php endif; ?>
 
 		<?php endif; ?>

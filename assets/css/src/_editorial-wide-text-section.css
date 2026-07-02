@@ -104,6 +104,14 @@
 	margin-bottom: 0;
 }
 
+.ewts__body p {
+	margin: 0;
+}
+
+.ewts__body p + p {
+	margin-top: 24px;
+}
+
 .ewts__body--left {
 	text-align: left;
 	max-width: 463px;
