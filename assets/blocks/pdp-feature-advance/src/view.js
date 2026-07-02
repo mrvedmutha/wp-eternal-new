@@ -66,16 +66,38 @@ if ( section ) {
 				rafId = requestAnimationFrame( tick );
 			}
 
-			activate( 0 );
-			rafId = requestAnimationFrame( tick );
+			let started = false;
+
+			function startAutoplay() {
+				if ( started ) return;
+				started = true;
+				activate( 0 );
+				rafId = requestAnimationFrame( tick );
+			}
+
+			// Don't start the auto-play loop until the section is actually
+			// scrolled into view — starting immediately on page load looked
+			// wrong when the section was still off-screen.
+			const observer = new IntersectionObserver( ( entries ) => {
+				if ( entries[ 0 ].isIntersecting ) {
+					startAutoplay();
+					observer.disconnect();
+				}
+			}, { threshold: 0.3 } );
+
+			observer.observe( section );
 
 			function onPrev() {
+				started = true;
+				observer.disconnect();
 				cancelAnimationFrame( rafId );
 				activate( currentIndex - 1 );
 				rafId = requestAnimationFrame( tick );
 			}
 
 			function onNext() {
+				started = true;
+				observer.disconnect();
 				cancelAnimationFrame( rafId );
 				activate( currentIndex + 1 );
 				rafId = requestAnimationFrame( tick );
@@ -86,6 +108,7 @@ if ( section ) {
 
 			// Cleanup when context is killed (e.g. viewport widens past 700px).
 			return () => {
+				observer.disconnect();
 				cancelAnimationFrame( rafId );
 				if ( prevBtn ) prevBtn.removeEventListener( 'click', onPrev );
 				if ( nextBtn ) nextBtn.removeEventListener( 'click', onNext );
