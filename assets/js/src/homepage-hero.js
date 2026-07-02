@@ -14,9 +14,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin( ScrollTrigger );
 
-const hero = document.querySelector( '.homepage-hero' );
+const heroes = document.querySelectorAll( '.homepage-hero' );
 
-if ( hero ) {
+heroes.forEach( ( hero ) => {
 	const heading = hero.querySelector( '.hero-heading' );
 	const subtext = hero.querySelector( '.hero-subtext' );
 	const cta     = hero.querySelector( '.hero-cta' );
@@ -76,4 +76,4 @@ if ( hero ) {
 			}
 		);
 	}
-}
+} );
